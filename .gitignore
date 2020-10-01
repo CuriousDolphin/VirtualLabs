@@ -62,3 +62,39 @@ testem.log
 Thumbs.db
 client/node_modules/.bin/ivy-ngcc
 client/node_modules/@angular/animations/bundles/animations-browser-testing.umd.js
+
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**
+!**/src/test/**
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
+### VS Code ###
+.vscode/
+
+server/src/main/.DS_Store
+server/src/main/.DS_Store
+server/src/main/java/it/polito/.DS_Store
