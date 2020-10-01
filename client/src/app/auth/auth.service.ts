@@ -36,9 +36,9 @@ export class AuthService {
     };
     return this.http.post(BASE_PATH + 'signin', body).pipe(
       tap((evt) => {
-        if (evt.token != null) {
+        if (evt['token'] != null) {
           // login
-          const token = evt.token;
+          const token = evt['token'];
           localStorage.setItem('token', token);
 
           const user: User = JSON.parse(atob(token.split('.')[1]));
