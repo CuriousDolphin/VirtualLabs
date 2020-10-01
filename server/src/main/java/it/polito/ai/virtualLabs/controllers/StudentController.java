@@ -16,7 +16,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/API/students")
+@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/api/students")
 public class StudentController {
     @Autowired
     TeamService teamService;

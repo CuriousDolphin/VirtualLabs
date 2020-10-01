@@ -27,6 +27,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatDialogModule } from "@angular/material/dialog";
 import { LoginDialogComponent } from "./auth/login-dialog/login-dialog.component";
 import { TokenInterceptor } from './auth/token.interceptor';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { TokenInterceptor } from './auth/token.interceptor';
     MatPaginatorModule,
     MatProgressSpinnerModule,
     MatDialogModule,
+    MatSnackBarModule,
   ],
   providers: [
     {
@@ -70,4 +72,4 @@ import { TokenInterceptor } from './auth/token.interceptor';
   bootstrap: [AppComponent],
   entryComponents: [LoginDialogComponent],
 })
-export class AppModule {}
+export class AppModule { }

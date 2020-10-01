@@ -1,7 +1,6 @@
 
 export interface User {
-  username: string;
   iat: number;
-  exp: number;
-  sub: string;
+  exp: number; // token expiration
+  sub: string; // username
 }

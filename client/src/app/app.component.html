@@ -3,16 +3,16 @@
     <button mat-icon-button class="mr-1" (click)="toggleForMenuClick()">
       <mat-icon>menu</mat-icon>
     </button>
-    <a mat-button [routerLink]="['home']">VirtualLabs</a>
+    <span>Virtual Labs</span>
     <span class="fill-remaining-space"></span>
     <button *ngIf="!isLogged; else showLogout" mat-button class="right" (click)="goToLogin()">
       Login
-      <mat-icon>account_circle</mat-icon>
+      <mat-icon class="ml-1">account_circle</mat-icon>
     </button>
     <ng-template #showLogout>
       <button mat-button class="right" (click)="logout()">
-        {{ user?.username }}
-        <mat-icon>exit_to_app</mat-icon>
+        {{ user?.sub }}
+        <mat-icon class="ml-1">exit_to_app</mat-icon>
       </button>
     </ng-template>
   </mat-toolbar-row>

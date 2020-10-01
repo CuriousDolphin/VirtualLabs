@@ -1,28 +1,29 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { MatSidenav } from "@angular/material/sidenav";
-import { MatDialog } from "@angular/material/dialog";
-import { LoginDialogComponent } from "./auth/login-dialog/login-dialog.component";
-import { Subscription } from "rxjs";
-import { AuthService } from "./auth/auth.service";
-import { User } from "./models/user.model";
-import { ActivatedRoute, Params, Router } from "@angular/router";
-import * as _ from "lodash";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatSidenav } from '@angular/material/sidenav';
+import { MatDialog } from '@angular/material/dialog';
+import { LoginDialogComponent } from './auth/login-dialog/login-dialog.component';
+import { Subscription } from 'rxjs';
+import { AuthService } from './auth/auth.service';
+import { User } from './models/user.model';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import * as _ from 'lodash';
+import { ToastService } from './services/toast.service';
 
 @Component({
-  selector: "app-root",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.sass"],
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.sass'],
 })
 export class AppComponent {
   @ViewChild(MatSidenav) sidenav: MatSidenav;
   tabs = [
     {
-      value: "students",
-      path: "/teacher/course/applicazioni-internet/students",
+      value: 'students',
+      path: '/teacher/course/applicazioni-internet/students',
     },
     {
-      value: "vms",
-      path: "/teacher/course/applicazioni-internet/vms",
+      value: 'vms',
+      path: '/teacher/course/applicazioni-internet/vms',
     },
   ];
   activeLink = this.tabs[0].path;
@@ -35,19 +36,21 @@ export class AppComponent {
   constructor(
     public dialog: MatDialog,
     private authService: AuthService,
+    private toastService: ToastService,
     private route: ActivatedRoute,
     private router: Router
-  ) {}
+  ) { }
   ngOnInit() {
     this.routeSubscription = this.route.queryParams.subscribe(
       (params: Params) => {
-        if (params["doLogin"] == "true") {
+        if (params.doLogin === 'true') {
           this.openLoginDialog();
         }
       }
     );
     this.userSubscription = this.authService.currentUser$.subscribe(
       (user: User) => {
+        console.log('user subscription ', user);
         if (user != null) {
           this.isLogged = true;
           this.user = user;
@@ -67,7 +70,7 @@ export class AppComponent {
     this.sidenav.opened = !this.sidenav.opened;
   }
   goToLogin() {
-    this.router.navigate(["home"], { queryParams: { doLogin: true } });
+    this.router.navigate(['home'], { queryParams: { doLogin: true } });
   }
   private openLoginDialog(redirectTo?: string) {
     if (this.dialogSubscription) this.dialogSubscription.unsubscribe();
@@ -78,19 +81,20 @@ export class AppComponent {
       console.log(`Dialog result: ${result}`);
 
       // se non c'e' il campo nextlink nello state default home
-      let nextLink = _.get(history.state, "nextlink", "home");
+      const nextLink = _.get(history.state, 'nextlink', 'home');
 
-      if (result == true) {
+      if (result === true) {
+        this.toastService.success('Login success!')
         // se il login e' andato bene e devo ridiriggere verso un altra pagina
-        console.log("REDIRECT TO", nextLink);
+        console.log('REDIRECT TO', nextLink);
         this.router.navigate([nextLink]);
       } else {
-        this.router.navigate(["home"]);
+        this.router.navigate(['home']);
       }
     });
   }
   logout() {
     this.authService.logout();
-    this.router.navigate(["home"]);
+    this.router.navigate(['home']);
   }
 }

@@ -10,7 +10,7 @@ import {
 } from 'rxjs';
 import { catchError, retry, tap } from 'rxjs/operators';
 import { User } from '../models/user.model';
-const BASE_PATH = 'http://localhost:8080/auth/';
+const BASE_PATH = '/auth';
 @Injectable({
   providedIn: 'root',
 })
@@ -21,7 +21,7 @@ export class AuthService {
   >(null);
   currentUser$ = this.currentUserSubject$.asObservable();
   constructor(private http: HttpClient) {
-    if (this.isLogged() == true) {
+    if (this.isLogged() === true) {
       const token = this.getToken();
       const user: User = JSON.parse(atob(token.split('.')[1]));
       this.currentUserSubject$.next(user);
@@ -32,16 +32,14 @@ export class AuthService {
       username,
       password,
     };
-    return this.http.post(BASE_PATH + 'signin', body).pipe(
+    return this.http.post(BASE_PATH + '/signin', body).pipe(
       tap((evt) => {
-        console.log('LOGIN RESPONSE ', evt);
         if (evt['token'] != null) {
           // login
           const token = evt['token'];
           localStorage.setItem('token', token);
 
           const user: User = JSON.parse(atob(token.split('.')[1]));
-          user.username = evt['username']
           console.log('LOGGED ', user);
           this.currentUserSubject$.next(user);
         }

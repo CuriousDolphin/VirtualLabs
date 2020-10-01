@@ -1,36 +1,36 @@
-import { Injectable } from "@angular/core";
-import { Student } from "../models/student.model";
-import { HttpClient } from "@angular/common/http";
+import { Injectable } from '@angular/core';
+import { Student } from '../models/student.model';
+import { HttpClient } from '@angular/common/http';
 import {
   BehaviorSubject,
   Observable,
   throwError,
   combineLatest,
   of,
-} from "rxjs";
-import { catchError, retry, tap } from "rxjs/operators";
-import * as _ from "lodash";
-const BASE_PATH = "http://localhost:3000/";
+} from 'rxjs';
+import { catchError, retry, tap } from 'rxjs/operators';
+import * as _ from 'lodash';
+const BASE_PATH = '/api';
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class StudentService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getEnrolledStudents(courseId: number) {
-    const url = BASE_PATH + "course/" + courseId + "/students";
+    const url = BASE_PATH + 'courses/' + courseId + '/students';
     return this.http.get<Student[]>(url).pipe(catchError(this.handleError));
   }
   getAllStudents() {
-    const url = BASE_PATH + "students/";
+    const url = BASE_PATH + 'students/';
     return this.http.get<Student[]>(url).pipe(catchError(this.handleError));
   }
 
   /* Multiple  PATCH */
   /* if course id= 0 unenrolled */
   updateEnrolled(students: Student[], courseId: number) {
-    let urls = [];
-    const url = BASE_PATH + "students/";
+    const urls = [];
+    const url = BASE_PATH + 'students/';
     students.forEach((student) => {
       urls.push(url + student.id);
       student.courseId = courseId;
@@ -41,22 +41,23 @@ export class StudentService {
         return this.http.patch(url + student.id, student);
       })
     ).pipe(
-      tap((evt) => console.log("update enrolled")),
+      tap((evt) => console.log('update enrolled')),
       catchError(this.handleError)
     );
   }
 
   private handleError(error) {
-    let errorMessage = "";
+    let errorMessage = '';
     if (error.error instanceof ErrorEvent) {
       // client-side error
       errorMessage = `Error: ${error.error.message}`;
+
     } else {
       // server-side error
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
-    //window.alert(errorMessage);
-    console.log("HTTP ERROR", errorMessage);
+    // window.alert(errorMessage);
+    console.log('HTTP ERROR', errorMessage);
     return of(null);
   }
 }
