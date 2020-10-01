@@ -38,20 +38,20 @@ public class VirtualLabs {
             public void run(String... args) throws Exception {
                 try{
                     users.save(User.builder()
-                            .username("student")
+                            .username("student@studenti.polito.it")
                             .password(passwordEncoder.encode("pwd"))
-                            .roles(Arrays.asList( "ROLE_PROF"))
+                            .roles(Arrays.asList( "ROLE_STUDENT"))
                             .build()
                     );
                     users.save(User.builder()
-                            .username("prof")
+                            .username("teacher@polito.it")
                             .password(passwordEncoder.encode("pwd"))
                             .roles(Arrays.asList( "ROLE_PROF"))
                             .build()
                     );
 
                     users.save(User.builder()
-                            .username("admin")
+                            .username("admin@polito.it")
                             .password(passwordEncoder.encode("pwd"))
                             .roles(Arrays.asList("ROLE_STUDENT","ROLE_PROF", "ROLE_ADMIN"))
                             .build()

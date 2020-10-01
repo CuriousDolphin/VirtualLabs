@@ -7,8 +7,7 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "mock_server": "json-server-auth --watch db.json -r virtuallabs_routes.json"
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {
@@ -38,7 +37,6 @@
     "codelyzer": "^6.0.1",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~6.0.0",
-    "json-server-auth": "^2.0.2",
     "karma": "~5.2.3",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage-istanbul-reporter": "~3.0.3",

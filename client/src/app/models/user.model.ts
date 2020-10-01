@@ -1,7 +1,6 @@
-import { NumberValueAccessor } from "@angular/forms";
 
 export interface User {
-  email: String;
+  username: string;
   iat: number;
   exp: number;
   sub: string;
