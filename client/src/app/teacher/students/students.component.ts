@@ -5,27 +5,27 @@ import {
   Input,
   Output,
   EventEmitter,
-} from "@angular/core";
-import { Student } from "../../models/student.model";
-import { Observable } from "rxjs";
-import { map, startWith } from "rxjs/operators";
-import { SelectionModel } from "@angular/cdk/collections";
-import { MatTableDataSource } from "@angular/material/table";
-import { FormControl } from "@angular/forms";
-import * as _ from "lodash";
-import { MatSort } from "@angular/material/sort";
-import { MatPaginator } from "@angular/material/paginator";
+} from '@angular/core';
+import { Student } from '../../models/student.model';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+import { SelectionModel } from '@angular/cdk/collections';
+import { MatTableDataSource } from '@angular/material/table';
+import { FormControl } from '@angular/forms';
+import * as _ from 'lodash';
+import { MatSort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
-  selector: "app-students",
-  templateUrl: "./students.component.html",
-  styleUrls: ["./students.component.sass"],
+  selector: 'app-students',
+  templateUrl: './students.component.html',
+  styleUrls: ['./students.component.sass'],
 })
 export class StudentsComponent implements OnInit {
   dataSource = new MatTableDataSource<Student>();
   @Input() set enrolledStudents(students: Student[]) {
     if (students != null) {
-      console.log("set enrolled students", students);
+      console.log('set enrolled students', students);
 
       this.selectedStudents.clear();
       this.dataSource.data = students;
@@ -34,13 +34,13 @@ export class StudentsComponent implements OnInit {
   @Input() set studentsDB(students: Student[]) {
     if (students != null) this.allStudents = students;
   }
-  allStudents = []; //for autocomplete
+  allStudents = []; // for autocomplete
   @Output() deleteStudents = new EventEmitter<Student[]>();
   @Output() addStudent = new EventEmitter<Student>();
   myControl = new FormControl();
   filteredOptions: Observable<Student[]>;
-  title = "ai20-lab05";
-  colsToDisplay = ["select", "id", "name", "firstName"];
+  title = 'ai20-lab05';
+  colsToDisplay = ['select', 'id', 'name', 'firstName'];
   selectedStudents = new SelectionModel<Student>(true, []);
 
   studentToAdd: Student = null;
@@ -51,17 +51,17 @@ export class StudentsComponent implements OnInit {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     this.filteredOptions = this.myControl.valueChanges.pipe(
-      startWith(""),
-      //debounceTime(200),
-      //distinctUntilChanged(),
-      map((value) => (typeof value === "string" ? value : value.firstName)),
+      startWith(''),
+      // debounceTime(200),
+      // distinctUntilChanged(),
+      map((value) => (typeof value === 'string' ? value : value.firstName)),
       map((value) => this._filter(value))
     );
   }
   displayFn(student: Student): string {
     return student && student.firstName
-      ? student.firstName + " " + student.id
-      : "";
+      ? student.firstName + ' ' + student.id
+      : '';
   }
 
   selectStudentToAdd(student: Student) {

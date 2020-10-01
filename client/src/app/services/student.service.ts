@@ -10,7 +10,9 @@ import {
 } from 'rxjs';
 import { catchError, retry, tap } from 'rxjs/operators';
 import * as _ from 'lodash';
-const BASE_PATH = '/api';
+import { environment } from 'src/environments/environment';
+const BASE_PATH = environment.apiUrl;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -18,7 +20,7 @@ export class StudentService {
   constructor(private http: HttpClient) { }
 
   getEnrolledStudents(courseId: number) {
-    const url = BASE_PATH + 'courses/' + courseId + '/students';
+    const url = BASE_PATH + 'courses/' + courseId + '/enrolled';
     return this.http.get<Student[]>(url).pipe(catchError(this.handleError));
   }
   getAllStudents() {
@@ -30,7 +32,7 @@ export class StudentService {
   /* if course id= 0 unenrolled */
   updateEnrolled(students: Student[], courseId: number) {
     const urls = [];
-    const url = BASE_PATH + 'students/';
+    const url = BASE_PATH + '/students/';
     students.forEach((student) => {
       urls.push(url + student.id);
       student.courseId = courseId;

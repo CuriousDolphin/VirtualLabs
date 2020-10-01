@@ -1,19 +1,19 @@
-import { Component, OnInit } from "@angular/core";
-import { MatDialogRef } from "@angular/material/dialog";
-import { MatDialog, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
   FormControl,
   Validators,
   FormGroup,
   FormBuilder,
-} from "@angular/forms";
-import { AuthService } from "../auth.service";
-import { Subscription } from "rxjs";
+} from '@angular/forms';
+import { AuthService } from '../auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
-  selector: "app-login-dialog",
-  templateUrl: "./login-dialog.component.html",
-  styleUrls: ["./login-dialog.component.sass"],
+  selector: 'app-login-dialog',
+  templateUrl: './login-dialog.component.html',
+  styleUrls: ['./login-dialog.component.sass'],
 })
 export class LoginDialogComponent implements OnInit {
   loginForm: FormGroup;
@@ -26,8 +26,8 @@ export class LoginDialogComponent implements OnInit {
     private authService: AuthService
   ) {
     this.loginForm = this.fb.group({
-      email: ["", [Validators.required, Validators.email]],
-      password: ["", [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(3)]],
     });
   }
 
@@ -39,13 +39,13 @@ export class LoginDialogComponent implements OnInit {
     if (this.loginForm.valid)
       this.authSubscription = this.authService
         .login(
-          this.loginForm.get("email").value,
-          this.loginForm.get("password").value
+          this.loginForm.get('email').value,
+          this.loginForm.get('password').value
         )
         .subscribe((evt) => {
           this.isLoading = false;
           if (evt == null) {
-            //login failed
+            // login failed
             this.showError = true;
           } else {
             this.dialogRef.close(true);

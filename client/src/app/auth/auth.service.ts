@@ -10,7 +10,9 @@ import {
 } from 'rxjs';
 import { catchError, retry, tap } from 'rxjs/operators';
 import { User } from '../models/user.model';
-const BASE_PATH = '/auth';
+import { environment } from '../../environments/environment';
+
+const BASE_PATH = environment.authUrl;
 @Injectable({
   providedIn: 'root',
 })
@@ -32,11 +34,11 @@ export class AuthService {
       username,
       password,
     };
-    return this.http.post(BASE_PATH + '/signin', body).pipe(
+    return this.http.post(BASE_PATH + 'signin', body).pipe(
       tap((evt) => {
-        if (evt['token'] != null) {
+        if (evt.token != null) {
           // login
-          const token = evt['token'];
+          const token = evt.token;
           localStorage.setItem('token', token);
 
           const user: User = JSON.parse(atob(token.split('.')[1]));
