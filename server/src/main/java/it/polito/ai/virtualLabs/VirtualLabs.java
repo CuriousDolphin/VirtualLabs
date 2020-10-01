@@ -36,25 +36,30 @@ public class VirtualLabs {
 
             @Override
             public void run(String... args) throws Exception {
-                users.save(User.builder()
-                        .username("student")
-                        .password(passwordEncoder.encode("pwd"))
-                        .roles(Arrays.asList( "ROLE_PROF"))
-                        .build()
-                );
-                users.save(User.builder()
-                        .username("prof")
-                        .password(passwordEncoder.encode("pwd"))
-                        .roles(Arrays.asList( "ROLE_PROF"))
-                        .build()
-                );
+                try{
+                    users.save(User.builder()
+                            .username("student")
+                            .password(passwordEncoder.encode("pwd"))
+                            .roles(Arrays.asList( "ROLE_PROF"))
+                            .build()
+                    );
+                    users.save(User.builder()
+                            .username("prof")
+                            .password(passwordEncoder.encode("pwd"))
+                            .roles(Arrays.asList( "ROLE_PROF"))
+                            .build()
+                    );
 
-                users.save(User.builder()
-                        .username("admin")
-                        .password(passwordEncoder.encode("pwd"))
-                        .roles(Arrays.asList("ROLE_STUDENT","ROLE_PROF", "ROLE_ADMIN"))
-                        .build()
-                );
+                    users.save(User.builder()
+                            .username("admin")
+                            .password(passwordEncoder.encode("pwd"))
+                            .roles(Arrays.asList("ROLE_STUDENT","ROLE_PROF", "ROLE_ADMIN"))
+                            .build()
+                    );
+                }catch (Exception e){
+                    System.out.println("Exception insert user: "+e.getMessage().toString());
+                }
+
                 System.out.println("printing all users...");
                 users.findAll().forEach(v ->  System.out.println(" User :" + v.toString()));
 

@@ -18,7 +18,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @Entity
-@Table(name="users")
+@Table(name="users",uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})})
 @Data
 @Builder
 @NoArgsConstructor
@@ -28,6 +28,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     @NotEmpty
+    @Column(unique = true)
     private String username;
     @NotEmpty
     private String password;
