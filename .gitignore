@@ -3,7 +3,7 @@ client/node_modules/**
 client/node_modules
 client/node_modules/
 client/node_modules/@angular/animations/browser/testing/package.json
-
+client/package-lock.json
 
 **/.DS_Store
 
@@ -14,6 +14,7 @@ client/node_modules/@angular/animations/browser/testing/package.json
 **/node_modules
 **/node_modules/*
 **/node_modules/**
+
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
@@ -98,3 +99,4 @@ build/
 server/src/main/.DS_Store
 server/src/main/.DS_Store
 server/src/main/java/it/polito/.DS_Store
+
