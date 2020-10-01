@@ -1,0 +1,59 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <button mat-icon-button class="mr-1" (click)="toggleForMenuClick()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <a mat-button [routerLink]="['home']">VirtualLabs</a>
+    <span class="fill-remaining-space"></span>
+    <button
+      *ngIf="!isLogged; else showLogout"
+      mat-button
+      class="right"
+      (click)="goToLogin()"
+    >
+      Login
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    <ng-template #showLogout>
+      <button mat-button class="right" (click)="logout()">
+        {{ user?.email }}
+        <mat-icon>exit_to_app</mat-icon>
+      </button>
+    </ng-template>
+  </mat-toolbar-row>
+  <mat-toolbar-row>
+    <span>Applicazioni Internet</span>
+  </mat-toolbar-row>
+</mat-toolbar>
+<mat-sidenav-container class="absolute-container">
+  <mat-sidenav mode="side" position="start">
+    <div class="container" style="width: 300px;">
+      <mat-nav-list>
+        <mat-list-item
+          [routerLink]="['teacher/course/applicazioni-internet/students']"
+        >
+          App Internet
+        </mat-list-item>
+        <mat-divider> </mat-divider>
+        <mat-list-item> pds </mat-list-item>
+        <mat-divider> </mat-divider>
+      </mat-nav-list>
+    </div>
+  </mat-sidenav>
+  <mat-sidenav-content
+    ><nav mat-tab-nav-bar>
+      <a
+        mat-tab-link
+        *ngFor="let tab of tabs"
+        [routerLink]="tab.path"
+        routerLinkActive
+        #rla="routerLinkActive"
+        [active]="rla.isActive"
+      >
+        {{ tab.value }}
+      </a>
+    </nav>
+
+    <router-outlet></router-outlet
+  ></mat-sidenav-content>
+</mat-sidenav-container>

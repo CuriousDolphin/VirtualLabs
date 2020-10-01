@@ -1,2 +1,2 @@
-# VirtualLabs
-Springboot (REST) + Angular + Mariadb &lt;3
+# VirtualLABS
+web application project

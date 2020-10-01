@@ -1,0 +1,39 @@
+<h1 mat-dialog-title>Login</h1>
+<div mat-dialog-content>
+  <div class="main-container" [formGroup]="loginForm">
+    <mat-form-field class="full-width" appearance="outline">
+      <mat-label>Enter your email</mat-label>
+      <input
+        matInput
+        placeholder="someone@example.com"
+        formControlName="email"
+        required
+      />
+      <mat-error *ngIf="loginForm.controls['email'].invalid"
+        >Not a valid email</mat-error
+      >
+    </mat-form-field>
+    <mat-form-field class="full-width" appearance="outline">
+      <mat-label>Enter your password</mat-label>
+      <input type="password" matInput formControlName="password" required />
+      <mat-error *ngIf="loginForm.controls['password'].invalid"
+        >Not a valid password</mat-error
+      >
+    </mat-form-field>
+    <mat-label class="my_label" *ngIf="showError">
+      Error during login,check username and password.
+    </mat-label>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button
+    [disabled]="!loginForm.valid"
+    mat-raised-button
+    color="primary"
+    (click)="attempLogin()"
+  >
+    Login
+  </button>
+  <button mat-button color="primary" (click)="cancel()">Cancel</button>
+  <mat-spinner *ngIf="isLoading" [diameter]="24"></mat-spinner>
+</div>
