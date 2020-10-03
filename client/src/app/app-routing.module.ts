@@ -17,16 +17,16 @@ const routes: Routes = [
     component:TeacherComponent,
     children: [
       {
-        path:'',
+        path:':id_course',
         component:TabContComponent,
         children:[
           {
-            path: ':id/students',
+            path: 'students',
             component: StudentsContComponent,
             canActivate: [AuthGuard],
           },
           {
-            path: ':id/vms',
+            path: 'vms',
             component: VmsComponent,
             canActivate: [AuthGuard],
           },

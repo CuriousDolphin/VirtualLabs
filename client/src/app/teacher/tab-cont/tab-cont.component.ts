@@ -9,11 +9,11 @@ export class TabContComponent implements OnInit {
   tabs = [
     {
       value: 'students',
-      path: 'applicazioni-internet/students',
+      path: 'students',
     },
     {
       value: 'vms',
-      path: 'applicazioni-internet/vms',
+      path: 'vms',
     },
   ];
   constructor() { }
