@@ -19,7 +19,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { StudentsComponent } from './teacher/students/students.component';
-import { StudentsContComponent } from './teacher/students-cont.component';
+import { StudentsContComponent } from './teacher/students-cont/students-cont.component';
 import { HomeComponent } from './home/home.component';
 import { VmsComponent } from './teacher/vms/vms.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
@@ -28,6 +28,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { LoginDialogComponent } from './auth/login-dialog/login-dialog.component';
 import { TokenInterceptor } from './auth/token.interceptor';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { TeacherComponent } from './teacher/teacher.component';
+import { TabContComponent } from './teacher/tab-cont/tab-cont.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     VmsComponent,
     PageNotFoundComponent,
     LoginDialogComponent,
+    TeacherComponent,
+    TabContComponent,
   ],
   imports: [
     BrowserModule,

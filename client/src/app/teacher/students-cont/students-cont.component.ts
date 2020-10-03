@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Student } from '../models/student.model';
+import { Student } from '../../models/student.model';
 import * as _ from 'lodash';
-import { StudentService } from '../services/student.service';
+import { StudentService } from '../../services/student.service';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/internal/operators/tap';
 import { startWith, switchMap } from 'rxjs/operators';

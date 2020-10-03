@@ -1,0 +1,26 @@
+<mat-toolbar color="primary">
+    
+ 
+      <span>Teacher Dashboard</span>
+ 
+  </mat-toolbar>
+  <mat-sidenav-container class="absolute-container">
+    <mat-sidenav mode="side" position="start" opened>
+      <div class="container" style="width: 300px;">
+        <mat-nav-list>
+          <mat-list-item [routerLink]="['applicazioni-internet/students']">
+            App Internet
+          </mat-list-item>
+          <mat-divider> </mat-divider>
+          <mat-list-item> pds </mat-list-item>
+          <mat-divider> </mat-divider>
+        </mat-nav-list>
+      </div>
+    </mat-sidenav>
+    <mat-sidenav-content>
+
+      
+  
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>

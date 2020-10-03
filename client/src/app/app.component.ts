@@ -8,6 +8,7 @@ import { User } from './models/user.model';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import * as _ from 'lodash';
 import { ToastService } from './services/toast.service';
+import { UtilsService } from './services/utils.service';
 
 @Component({
   selector: 'app-root',
@@ -38,9 +39,12 @@ export class AppComponent {
     private authService: AuthService,
     private toastService: ToastService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private utilsService:UtilsService
   ) { }
   ngOnInit() {
+
+    // if route have param "do login" open login dialog
     this.routeSubscription = this.route.queryParams.subscribe(
       (params: Params) => {
         if (params.doLogin === 'true') {
@@ -67,7 +71,8 @@ export class AppComponent {
     if (this.dialogSubscription) this.dialogSubscription.unsubscribe();
   }
   toggleForMenuClick() {
-    this.sidenav.opened = !this.sidenav.opened;
+    this.utilsService.toggleMenu();
+    //this.sidenav.opened = !this.sidenav.opened;
   }
   goToLogin() {
     this.router.navigate(['home'], { queryParams: { doLogin: true } });
@@ -81,8 +86,8 @@ export class AppComponent {
       console.log(`Dialog result: ${result}`);
 
       // se non c'e' il campo nextlink nello state default home
-      const nextLink = _.get(history.state, 'nextlink', 'home');
-
+      // const nextLink = _.get(history.state, 'nextlink', 'home');
+      const nextLink ="teacher"
       if (result === true) {
         this.toastService.success('Login success!')
         // se il login e' andato bene e devo ridiriggere verso un altra pagina
