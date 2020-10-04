@@ -7,19 +7,19 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { StudentsContComponent } from './teacher/students-cont/students-cont.component';
 import { AuthGuard } from './auth/auth.guard';
 import { TeacherComponent } from './teacher/teacher.component';
-import { TabContComponent } from './teacher/tab-cont/tab-cont.component';
+import { CourseDashboard } from './teacher/course-dashboard/course-dashboard';
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 
   {
     path: 'teacher',
-    component:TeacherComponent,
+    component: TeacherComponent,
     children: [
       {
-        path:':id_course',
-        component:TabContComponent,
-        children:[
+        path: ':id_course',
+        component: CourseDashboard,
+        children: [
           {
             path: 'students',
             component: StudentsContComponent,
@@ -40,7 +40,7 @@ const routes: Routes = [
 
 
       }, */
-      
+
     ],
     canActivate: [AuthGuard],
   },
@@ -52,4 +52,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

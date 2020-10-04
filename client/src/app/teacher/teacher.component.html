@@ -1,26 +1,37 @@
-<mat-toolbar color="primary">
-    
- 
-      <span>Teacher Dashboard</span>
- 
-  </mat-toolbar>
-  <mat-sidenav-container class="absolute-container">
-    <mat-sidenav mode="side" position="start" opened>
-      <div class="container" style="width: 300px;">
-        <mat-nav-list>
-          <mat-list-item [routerLink]="['applicazioni-internet/students']">
-            App Internet
-          </mat-list-item>
-          <mat-divider> </mat-divider>
-          <mat-list-item> pds </mat-list-item>
-          <mat-divider> </mat-divider>
-        </mat-nav-list>
-      </div>
-    </mat-sidenav>
-    <mat-sidenav-content>
+<mat-sidenav-container class="absolute-container">
+  <mat-sidenav mode="side" position="start" opened>
+    <mat-toolbar color="primary">Teacher courses</mat-toolbar>
+    <div class="container p-16">
 
-      
-  
-      <router-outlet></router-outlet>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+
+      <mat-nav-list>
+        <div *ngFor="let course of courses$| async">
+          <mat-divider> </mat-divider>
+          <mat-list-item [routerLink]="[course.name,'students']"> {{course.name}} </mat-list-item>
+          <mat-divider> </mat-divider>
+
+
+        </div>
+        <!--  <mat-list-item [routerLink]="['applicazioni-internet/students']">
+          App Internet
+        </mat-list-item> -->
+
+      </mat-nav-list>
+      <button mat-raised-button color="primary" style="border-radius: 20px;margin-top: 16px;">
+        <mat-icon>
+          add_circle
+        </mat-icon>
+        New
+      </button>
+
+    </div>
+
+
+  </mat-sidenav>
+  <mat-sidenav-content>
+
+
+
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

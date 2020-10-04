@@ -13,6 +13,7 @@ public class CourseDTO extends RepresentationModel<CourseDTO> {
     @NotNull
 
     private String name;
+    private String acronym;
     private int min;
     private int max;
     private boolean enabled;

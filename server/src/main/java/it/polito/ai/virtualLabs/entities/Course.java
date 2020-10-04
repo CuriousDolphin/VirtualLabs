@@ -1,6 +1,9 @@
 package it.polito.ai.virtualLabs.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnTransformer;
 
 import javax.persistence.*;
@@ -9,12 +12,17 @@ import java.util.List;
 
 @Entity
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Course {
 
     @Id
-    @Column(name="name")
+    @Column(name="name",unique = true)
     @ColumnTransformer(read = "UPPER(name)")
     private String name;
+    @Column(unique = true)
+    private String acronym;
     private int min;
     private int max;
     private boolean enabled;

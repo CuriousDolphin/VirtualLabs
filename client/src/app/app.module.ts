@@ -29,7 +29,7 @@ import { LoginDialogComponent } from './auth/login-dialog/login-dialog.component
 import { TokenInterceptor } from './auth/token.interceptor';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TeacherComponent } from './teacher/teacher.component';
-import { TabContComponent } from './teacher/tab-cont/tab-cont.component';
+import { CourseDashboard } from './teacher/course-dashboard/course-dashboard';
 
 @NgModule({
   declarations: [
@@ -41,7 +41,7 @@ import { TabContComponent } from './teacher/tab-cont/tab-cont.component';
     PageNotFoundComponent,
     LoginDialogComponent,
     TeacherComponent,
-    TabContComponent,
+    CourseDashboard,
   ],
   imports: [
     BrowserModule,
