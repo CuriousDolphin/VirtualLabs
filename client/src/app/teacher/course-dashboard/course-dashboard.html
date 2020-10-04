@@ -7,10 +7,10 @@
   <span>{{currentCourse?.name}}</span>
   <div class="subtitle"> {{currentCourse?.acronym}}</div>
 
-  <mat-chip-list class="ml-1">
+  <div fxFlex fxLayout="row" class="ml-1">
     <div class="my-chip" color="primary">min:{{currentCourse?.min}} max:{{currentCourse?.max}}</div>
     <siv class="my-chip" color="primary">enabled:{{currentCourse?.enabled}}</siv>
-  </mat-chip-list>
+  </div>
 
 
   <button mat-button color="primary" class="ml-1 edit-button">
@@ -21,7 +21,7 @@
 
 </mat-toolbar>
 
-<nav mat-tab-nav-bar>
+<nav mat-tab-nav-bar class="white-smoke">
   <a mat-tab-link *ngFor="let tab of tabs" [routerLink]="tab.path" routerLinkActive #rla="routerLinkActive"
     [active]="rla.isActive">
     {{ tab.value }}

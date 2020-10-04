@@ -31,6 +31,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TeacherComponent } from './teacher/teacher.component';
 import { CourseDashboard } from './teacher/course-dashboard/course-dashboard';
 import { MatChipsModule } from '@angular/material/chips';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { MatChipsModule } from '@angular/material/chips';
     MatProgressSpinnerModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatChipsModule
+    MatChipsModule,
+    FlexLayoutModule
   ],
   providers: [
     {

@@ -40,7 +40,7 @@ export class AppComponent {
     private toastService: ToastService,
     private route: ActivatedRoute,
     private router: Router,
-    private utilsService:UtilsService
+    private utilsService: UtilsService
   ) { }
   ngOnInit() {
 
@@ -72,7 +72,7 @@ export class AppComponent {
   }
   toggleForMenuClick() {
     this.utilsService.toggleMenu();
-    //this.sidenav.opened = !this.sidenav.opened;
+    // this.sidenav.opened = !this.sidenav.opened;
   }
   goToLogin() {
     this.router.navigate(['home'], { queryParams: { doLogin: true } });
@@ -87,7 +87,7 @@ export class AppComponent {
 
       // se non c'e' il campo nextlink nello state default home
       // const nextLink = _.get(history.state, 'nextlink', 'home');
-      const nextLink ="teacher"
+      const nextLink = 'teacher'
       if (result === true) {
         this.toastService.success('Login success!')
         // se il login e' andato bene e devo ridiriggere verso un altra pagina
