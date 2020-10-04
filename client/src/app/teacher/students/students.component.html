@@ -1,6 +1,6 @@
-<div fxLayout="row">
+<div class="search-container" fxLayout="row" fxLayoutAlign="start stretch">
   <form class="my-form">
-    <mat-form-field style="width: 300px;" appearance="outline">
+    <mat-form-field class="form-small" style="width: 300px;" appearance="outline">
       <mat-label>Search student</mat-label>
       <input type="text" placeholder="search student" matInput [formControl]="myControl" [matAutocomplete]="auto" />
       <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayFn"
@@ -10,11 +10,13 @@
         </mat-option>
       </mat-autocomplete>
     </mat-form-field>
-    <button mat-raised-button [disabled]="!studentToAdd" (click)="addStudentToTable()">
-      add
-    </button>
+
   </form>
+  <button mat-raised-button [disabled]="!studentToAdd" (click)="addStudentToTable()">
+    ADD
+  </button>
 </div>
+<mat-divider></mat-divider>
 
 <div class="container">
 
