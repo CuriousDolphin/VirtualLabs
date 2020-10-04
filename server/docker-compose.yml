@@ -7,8 +7,12 @@ services:
         environment:
             - MYSQL_ROOT_PASSWORD=pwd
             - MYSQL_DATABASE=db_test
-
-  #server:
-    #build: .
-    #container_name: virtuallabs_server
+        volumes:
+        - db_data/:/var/lib/mysql
+    #server:
+        #build: .
+        #container_name: virtuallabs_server    
+volumes: 
+    db_data:       
+ 
     

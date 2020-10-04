@@ -7,7 +7,7 @@
       <mat-nav-list>
         <div *ngFor="let course of courses$| async">
           <mat-divider> </mat-divider>
-          <mat-list-item [routerLink]="[course.name,'students']"> {{course.name}} </mat-list-item>
+          <mat-list-item [routerLink]="[course.name]" [state]="course"> {{course.name}} </mat-list-item>
           <mat-divider> </mat-divider>
 
 

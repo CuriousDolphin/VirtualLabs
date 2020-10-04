@@ -30,6 +30,7 @@ import { TokenInterceptor } from './auth/token.interceptor';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TeacherComponent } from './teacher/teacher.component';
 import { CourseDashboard } from './teacher/course-dashboard/course-dashboard';
+import { MatChipsModule } from '@angular/material/chips';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { CourseDashboard } from './teacher/course-dashboard/course-dashboard';
     MatProgressSpinnerModule,
     MatDialogModule,
     MatSnackBarModule,
+    MatChipsModule
   ],
   providers: [
     {

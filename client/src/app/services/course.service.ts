@@ -22,9 +22,13 @@ export class CourseService {
   constructor(private http: HttpClient) { }
 
 
-  getAllCourses():Observable<Course[]> {
+  getAllCourses(): Observable<Course[]> {
     const url = BASE_PATH + 'courses';
     return this.http.get<Course[]>(url).pipe(catchError(this.handleError));
+  }
+  getCourse(name: string): Observable<Course> {
+    const url = BASE_PATH + 'courses/' + name;
+    return this.http.get<Course>(url).pipe(catchError(this.handleError));
   }
 
 
