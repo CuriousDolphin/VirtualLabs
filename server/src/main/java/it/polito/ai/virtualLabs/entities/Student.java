@@ -23,11 +23,12 @@ public class Student {
    // @Getter(AccessLevel.NONE)
     private String id;
     private String name;
-    private String firstName;
+    private String lastName;
+    private String email;
 
     @Override
     public String toString(){
-        return this.id+"_"+this.name+"_"+this.firstName;
+        return this.id+"_"+this.name+"_"+this.lastName;
     }
 
 
@@ -48,7 +49,7 @@ public class Student {
     }
 
     public void setId(String id){
-        System.out.println("SET STUDENT ID"+this.id.toUpperCase());
+       // System.out.println("SET STUDENT ID"+this.id.toUpperCase());
         this.id=id.toUpperCase();
     }
 }

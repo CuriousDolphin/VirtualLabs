@@ -1,29 +1,34 @@
 <div class="loader" *ngIf="isLoading">
   <mat-spinner></mat-spinner>
 </div>
-<mat-toolbar style="color: rgb(32 32 32 / 87%);">
-
-
+<mat-toolbar style="color: rgb(32 32 32 / 87%)">
   <span>{{currentCourse?.name}}</span>
-  <div class="subtitle"> {{currentCourse?.acronym}}</div>
+  <div class="subtitle">{{currentCourse?.acronym}}</div>
 
   <div fxFlex fxLayout="row" class="ml-1">
-    <div class="my-chip" color="primary">min:{{currentCourse?.min}} max:{{currentCourse?.max}}</div>
-    <div class="my-chip" color="primary">enabled:{{currentCourse?.enabled}}</div>
+    <div class="my-chip" color="primary">
+      min:{{currentCourse?.min}} max:{{currentCourse?.max}}
+    </div>
+    <div class="my-chip" color="primary">
+      enabled:{{currentCourse?.enabled}}
+    </div>
   </div>
 
-
   <button mat-button color="primary" class="ml-1 edit-button">
-    <mat-icon>
-      build
-    </mat-icon>
+    <mat-icon> build </mat-icon>
   </button>
-
 </mat-toolbar>
 
 <nav mat-tab-nav-bar class="white-smoke">
-  <a mat-tab-link *ngFor="let tab of tabs" [routerLink]="tab.path" routerLinkActive #rla="routerLinkActive"
-    [active]="rla.isActive">
+  <a
+    mat-tab-link
+    *ngFor="let tab of tabs"
+    [routerLink]="tab.path"
+    [state]="currentCourse"
+    routerLinkActive
+    #rla="routerLinkActive"
+    [active]="rla.isActive"
+  >
     {{ tab.value }}
   </a>
 </nav>

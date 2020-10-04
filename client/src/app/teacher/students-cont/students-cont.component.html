@@ -1,5 +1,9 @@
-<app-students [studentsDB]="studentsDB$ | async" [enrolledStudents]="enrolledStudents$ | async"
-  (deleteStudents)="removeStudents($event)" (addStudent)="addStudent($event)"></app-students>
+<app-students
+  [studentsDB]="studentsDB$ | async"
+  [enrolledStudents]="enrolledStudents$ | async"
+  (deleteStudents)="removeStudents($event)"
+  (addStudent)="enrollStudent($event)"
+></app-students>
 
 <div class="loader" *ngIf="isLoading">
   <mat-spinner></mat-spinner>

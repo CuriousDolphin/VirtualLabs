@@ -150,6 +150,7 @@ public class TeamServiceImpl implements TeamService {
     public List<Boolean> addAll(List<StudentDTO> students) {
         List<Boolean> ris = new ArrayList<>();
         students.forEach(studentDTO -> {
+            System.out.println("st " + studentDTO.toString());
             ris.add(this.addStudent(studentDTO));
         });
         return ris;

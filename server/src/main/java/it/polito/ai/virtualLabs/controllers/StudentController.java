@@ -63,6 +63,17 @@ public class StudentController {
 
     }
 
+    @PostMapping({"/addAll"})
+    @ResponseStatus(HttpStatus.CREATED)
+    List<Boolean> addStudents(@Valid @RequestBody List<StudentDTO> students, BindingResult result){
+        if(result.hasErrors())  throw new ResponseStatusException(HttpStatus.CONFLICT);
+
+        List<Boolean> ris=teamService.addAll(students);
+
+        return ris;
+
+    }
+
 
 
 }
