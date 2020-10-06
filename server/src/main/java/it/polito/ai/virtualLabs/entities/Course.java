@@ -18,6 +18,8 @@ import java.util.List;
 public class Course {
 
     @Id
+    @GeneratedValue
+    private Long id;
     @Column(name="name",unique = true)
     @ColumnTransformer(read = "UPPER(name)")
     private String name;

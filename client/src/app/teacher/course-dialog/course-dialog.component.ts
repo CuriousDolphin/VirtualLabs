@@ -81,7 +81,7 @@ export class CourseDialogComponent implements OnInit {
           //  failed
           this.showError = true;
         } else {
-          this.dialogRef.close(true);
+          this.dialogRef.close(evt);
         }
       })
     }
@@ -100,11 +100,11 @@ export class CourseDialogComponent implements OnInit {
       };
       this.courseSubscription = this.courseService.addCourse(course).subscribe((evt) => {
         this.isLoading = false;
-        if (evt == null) {
+        if (evt === null) {
           //  failed
           this.showError = true;
         } else {
-          this.dialogRef.close(true);
+          this.dialogRef.close(evt);
         }
       })
     }

@@ -65,9 +65,9 @@ export class TeacherComponent implements OnInit, OnDestroy {
 
     const dialogRef = this.dialog.open(CourseDialogComponent, { data: { mode: 'Create' } },);
 
-    this.dialogSubscription = dialogRef.afterClosed().subscribe((result) => {
+    this.dialogSubscription = dialogRef.afterClosed().subscribe((result: Course) => {
       console.log(`Dialog result: ${result}`);
-      if (result === true) {
+      if (result !== null && result !== undefined) {
         this.toastService.success('Create success!');
         // reload data
         this._reloadSubject$.next(null);
