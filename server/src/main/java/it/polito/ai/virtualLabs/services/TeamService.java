@@ -13,6 +13,9 @@ public interface TeamService {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     boolean addCourse(CourseDTO course);
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
+    CourseDTO updateCourse(CourseDTO course,String courseName);
+
     Optional<CourseDTO> getCourse(String name);
 
     List<CourseDTO> getAllCourses();

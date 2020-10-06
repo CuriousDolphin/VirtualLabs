@@ -31,7 +31,7 @@ export class LoginDialogComponent implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
   attempLogin() {
     if (this.authSubscription) this.authSubscription.unsubscribe();
     this.isLoading = true;

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginDialogComponent } from './auth/login-dialog/login-dialog.component';
@@ -15,19 +15,9 @@ import { UtilsService } from './services/utils.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.sass'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
   @ViewChild(MatSidenav) sidenav: MatSidenav;
-  tabs = [
-    {
-      value: 'students',
-      path: '/teacher/course/applicazioni-internet/students',
-    },
-    {
-      value: 'vms',
-      path: '/teacher/course/applicazioni-internet/vms',
-    },
-  ];
-  activeLink = this.tabs[0].path;
+
   userSubscription: Subscription;
   routeSubscription: Subscription;
   dialogSubscription: Subscription;
@@ -75,7 +65,8 @@ export class AppComponent {
     // this.sidenav.opened = !this.sidenav.opened;
   }
   goToLogin() {
-    this.router.navigate(['home'], { queryParams: { doLogin: true } });
+    this.openLoginDialog();
+    // this.router.navigate(['home'], { queryParams: { doLogin: true } });
   }
   private openLoginDialog(redirectTo?: string) {
     if (this.dialogSubscription) this.dialogSubscription.unsubscribe();
@@ -87,6 +78,9 @@ export class AppComponent {
 
       // se non c'e' il campo nextlink nello state default home
       // const nextLink = _.get(history.state, 'nextlink', 'home');
+
+
+      // TOFO HANDLE THIS in base al ruolo dell'user,se role_teacher go to teacher else..
       const nextLink = 'teacher'
       if (result === true) {
         this.toastService.success('Login success!')

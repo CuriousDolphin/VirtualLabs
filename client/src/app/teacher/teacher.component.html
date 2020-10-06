@@ -2,10 +2,14 @@
   <mat-sidenav mode="side" position="start" opened [fixedInViewport]="false">
     <mat-toolbar color="primary">Teacher courses</mat-toolbar>
     <div class="container p-16">
+      <div class="loader" *ngIf="isLoading">
+        <mat-spinner></mat-spinner>
+      </div>
 
 
-      <mat-nav-list>
-        <div *ngFor="let course of courses$| async">
+      <mat-nav-list class="my-list">
+
+        <div *ngFor="let course of courses$ | async">
           <mat-divider> </mat-divider>
           <mat-list-item [routerLink]="[course.name]" [state]="course"> {{course.name}} </mat-list-item>
           <mat-divider> </mat-divider>
@@ -17,7 +21,7 @@
         </mat-list-item> -->
 
       </mat-nav-list>
-      <button mat-raised-button color="primary" style="border-radius: 20px;margin-top: 16px;">
+      <button mat-raised-button color="primary" style="border-radius: 20px;margin-top: 16px;" (click)="createCourse()">
         <mat-icon>
           add_circle
         </mat-icon>

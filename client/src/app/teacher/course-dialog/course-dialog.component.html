@@ -1,0 +1,56 @@
+<h1 mat-dialog-title>{{data.mode}} course</h1>
+<div mat-dialog-content style="width:350px">
+    <div [formGroup]="courseForm">
+        <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Name</mat-label>
+            <input matInput placeholder="Es: Applicazioni internet" formControlName="name" required />
+            <mat-error *ngIf="courseForm.controls['name'].invalid">Not a valid name</mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Acronym</mat-label>
+            <input matInput placeholder="Es: AI" formControlName="acronym" required />
+            <mat-error *ngIf="courseForm.controls['acronym'].invalid">Not a valid acronym</mat-error>
+        </mat-form-field>
+
+        <div fxLayout="row" fxLayoutAlign="space-between start">
+
+
+            <mat-form-field class="form-small mini" appearance="outline">
+                <mat-label>min</mat-label>
+
+                <input min="0" max="100" matInput type="number" placeholder="min" formControlName="min" required />
+
+            </mat-form-field>
+
+            <mat-form-field class="form-small mini" appearance="outline">
+                <mat-label>max</mat-label>
+
+                <input min="0" max="100" matInput type="number" placeholder="max" formControlName="max" required />
+
+            </mat-form-field>
+
+            <div fxLayout="row" fxLayoutAlign=" center" style="height: 50px;">
+                <mat-slide-toggle class="ml-1" formControlName="enabled">Enabled</mat-slide-toggle>
+            </div>
+
+        </div>
+        <mat-label class="my_label" *ngIf="showError">
+            Error during request
+        </mat-label>
+
+    </div>
+</div>
+
+<div mat-dialog-actions>
+    <button *ngIf="data.mode==='Create'" [disabled]="!courseForm.valid" mat-raised-button color="primary"
+        (click)="createCourse()">
+        Create
+    </button>
+
+    <button *ngIf="data.mode==='Update'" [disabled]="!courseForm.valid || courseForm.pristine" mat-raised-button
+        color="primary" (click)="updateCourse()">
+        update
+    </button>
+    <button mat-button color="primary" (click)="cancel()">Cancel</button>
+    <mat-spinner *ngIf="isLoading" [diameter]="24"></mat-spinner>
+</div>

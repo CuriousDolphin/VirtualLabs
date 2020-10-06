@@ -38,9 +38,8 @@ public class TeamServiceImpl implements TeamService {
 
 
     @Override
-
     public boolean addCourse(CourseDTO course) {
-        if (courseRepository.existsById(course.getName())) {
+        if (courseRepository.findByNameIgnoreCase(course.getName()).isPresent()) {
             return false;
         } else {
             if (course.getName() != null && !course.getName().equals("")) {
@@ -52,9 +51,29 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    public CourseDTO updateCourse(CourseDTO course, String courseName){
+        //if (!courseRepository.existsById(courseName)) throw new CourseNotFoundException();
+        if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
 
+        Course c = courseRepository.findByNameIgnoreCase(courseName).get();
+        c.setAcronym(course.getAcronym());
+        c.setEnabled(course.isEnabled());
+        c.setMax(course.getMax());
+        c.setMin(course.getMax());
+        c.setName(course.getName());
+
+        this.courseRepository.save(c);
+
+        return modelMapper.map(c,CourseDTO.class);
+
+    }
+
+    @Override
     public Optional<CourseDTO> getCourse(String name) {
-        if (!courseRepository.existsById(name)) throw new CourseNotFoundException();
+
+        if (!courseRepository.findByNameIgnoreCase(name).isPresent()) throw new CourseNotFoundException();
+
+        //if (!courseRepository.existsById(name)) throw new CourseNotFoundException();
 
         Course course = courseRepository.findByNameIgnoreCase(name).get();
         System.out.println("GET COURSE " + course.getName());
@@ -102,7 +121,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public List<StudentDTO> getEnrolledStudents(String courseName) {
-        if (!courseRepository.existsById(courseName)) throw new CourseNotFoundException();
+        if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
         return courseRepository
                 //.findById(courseName)
                 .findByNameIgnoreCase(courseName).get()
@@ -116,7 +135,7 @@ public class TeamServiceImpl implements TeamService {
     public boolean addStudentToCourse(String studentId, String courseName) {
 
         if (!studentRepository.existsById(studentId)) throw new StudentNotFoundException();
-        if (!courseRepository.existsById(courseName)) throw new CourseNotFoundException();
+        if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
         if (courseRepository.findByNameIgnoreCase(courseName).get().getStudents().contains(studentRepository.findByIdIgnoreCase(studentId).get()))
             return false;
 
@@ -134,14 +153,14 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public void enableCourse(String courseName) {
 
-        if (!courseRepository.existsById(courseName)) throw new CourseNotFoundException();
+        if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
         courseRepository.findByNameIgnoreCase(courseName).get().setEnabled(true);
     }
 
     @Override
     public void disableCourse(String courseName) {
 
-        if (!courseRepository.existsById(courseName)) throw new CourseNotFoundException();
+        if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
         courseRepository.findByNameIgnoreCase(courseName).get().setEnabled(false);
 
     }
@@ -160,7 +179,7 @@ public class TeamServiceImpl implements TeamService {
 
     public List<Boolean> enrollAll(List<String> studentIds, String courseName) {
 
-        if (!courseRepository.existsById(courseName)) throw new CourseNotFoundException();
+        if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
         List<Boolean> ris = new ArrayList<>();
         studentIds.forEach(s -> {
             try {
@@ -176,7 +195,7 @@ public class TeamServiceImpl implements TeamService {
     @Override
 
     public List<Boolean> addAndEnroll(Reader r, String courseName) {
-        if (!courseRepository.existsById(courseName)) throw new CourseNotFoundException();
+        if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
         /* create csv bean reader */
         CsvToBean csvToBean = new CsvToBeanBuilder(r)
                 .withType(StudentDTO.class)
@@ -302,8 +321,8 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public List<TeamDTO> getTeamForCourse(String courseName) {
         // check esistenza corso
-        if (!courseRepository.existsById(courseName))
-            throw new CourseNotFoundException();
+        if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
+
 
         return courseRepository.findByNameIgnoreCase(courseName)
                 .get()
@@ -317,8 +336,8 @@ public class TeamServiceImpl implements TeamService {
     @Override
 
     public List<StudentDTO> getStudentsInTeams(String courseName) {
-        if (!courseRepository.existsById(courseName))
-            throw new CourseNotFoundException();
+        if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
+
 
         return courseRepository.getStudentsInTeams(courseName)
                 .stream()
@@ -328,8 +347,8 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public List<StudentDTO> getAvailableStudents(String courseName) {
-        if (!courseRepository.existsById(courseName))
-            throw new CourseNotFoundException();
+        if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
+
 
         return courseRepository.getStudentsNotInTeams(courseName)
                 .stream()
