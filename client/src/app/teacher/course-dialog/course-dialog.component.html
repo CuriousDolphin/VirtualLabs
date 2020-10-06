@@ -1,0 +1,57 @@
+<h1 mat-dialog-title>{{data.mode}} course</h1>
+<div mat-dialog-content style="width:350px" *ngIf="data.mode ==='Create'">
+    <div [formGroup]="courseForm">
+        <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Name</mat-label>
+            <input matInput placeholder="Es: Applicazioni internet" formControlName="name" required />
+            <mat-error *ngIf="courseForm.controls['name'].invalid">Not a valid name</mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Acronym</mat-label>
+            <input matInput placeholder="Es: AI" formControlName="acronym" required />
+            <mat-error *ngIf="courseForm.controls['acronym'].invalid">Not a valid acronym</mat-error>
+        </mat-form-field>
+
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+            <mat-slide-toggle class="ml-1" formControlName="enabled">Enabled</mat-slide-toggle>
+
+            <mat-form-field class="form-small mini" appearance="outline">
+                <mat-label>min</mat-label>
+
+                <input matInput type="number" placeholder="min" formControlName="min" required />
+
+            </mat-form-field>
+
+            <mat-form-field class="form-small mini" appearance="outline">
+                <mat-label>max</mat-label>
+
+                <input matInput type="number" placeholder="max" formControlName="max" required />
+
+            </mat-form-field>
+
+        </div>
+
+
+
+        <!-- <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Enabled</mat-label>
+            <input type="password" matInput formControlName="enabled" required />
+            <mat-error *ngIf="loginForm.controls['password'].enabled">Not a valid password</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Min</mat-label>
+            <input type="password" matInput formControlName="enabled" required />
+            <mat-error *ngIf="loginForm.controls['min'].enabled">Not a valid password</mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Max</mat-label>
+            <input type="password" matInput formControlName="enabled" required />
+            <mat-error *ngIf="loginForm.controls['max'].enabled">Not a valid password</mat-error>
+        </mat-form-field> -->
+        <mat-label class="my_label" *ngIf="showError">
+            Error during login,check username and password.
+        </mat-label>
+
+    </div>
+</div>

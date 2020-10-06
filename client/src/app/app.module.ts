@@ -31,6 +31,8 @@ import { TeacherComponent } from "./teacher/teacher.component";
 import { CourseDashboard } from "./teacher/course-dashboard/course-dashboard";
 import { MatChipsModule } from "@angular/material/chips";
 import { FlexLayoutModule } from "@angular/flex-layout";
+import { CourseDialogComponent } from './teacher/course-dialog/course-dialog.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [
@@ -42,6 +44,7 @@ import { FlexLayoutModule } from "@angular/flex-layout";
     LoginDialogComponent,
     TeacherComponent,
     CourseDashboard,
+    CourseDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -67,6 +70,7 @@ import { FlexLayoutModule } from "@angular/flex-layout";
     MatSnackBarModule,
     MatChipsModule,
     FlexLayoutModule,
+    MatSlideToggleModule
   ],
   providers: [
     {
@@ -78,4 +82,4 @@ import { FlexLayoutModule } from "@angular/flex-layout";
   bootstrap: [AppComponent],
   entryComponents: [LoginDialogComponent],
 })
-export class AppModule {}
+export class AppModule { }
