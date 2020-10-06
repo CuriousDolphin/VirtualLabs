@@ -1,8 +1,9 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSidenav } from '@angular/material/sidenav';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, skip, switchMap, tap } from 'rxjs/operators';
 import { Course } from '../models/course.model';
 import { CourseService } from '../services/course.service';
 import { ToastService } from '../services/toast.service';
@@ -20,27 +21,39 @@ export class TeacherComponent implements OnInit, OnDestroy {
   courses$: Observable<Course[]>;
   dialogSubscription: Subscription;
   isLoading = false;
+  routeSubscription: Subscription;
+  reloadCourseFromServiceSubscription: Subscription;
+
 
 
   @ViewChild(MatSidenav) sidenav: MatSidenav;
-  tabs = [
-    {
-      value: 'students',
-      path: 'applicazioni-internet/students',
-    },
-    {
-      value: 'vms',
-      path: 'applicazioni-internet/vms',
-    },
-  ];
+
+
   constructor(
     private utilsService: UtilsService,
     private courseService: CourseService,
     public dialog: MatDialog,
-    private toastService: ToastService) { }
+    private toastService: ToastService,
+    private route: ActivatedRoute,
+
+  ) { }
+
+
 
 
   ngOnInit(): void {
+    this.routeSubscription = this.route.url.subscribe(
+      (params: Params) => {
+        console.log("teacher url");
+      }
+    );
+
+    // reload courses from service
+    this.reloadCourseFromServiceSubscription = this.utilsService.reloadCurses$
+      .pipe(skip(1)).subscribe(() => this._reloadSubject$.next(null))
+
+
+
     this.menuSubscription = this.utilsService.toggleMenu$.subscribe(() => {
       if (this.sidenav)
         this.sidenav.opened = !this.sidenav.opened;

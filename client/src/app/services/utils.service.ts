@@ -9,10 +9,9 @@ export class UtilsService {
   private _toggleMenu$: BehaviorSubject<void> = new BehaviorSubject<void>(null);
   toggleMenu$ = this._toggleMenu$.asObservable();
 
-  private _currentCourse$: BehaviorSubject<Course> = new BehaviorSubject<
-    Course
-  >(null);
-  currentCourse$ = this._currentCourse$.asObservable();
+  private _reloadCurses$: BehaviorSubject<void> = new BehaviorSubject(null);
+
+  reloadCurses$ = this._reloadCurses$.asObservable();
 
   constructor() { }
 
@@ -20,7 +19,7 @@ export class UtilsService {
     this._toggleMenu$.next(null);
   }
 
-  public setCurrentCourse(course?: Course) {
-    this._currentCourse$.next(course);
+  public reloadCurses() {
+    this._reloadCurses$.next(null)
   }
 }

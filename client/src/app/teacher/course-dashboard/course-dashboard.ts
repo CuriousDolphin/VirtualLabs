@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { switchMap, tap, map } from 'rxjs/operators';
 import { Course } from 'src/app/models/course.model';
@@ -50,7 +50,8 @@ export class CourseDashboard implements OnInit, OnDestroy {
     private utilsService: UtilsService,
     private courseService: CourseService,
     public dialog: MatDialog,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -114,10 +115,14 @@ export class CourseDashboard implements OnInit, OnDestroy {
       console.log(`Dialog result: ${result}`);
       if (result !== null) {
         this.toastService.success('update success!');
-        this._currentCourseName$.next(result.name);
+        //this._currentCourseName$.next(result.name);
 
-        // reload data
-        //this._reloadCourse$.next(null);
+        // reload data parent
+        this.utilsService.reloadCurses();
+        // reload data this
+        this.router.navigate(['teacher/' + result.name]);
+
+
       }
     })
 
