@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
@@ -6,7 +7,9 @@ import { Course } from 'src/app/models/course.model';
 import { Student } from 'src/app/models/student.model';
 import { CourseService } from 'src/app/services/course.service';
 import { StudentService } from 'src/app/services/student.service';
+import { ToastService } from 'src/app/services/toast.service';
 import { UtilsService } from 'src/app/services/utils.service';
+import { CourseDialogComponent } from '../course-dialog/course-dialog.component';
 
 @Component({
   selector: 'app-course-dashboard',
@@ -32,6 +35,8 @@ export class CourseDashboard implements OnInit, OnDestroy {
   private courseSubscription: Subscription;
   private routeSubscription: Subscription;
   private enrollSubscription: Subscription;
+  private dialogSubscription: Subscription;
+
   studentsDB$: Observable<Student[]>;
   currentCourse: Course;
   currentCourse$: Observable<Course>;
@@ -41,8 +46,10 @@ export class CourseDashboard implements OnInit, OnDestroy {
     private studentService: StudentService,
     private route: ActivatedRoute,
     private utilsService: UtilsService,
-    private courseService: CourseService
-  ) {}
+    private courseService: CourseService,
+    public dialog: MatDialog,
+    private toastService: ToastService
+  ) { }
 
   ngOnInit(): void {
     console.log('dashboard on init');
@@ -93,7 +100,25 @@ export class CourseDashboard implements OnInit, OnDestroy {
       });
   }
 
+  openUpdateDialog() {
+    if (this.dialogSubscription) this.dialogSubscription.unsubscribe();
+    const dialogRef = this.dialog.open(CourseDialogComponent, { data: { mode: 'Update', course: this.currentCourse } },);
+
+    this.dialogSubscription = dialogRef.afterClosed().subscribe((result) => {
+      console.log(`Dialog result: ${result}`);
+      if (result === true) {
+        this.toastService.success('update success!');
+        // reload data
+        this._reloadSubject$.next(null);
+      }
+    })
+
+
+
+  }
+
   ngOnDestroy(): void {
+    if (this.dialogSubscription) this.dialogSubscription.unsubscribe();
     if (this.courseSubscription) this.courseSubscription.unsubscribe();
     if (this.routeSubscription) this.routeSubscription.unsubscribe();
     if (this.enrollSubscription) this.enrollSubscription.unsubscribe();

@@ -30,6 +30,11 @@ export class CourseService {
     return this.http.get<Course>(url).pipe(catchError(this.handleError));
   }
 
+  updateCourse(course: Course, name: string): Observable<Course> {
+    const url = BASE_PATH + 'courses/' + name;
+    return this.http.patch<Course>(url, course).pipe(catchError(this.handleError));
+  }
+
   addCourse(course: Course) {
     const url = BASE_PATH + 'courses/';
     return this.http.post<Course>(url, course).pipe(catchError(this.handleError));

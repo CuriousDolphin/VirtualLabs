@@ -171,14 +171,22 @@ public class CourseController {
     }
 
     @PatchMapping("/{name}")
-    void updateCourse(@RequestBody @Valid Map<String, Boolean> input, @PathVariable("name") String courseName) {
-        if (!input.containsKey("enabled")) throw new ResponseStatusException(HttpStatus.CONFLICT);
+    void updateCourse(@RequestBody @Valid CourseDTO course, @PathVariable("name") String courseName) {
+        /* if (!input.containsKey("enabled")) throw new ResponseStatusException(HttpStatus.CONFLICT);
         try {
             if(input.get("enabled")==true){
                 teamService.enableCourse(courseName);
             }else{
                 teamService.disableCourse(courseName);
             }
+        } catch (CourseNotFoundException ce) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
+        }
+
+         */
+
+        try {
+            teamService.updateCourse(course,courseName);
         } catch (CourseNotFoundException ce) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
         }

@@ -38,7 +38,6 @@ public class TeamServiceImpl implements TeamService {
 
 
     @Override
-
     public boolean addCourse(CourseDTO course) {
         if (courseRepository.existsById(course.getName())) {
             return false;
@@ -52,7 +51,23 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    public CourseDTO updateCourse(CourseDTO course, String courseName){
+        if (!courseRepository.existsById(courseName)) throw new CourseNotFoundException();
 
+        Course c = courseRepository.findByNameIgnoreCase(courseName).get();
+        c.setAcronym(course.getAcronym());
+        c.setEnabled(course.isEnabled());
+        c.setMax(course.getMax());
+        c.setMin(course.getMax());
+        c.setName(course.getName());
+
+        this.courseRepository.save(c);
+
+        return modelMapper.map(c,CourseDTO.class);
+
+    }
+
+    @Override
     public Optional<CourseDTO> getCourse(String name) {
         if (!courseRepository.existsById(name)) throw new CourseNotFoundException();
 
