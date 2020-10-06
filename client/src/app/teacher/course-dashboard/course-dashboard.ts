@@ -113,7 +113,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
 
     this.dialogSubscription = dialogRef.afterClosed().subscribe((result: Course) => {
       console.log(`Dialog result: ${result}`);
-      if (result !== null) {
+      if (result !== null && result !== undefined) {
         this.toastService.success('update success!');
         //this._currentCourseName$.next(result.name);
 

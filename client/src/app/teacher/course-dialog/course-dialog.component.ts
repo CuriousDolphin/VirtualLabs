@@ -58,7 +58,7 @@ export class CourseDialogComponent implements OnInit {
 
   cancel() {
     this.courseForm.reset();
-    this.dialogRef.close(false);
+    this.dialogRef.close(null);
   }
 
   updateCourse() {
