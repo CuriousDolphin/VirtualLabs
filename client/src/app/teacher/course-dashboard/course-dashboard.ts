@@ -1,30 +1,30 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { BehaviorSubject, combineLatest, Observable, Subscription } from "rxjs";
-import { switchMap, tap } from "rxjs/operators";
-import { Course } from "src/app/models/course.model";
-import { Student } from "src/app/models/student.model";
-import { CourseService } from "src/app/services/course.service";
-import { StudentService } from "src/app/services/student.service";
-import { UtilsService } from "src/app/services/utils.service";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
+import { Course } from 'src/app/models/course.model';
+import { Student } from 'src/app/models/student.model';
+import { CourseService } from 'src/app/services/course.service';
+import { StudentService } from 'src/app/services/student.service';
+import { UtilsService } from 'src/app/services/utils.service';
 
 @Component({
-  selector: "app-course-dashboard",
-  templateUrl: "./course-dashboard.html",
-  styleUrls: ["./course-dashboard.sass"],
+  selector: 'app-course-dashboard',
+  templateUrl: './course-dashboard.html',
+  styleUrls: ['./course-dashboard.sass'],
 })
 export class CourseDashboard implements OnInit, OnDestroy {
   tabs = [
     {
-      value: "students",
-      path: "students",
+      value: 'students',
+      path: 'students',
     },
     {
-      value: "vms",
-      path: "vms",
+      value: 'vms',
+      path: 'vms',
     },
   ];
-  currentPath = "";
+  currentPath = '';
   private _currentCourseName$: BehaviorSubject<string> = new BehaviorSubject(
     null
   );
@@ -45,13 +45,13 @@ export class CourseDashboard implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    console.log("dashboard on init");
+    console.log('dashboard on init');
     this.studentsDB$ = this.studentService.getAllStudents();
 
     // take the name of the route (course name)
     this.routeSubscription = this.route.url.subscribe((evt) => {
       (this.currentPath = evt[0].path),
-        console.log("tab route change", "data", this.currentPath);
+        console.log('tab route change', 'data', this.currentPath);
       const name = evt[0].path;
       if (name) {
         this._currentCourseName$.next(name);

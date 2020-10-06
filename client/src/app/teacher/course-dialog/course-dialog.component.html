@@ -12,46 +12,39 @@
             <mat-error *ngIf="courseForm.controls['acronym'].invalid">Not a valid acronym</mat-error>
         </mat-form-field>
 
-        <div fxLayout="row" fxLayoutAlign="space-between center">
-            <mat-slide-toggle class="ml-1" formControlName="enabled">Enabled</mat-slide-toggle>
+        <div fxLayout="row" fxLayoutAlign="space-between start">
+
 
             <mat-form-field class="form-small mini" appearance="outline">
                 <mat-label>min</mat-label>
 
-                <input matInput type="number" placeholder="min" formControlName="min" required />
+                <input min="0" max="100" matInput type="number" placeholder="min" formControlName="min" required />
 
             </mat-form-field>
 
             <mat-form-field class="form-small mini" appearance="outline">
                 <mat-label>max</mat-label>
 
-                <input matInput type="number" placeholder="max" formControlName="max" required />
+                <input min="0" max="100" matInput type="number" placeholder="max" formControlName="max" required />
 
             </mat-form-field>
 
+            <div fxLayout="row" fxLayoutAlign=" center" style="height: 50px;">
+                <mat-slide-toggle class="ml-1" formControlName="enabled">Enabled</mat-slide-toggle>
+            </div>
+
         </div>
-
-
-
-        <!-- <mat-form-field class="full-width" appearance="outline">
-            <mat-label>Enabled</mat-label>
-            <input type="password" matInput formControlName="enabled" required />
-            <mat-error *ngIf="loginForm.controls['password'].enabled">Not a valid password</mat-error>
-        </mat-form-field>
-
-        <mat-form-field class="full-width" appearance="outline">
-            <mat-label>Min</mat-label>
-            <input type="password" matInput formControlName="enabled" required />
-            <mat-error *ngIf="loginForm.controls['min'].enabled">Not a valid password</mat-error>
-        </mat-form-field>
-        <mat-form-field class="full-width" appearance="outline">
-            <mat-label>Max</mat-label>
-            <input type="password" matInput formControlName="enabled" required />
-            <mat-error *ngIf="loginForm.controls['max'].enabled">Not a valid password</mat-error>
-        </mat-form-field> -->
         <mat-label class="my_label" *ngIf="showError">
-            Error during login,check username and password.
+            Error during request
         </mat-label>
 
     </div>
+</div>
+
+<div mat-dialog-actions>
+    <button [disabled]="!courseForm.valid" mat-raised-button color="primary" (click)="createCourse()">
+        {{data.mode}}
+    </button>
+    <button mat-button color="primary" (click)="cancel()">Cancel</button>
+    <mat-spinner *ngIf="isLoading" [diameter]="24"></mat-spinner>
 </div>

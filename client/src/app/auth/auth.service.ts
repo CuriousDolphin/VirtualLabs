@@ -11,11 +11,13 @@ import {
 import { catchError, retry, tap } from 'rxjs/operators';
 import { User } from '../models/user.model';
 import { environment } from '../../environments/environment';
+import * as _ from 'lodash';
 
 const BASE_PATH = environment.authUrl;
 @Injectable({
   providedIn: 'root',
 })
+
 
 export class AuthService {
   private currentUserSubject$: BehaviorSubject<User> = new BehaviorSubject<
@@ -36,9 +38,9 @@ export class AuthService {
     };
     return this.http.post(BASE_PATH + 'signin', body).pipe(
       tap((evt) => {
-        if (evt['token'] != null) {
+        if (_.get(evt, 'token', null) != null) {
           // login
-          const token = evt['token'];
+          const token = _.get(evt, 'token');
           localStorage.setItem('token', token);
 
           const user: User = JSON.parse(atob(token.split('.')[1]));

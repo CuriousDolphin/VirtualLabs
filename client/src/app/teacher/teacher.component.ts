@@ -2,9 +2,10 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSidenav } from '@angular/material/sidenav';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { Course } from '../models/course.model';
 import { CourseService } from '../services/course.service';
+import { ToastService } from '../services/toast.service';
 import { UtilsService } from '../services/utils.service';
 import { CourseDialogComponent } from './course-dialog/course-dialog.component';
 
@@ -15,9 +16,10 @@ import { CourseDialogComponent } from './course-dialog/course-dialog.component';
 })
 export class TeacherComponent implements OnInit, OnDestroy {
   menuSubscription: Subscription;
-  reloadData: BehaviorSubject<void> = new BehaviorSubject(null);
+  private _reloadSubject$: BehaviorSubject<void> = new BehaviorSubject(null);
   courses$: Observable<Course[]>;
   dialogSubscription: Subscription;
+  isLoading = false;
 
 
   @ViewChild(MatSidenav) sidenav: MatSidenav;
@@ -31,7 +33,11 @@ export class TeacherComponent implements OnInit, OnDestroy {
       path: 'applicazioni-internet/vms',
     },
   ];
-  constructor(private utilsService: UtilsService, private courseService: CourseService, public dialog: MatDialog) { }
+  constructor(
+    private utilsService: UtilsService,
+    private courseService: CourseService,
+    public dialog: MatDialog,
+    private toastService: ToastService) { }
 
 
   ngOnInit(): void {
@@ -42,8 +48,12 @@ export class TeacherComponent implements OnInit, OnDestroy {
 
     // get all courses withouth subscription (async in template),combinelatest need for dynamic reload of courses
     this.courses$ =
-      combineLatest([this.reloadData, this.courseService.getAllCourses()])
-        .pipe(map(([reaload, courses]) => courses))
+      this._reloadSubject$.pipe(
+        tap(() => this.isLoading = true),
+        switchMap(() => this.courseService.getAllCourses()),
+        tap(() => this.isLoading = false),
+      )
+
   }
 
   ngOnDestroy(): void {
@@ -57,6 +67,11 @@ export class TeacherComponent implements OnInit, OnDestroy {
 
     this.dialogSubscription = dialogRef.afterClosed().subscribe((result) => {
       console.log(`Dialog result: ${result}`);
+      if (result === true) {
+        this.toastService.success('Create success!');
+        // reload data
+        this._reloadSubject$.next(null);
+      }
     })
 
   }

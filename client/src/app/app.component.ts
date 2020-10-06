@@ -66,7 +66,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
   goToLogin() {
     this.openLoginDialog();
-    //this.router.navigate(['home'], { queryParams: { doLogin: true } });
+    // this.router.navigate(['home'], { queryParams: { doLogin: true } });
   }
   private openLoginDialog(redirectTo?: string) {
     if (this.dialogSubscription) this.dialogSubscription.unsubscribe();
