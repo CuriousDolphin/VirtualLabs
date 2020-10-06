@@ -12,6 +12,7 @@ import { catchError, retry, tap } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { environment } from 'src/environments/environment';
 import { Course } from '../models/course.model';
+import { NetErr } from '../models/error.model';
 const BASE_PATH = environment.apiUrl;
 
 @Injectable({

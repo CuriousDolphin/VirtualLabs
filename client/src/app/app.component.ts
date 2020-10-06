@@ -83,7 +83,7 @@ export class AppComponent implements OnInit, OnDestroy {
       // TOFO HANDLE THIS in base al ruolo dell'user,se role_teacher go to teacher else..
       const nextLink = 'teacher'
       if (result === true) {
-        this.toastService.success('Login success!')
+        this.toastService.success('Login success')
         // se il login e' andato bene e devo ridiriggere verso un altra pagina
         console.log('REDIRECT TO', nextLink);
         this.router.navigate([nextLink]);

@@ -1,0 +1,17 @@
+<div class="flex flex-align-center">
+    <div>
+        <i *ngIf="data.level === 'info'" class="fas fa-info-circle"></i>
+        <i *ngIf="data.level === 'success'" class="fas fa-check-circle"></i>
+        <i *ngIf="data.level === 'warning'" class="fas fa-exclamation-triangle"></i>
+        <i *ngIf="data.level === 'error'" class="fas fa-exclamation-circle"></i>
+    </div>
+    <div class="px-1">
+        <p class="title" *ngIf="data.title">{{data.title}}</p>
+        <p class="message">{{data.message}}</p>
+    </div>
+
+    <div class="dismiss-button">
+        <button class="pr-1 pl-0" (click)="dismiss()" *ngIf="data.dismissable"><i class="fas fa-times"></i></button>
+    </div>
+
+</div>
