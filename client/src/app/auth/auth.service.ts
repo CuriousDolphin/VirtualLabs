@@ -82,6 +82,6 @@ export class AuthService {
   logout() {
     this.currentUserSubject$.next(null);
     localStorage.removeItem('token');
-    this.toastService.success('user logged out')
+    // this.toastService.success('user logged out')
   }
 }
