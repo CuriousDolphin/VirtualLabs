@@ -97,6 +97,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
     // console.log(reader.result);
     this.uploadSubscription = this.courseService.addAndEnrollFromCsv(this.currentCourse, formData).subscribe((evt) => {
       if (evt !== null) {
+
         let countError = 0;
         evt.forEach(r => {
           if (!r)
@@ -159,6 +160,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
       .subscribe((evt) => {
         this.isLoading = false;
         if (evt !== null) {
+          console.log("enroll success")
           this.toastService.success('enroll success');
         }
 

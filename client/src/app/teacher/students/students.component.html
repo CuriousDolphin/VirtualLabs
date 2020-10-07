@@ -1,51 +1,63 @@
-<div class="search-container" fxLayout="row" fxLayoutAlign="space-between stretch">
-
-  <div fxLayout="row" fxLayoutAlign="start stretch">
-    <form class="my-form">
-      <mat-form-field class="form-small" style="width: 300px" appearance="outline">
-        <mat-label>Search student</mat-label>
-        <input type="text" placeholder="search student" matInput [formControl]="myControl" [matAutocomplete]="auto" />
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayFn"
-          (optionSelected)="selectStudentToAdd($event.option.value)">
-          <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-            {{ option.name }} ({{ option.id }})
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-    </form>
-    <button mat-raised-button color="accent" [disabled]="!studentToAdd" (click)="addStudentToTable()" class="radius-20">
-      <mat-icon> person_add </mat-icon>
-    </button>
-    <div fxLayout="row" fxLayoutAlign="space-between center" *ngIf="studentToAdd" class="student-detail">
-
-      {{ studentToAdd.name }} {{ studentToAdd.lastName }} ({{
-      studentToAdd.email
-    }})
-    </div>
-  </div>
-
-  <!-- upload file -->
-  <div>
-
-    <button (click)="uploader.click()" mat-flat-button class="radius-20" matTooltip="Enroll students from csv,
-    if students do not exist, they will be added automatically" style="background-color: transparent;">
-
-      <mat-icon color="primary"> note_add </mat-icon>
-      csv
-    </button>
-    <input hidden #uploader type="file" id="file" (change)="uploadFile($event.target.files)" accept=".csv">
-
-  </div>
-
-</div>
 <mat-divider></mat-divider>
 
 
 <div class="container">
 
+  <mat-card style="margin-bottom:22px">
+    <mat-card-header fxLayout="row" fxLayoutAlign="space-between stretch">
+      <mat-card-title>Add Students</mat-card-title>
+      <!-- upload file -->
+      <div>
+
+        <button (click)="uploader.click()" mat-flat-button class="radius-20" matTooltip="Enroll students from csv,
+        if students do not exist, they will be added automatically" style="background-color: transparent;">
+
+          <mat-icon color="primary"> note_add </mat-icon>
+          csv
+        </button>
+        <input hidden #uploader type="file" id="file" (change)="uploadFile($event.target.files)" accept=".csv">
+
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="search-container" fxLayout="row" fxLayoutAlign="space-between stretch">
+
+        <div fxLayout="row" fxLayoutAlign="start stretch">
+          <form class="my-form">
+            <mat-form-field style="width: 300px" appearance="outline">
+              <mat-label>Search student</mat-label>
+              <input type="text" placeholder="Search by name,id,email.." matInput [formControl]="myControl"
+                [matAutocomplete]="auto" />
+              <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayFn"
+                (optionSelected)="selectStudentToAdd($event.option.value)">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                  {{ option.name }} ({{ option.id }})
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </form>
+
+        </div>
+
+      </div>
+    </mat-card-content>
+    <mat-card-action fxLayout="row" fxLayoutAlign="start center">
+      <button mat-button color="accent" [disabled]="!studentToAdd" (click)="addStudentToTable()" class="radius-20">
+        <mat-icon> person_add </mat-icon>
+        Add
+      </button>
+      <div fxLayout="row" fxLayoutAlign="space-between center" *ngIf="studentToAdd" class="student-detail">
+
+        {{ studentToAdd.name }} {{ studentToAdd.lastName }} ({{
+            studentToAdd.email
+          }})
+      </div>
+    </mat-card-action>
+  </mat-card>
+
   <mat-card>
     <mat-card-header>
-      <mat-card-title>Elenco studenti iscritti al corso</mat-card-title>
+      <mat-card-title>Enrolled students</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <table mat-table [dataSource]="dataSource" class="elevation-z6" matSort>
@@ -89,6 +101,8 @@
     </mat-card-content>
     <mat-card-actions class="button-area">
       <button color="accent" [disabled]="selectedStudents.isEmpty()" mat-button (click)="deleteSelectedStudents()">
+        <mat-icon> delete </mat-icon>
+
         Delete Selected
       </button>
       <span *ngIf="selectedStudents.selected.length>0">

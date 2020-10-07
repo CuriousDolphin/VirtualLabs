@@ -8,7 +8,7 @@ import {
   combineLatest,
   of,
 } from 'rxjs';
-import { catchError, retry, tap } from 'rxjs/operators';
+import { catchError, map, retry, tap } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { environment } from 'src/environments/environment';
 import { Course } from '../models/course.model';
@@ -42,11 +42,19 @@ export class CourseService {
     return this.http.post<Course>(url, course).pipe(catchError((e) => this.handleError(e)));
 
   }
-  enrollOne(course: Course, student: Student): Observable<void> {
+  enrollOne(course: Course, student: Student): Observable<any> {
     const url = BASE_PATH + 'courses/' + course.name + '/enrollOne';
     return this.http
       .post<void>(url, _.omit(student, 'links'))
-      .pipe(catchError((e) => this.handleError(e)));
+      .pipe(
+        map(e => {
+          if (e == null) {
+            return "ok"
+          }
+          return e
+        }),
+        catchError((e) => this.handleError(e))
+      );
   }
 
   addAndEnrollFromCsv(course: Course, data: any): Observable<Array<boolean>> {
