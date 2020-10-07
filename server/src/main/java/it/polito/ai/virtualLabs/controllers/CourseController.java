@@ -78,8 +78,8 @@ public class CourseController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
         }
     }
-
-    @PostMapping("/{name}/enrollMany")
+    // csv
+    @PostMapping("/{name}/addAndEnroll")
     List<Boolean> enrollMany(@RequestParam("file") MultipartFile file, @PathVariable("name") String courseName) {
         if (!file.getContentType().equals("text/csv"))
             throw new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, file.getContentType());

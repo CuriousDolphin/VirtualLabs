@@ -49,6 +49,13 @@ export class CourseService {
       .pipe(catchError((e) => this.handleError(e)));
   }
 
+  addAndEnrollFromCsv(course: Course, data: any): Observable<Array<boolean>> {
+    const url = BASE_PATH + 'courses/' + course.name + '/addAndEnroll';
+    return this.http
+      .post<void>(url, data)
+      .pipe(catchError((e) => this.handleError(e)));
+  }
+
   unEnrollMany(course: Course, studentIds: Array<string>): Observable<Array<boolean>> {
     const url = BASE_PATH + 'courses/' + course.name + '/unEnrollMany';
     return this.http

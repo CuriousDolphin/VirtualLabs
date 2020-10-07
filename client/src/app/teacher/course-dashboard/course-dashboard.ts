@@ -29,6 +29,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
   private enrollSubscription: Subscription;
   private unenrollSubscription: Subscription;
   private dialogSubscription: Subscription;
+  private uploadSubscription: Subscription;
 
   studentsDB$: Observable<Student[]>;
   currentCourse: Course;
@@ -84,6 +85,41 @@ export class CourseDashboard implements OnInit, OnDestroy {
       }),
       tap(() => (this.isLoading = false))
     );
+  }
+  uploadCsv(file: File) {
+    console.log(file);
+    const reader = new FileReader();
+    this.isLoading = true;
+    const formData: FormData = new FormData();
+    formData.append('file', file);
+
+
+    // console.log(reader.result);
+    this.uploadSubscription = this.courseService.addAndEnrollFromCsv(this.currentCourse, formData).subscribe((evt) => {
+      if (evt !== null) {
+        let countError = 0;
+        evt.forEach(r => {
+          if (!r)
+            countError++;
+        })
+
+        if (countError === 0) {
+          this.toastService.success('upload csv success!')
+        } else {
+          this.toastService.info(countError + ' students failed of ' + evt.length)
+        }
+
+
+
+        this._reloadStudents$.next(null);
+      } else {
+        this.toastService.error('failed upload csv')
+      }
+
+      this.isLoading = false;
+    })
+
+
   }
 
   unEnrollStudents(studentsId: Array<string>) {
