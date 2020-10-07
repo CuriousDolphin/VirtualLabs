@@ -1,17 +1,26 @@
-<div class="flex flex-align-center">
+<div fxLayout="row" fxLayoutAlign="space-between center">
     <div>
-        <i *ngIf="data.level === 'info'" class="fas fa-info-circle"></i>
-        <i *ngIf="data.level === 'success'" class="fas fa-check-circle"></i>
-        <i *ngIf="data.level === 'warning'" class="fas fa-exclamation-triangle"></i>
-        <i *ngIf="data.level === 'error'" class="fas fa-exclamation-circle"></i>
+        <mat-icon *ngIf="data.level === 'info'">
+            info
+        </mat-icon>
+        <mat-icon *ngIf="data.level === 'success'">
+            done
+        </mat-icon>
+        <mat-icon *ngIf="data.level === 'warning'">
+            priority_high
+        </mat-icon>
+        <mat-icon *ngIf="data.level === 'error'">
+            report_problem
+        </mat-icon>
     </div>
-    <div class="px-1">
+    <div style="padding: 8px;">
         <p class="title" *ngIf="data.title">{{data.title}}</p>
         <p class="message">{{data.message}}</p>
     </div>
+    <div></div>
 
-    <div class="dismiss-button">
+    <!-- <div class="dismiss-button">
         <button class="pr-1 pl-0" (click)="dismiss()" *ngIf="data.dismissable"><i class="fas fa-times"></i></button>
-    </div>
+    </div> -->
 
 </div>
