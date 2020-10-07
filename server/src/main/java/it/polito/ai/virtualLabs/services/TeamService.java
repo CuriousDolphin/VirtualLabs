@@ -23,6 +23,8 @@ public interface TeamService {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     boolean addStudent(StudentDTO student);
 
+
+
     Optional<StudentDTO> getStudent(String studentId);
 
     List<StudentDTO> getAllStudents();
@@ -32,6 +34,14 @@ public interface TeamService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     boolean addStudentToCourse(String studentId, String courseName);
+
+    // multiple
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
+    List<Boolean> removeStudentsFromCourse(List<String> studentIds, String courseName);
+
+    // single
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
+    boolean removeStudentFromCourse(String studentId, String courseName);
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     void enableCourse(String courseName);

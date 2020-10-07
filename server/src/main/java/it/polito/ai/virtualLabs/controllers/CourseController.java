@@ -69,6 +69,15 @@ public class CourseController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found");
         }
     }
+    @DeleteMapping("/{name}/unEnrollMany")
+    List<Boolean> unenrollMany(@RequestBody List<String> studentIds,@PathVariable("name") String courseName){
+        try {
+            List<Boolean> ris = teamService.removeStudentsFromCourse(studentIds, courseName);
+            return ris;
+        } catch (CourseNotFoundException ce) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
+        } 
+    }
 
     @PostMapping("/{name}/enrollMany")
     List<Boolean> enrollMany(@RequestParam("file") MultipartFile file, @PathVariable("name") String courseName) {
