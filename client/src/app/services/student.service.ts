@@ -11,21 +11,22 @@ import {
 import { catchError, retry, tap } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { environment } from 'src/environments/environment';
+import { ToastService } from './toast.service';
 const BASE_PATH = environment.apiUrl;
 
 @Injectable({
   providedIn: 'root',
 })
 export class StudentService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private toastService: ToastService) { }
 
   getEnrolledStudents(courseName: string) {
     const url = BASE_PATH + 'courses/' + courseName + '/enrolled';
-    return this.http.get<Student[]>(url).pipe(catchError(this.handleError));
+    return this.http.get<Student[]>(url).pipe(catchError((e) => this.handleError(e)));
   }
   getAllStudents() {
     const url = BASE_PATH + 'students/';
-    return this.http.get<Student[]>(url).pipe(catchError(this.handleError));
+    return this.http.get<Student[]>(url).pipe(catchError((e) => this.handleError(e)));
   }
 
   /* Multiple  PATCH */
@@ -43,7 +44,7 @@ export class StudentService {
       })
     ).pipe(
       tap((evt) => console.log('update enrolled')),
-      catchError(this.handleError)
+      catchError((e) => this.handleError(e))
     );
   }
 
@@ -56,8 +57,13 @@ export class StudentService {
       // server-side error
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
+    // this.toastService.error(err.message, err.status.toString())
+
     // window.alert(errorMessage);
-    console.log('HTTP ERROR', errorMessage);
+
+
+    this.toastService.error(error.error.message, error.error.status.toString())
+    console.log('HTTP ERROR', error);
     return of(null);
   }
 }

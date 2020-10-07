@@ -12,6 +12,7 @@ import { catchError, retry, tap } from 'rxjs/operators';
 import { User } from '../models/user.model';
 import { environment } from '../../environments/environment';
 import * as _ from 'lodash';
+import { ToastService } from '../services/toast.service';
 
 const BASE_PATH = environment.authUrl;
 @Injectable({
@@ -24,7 +25,7 @@ export class AuthService {
     User
   >(null);
   currentUser$ = this.currentUserSubject$.asObservable();
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private toastService: ToastService) {
     if (this.isLogged() === true) {
       const token = this.getToken();
       const user: User = JSON.parse(atob(token.split('.')[1]));
@@ -50,6 +51,7 @@ export class AuthService {
       }),
       catchError((e) => {
         console.log('ERRORE LOGIN');
+        this.toastService.error("Login failed");
         return of(null);
       })
     );
