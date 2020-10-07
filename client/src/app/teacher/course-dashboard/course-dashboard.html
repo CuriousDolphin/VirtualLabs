@@ -22,7 +22,7 @@
 <mat-tab-group>
   <mat-tab label="students">
     <app-students [studentsDB]="studentsDB$ | async" [enrolledStudents]="enrolledStudents$ | async"
-      (addStudent)="enrollStudent($event)"></app-students>
+      (addStudent)="enrollStudent($event)" (deleteStudents)="unEnrollStudents($event)"></app-students>
   </mat-tab>
   <mat-tab label="vm"> Content 2 </mat-tab>
 </mat-tab-group>

@@ -39,7 +39,7 @@ export class CourseService {
 
   addCourse(course: Course) {
     const url = BASE_PATH + 'courses/';
-    return this.http.post<Course>(url, course).pipe(catchError(this.handleError));
+    return this.http.post<Course>(url, course).pipe(catchError((e) => this.handleError(e)));
 
   }
   enrollOne(course: Course, student: Student): Observable<void> {
@@ -48,6 +48,15 @@ export class CourseService {
       .post<void>(url, _.omit(student, 'links'))
       .pipe(catchError((e) => this.handleError(e)));
   }
+
+  unEnrollMany(course: Course, studentIds: Array<string>): Observable<Array<boolean>> {
+    const url = BASE_PATH + 'courses/' + course.name + '/unEnrollMany';
+    return this.http
+      .patch<Array<string>>(url, studentIds)
+      .pipe(catchError((e) => this.handleError(e)));
+  }
+
+
 
   private handleError(error) {
     let errorMessage = '';

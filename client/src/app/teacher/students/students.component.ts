@@ -38,7 +38,7 @@ export class StudentsComponent implements OnInit {
     }
   }
   allStudents = []; // for autocomplete
-  @Output() deleteStudents = new EventEmitter<Student[]>();
+  @Output() deleteStudents = new EventEmitter<string[]>();
   @Output() addStudent = new EventEmitter<Student>();
   myControl = new FormControl();
   filteredOptions: Observable<Student[]>;
@@ -71,7 +71,7 @@ export class StudentsComponent implements OnInit {
   addStudentToTable() {
     if (
       this.studentToAdd &&
-      _.findIndex(this.dataSource.data, this.studentToAdd) == -1
+      _.findIndex(this.dataSource.data, this.studentToAdd) === -1
     ) {
       this.selectedStudents.clear();
       // emit here
@@ -98,12 +98,14 @@ export class StudentsComponent implements OnInit {
     this.isAllSelected()
       ? this.selectedStudents.clear()
       : this.dataSource.data.forEach((student) =>
-          this.selectedStudents.select(student)
-        );
+        this.selectedStudents.select(student)
+      );
   }
 
-  deleteSelectedStudent() {
-    this.deleteStudents.emit(this.selectedStudents.selected);
+  deleteSelectedStudents() {
+    const arr: Array<string> = [];
+    this.selectedStudents.selected.forEach((student: Student) => arr.push(student.id))
+    this.deleteStudents.emit(arr);
     this.selectedStudents.clear();
   }
   toggleStudent(student: Student) {

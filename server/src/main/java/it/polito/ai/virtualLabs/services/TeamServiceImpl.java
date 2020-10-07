@@ -143,11 +143,46 @@ public class TeamServiceImpl implements TeamService {
         System.out.println("ADD STUDENT TO COURSE " + c.getName());
         Student s = studentRepository.findByIdIgnoreCase(studentId).get();
         System.out.println("ADD STUDENT TO COURSE STUDENT" + s.getId());
-        c.addStudent(
-                s
-        );
+        c.addStudent(s);
 
         return true;
+    }
+    // unenroll multiple students
+    @Override
+    public List<Boolean> removeStudentsFromCourse(List<String> studentIds, String courseName){
+        if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
+
+
+        Course c = courseRepository.findByNameIgnoreCase(courseName).get();
+        System.out.println("REMOVE STUDENTS TO COURSE " + c.getName());
+
+        List<Boolean> ris = new ArrayList<>();
+        studentIds.forEach(s -> {
+            try {
+                ris.add(this.removeStudentFromCourse(s, courseName));
+            } catch (Exception e) {
+                System.out.println("catched exception " + e.toString());
+                ris.add(false);
+            }
+        });
+        return ris;
+
+
+    }
+    // enroll single student
+    @Override
+    public boolean removeStudentFromCourse(String studentId, String courseName){
+        if (!studentRepository.existsById(studentId)) throw new StudentNotFoundException();
+
+        Course c = courseRepository.findByNameIgnoreCase(courseName).get();
+        System.out.println("REMOVE STUDENT TO COURSE " + c.getName());
+        Student s = studentRepository.findByIdIgnoreCase(studentId).get();
+        System.out.println(" STUDENT" + s.getId());
+
+        c.removeStudent(s);
+        return true;
+
+
     }
 
     @Override

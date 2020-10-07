@@ -38,6 +38,14 @@ public class Student {
 
     }
 
+    public void removeCourse(Course course){
+        if(this.courses.contains(course)) this.courses.remove(course);
+        if(course.getStudents().contains(this)) course.removeStudent(this);
+
+    }
+
+
+
     public void addTeam(Team t){
         if(!this.teams.contains(t)) this.teams.add(t);
         if(!t.getMembers().contains(this))  t.addMembers(this);

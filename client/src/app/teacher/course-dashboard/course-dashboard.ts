@@ -17,16 +17,6 @@ import { CourseDialogComponent } from '../course-dialog/course-dialog.component'
   styleUrls: ['./course-dashboard.sass'],
 })
 export class CourseDashboard implements OnInit, OnDestroy {
-  tabs = [
-    {
-      value: 'students',
-      path: 'students',
-    },
-    {
-      value: 'vms',
-      path: 'vms',
-    },
-  ];
   currentPath = '';
   private _currentCourseName$: BehaviorSubject<string> = new BehaviorSubject(
     null
@@ -37,6 +27,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
   private courseSubscription: Subscription;
   private routeSubscription: Subscription;
   private enrollSubscription: Subscription;
+  private unenrollSubscription: Subscription;
   private dialogSubscription: Subscription;
 
   studentsDB$: Observable<Student[]>;
@@ -69,18 +60,18 @@ export class CourseDashboard implements OnInit, OnDestroy {
     });
 
     // get current course after name changes and reload course is triggered
-    this.currentCourse$ =
-      this._currentCourseName$
+    this.currentCourse$ = combineLatest([this._currentCourseName$, this._reloadCourse$])
 
-        .pipe(
-          tap(() => (this.isLoading = true)),
-          switchMap((name) => {
-            if (name) return this.courseService.getCourse(name);
-          }),
-          tap((course) => {
-            this.currentCourse = course;
-          })
-        );
+      .pipe(
+        map(([name, reload]) => name),
+        tap(() => (this.isLoading = true)),
+        switchMap((name) => {
+          if (name) return this.courseService.getCourse(name);
+        }),
+        tap((course) => {
+          this.currentCourse = course;
+        })
+      );
 
     this.enrolledStudents$ = combineLatest([
       this.currentCourse$,
@@ -95,6 +86,35 @@ export class CourseDashboard implements OnInit, OnDestroy {
     );
   }
 
+  unEnrollStudents(studentsId: Array<string>) {
+    console.log('going to unenroll students', studentsId)
+    this.isLoading = true;
+    this.unenrollSubscription = this.courseService
+      .unEnrollMany(this.currentCourse, studentsId)
+      .subscribe((evt: Array<boolean>) => {
+        this.isLoading = false;
+        if (evt !== null) {
+          let countError = 0;
+          evt.forEach(r => {
+            if (!r)
+              countError++;
+          })
+
+          if (countError === 0) {
+            this.toastService.success(' students correctly unenrolled')
+          } else {
+            this.toastService.info(countError + ' students failed of ' + evt.length)
+
+          }
+          console.log('delete students', evt);
+        }
+
+        // trigger reload
+        this._reloadStudents$.next(null);
+      })
+
+  }
+
   enrollStudent(student: Student) {
     this.isLoading = true;
 
@@ -102,8 +122,13 @@ export class CourseDashboard implements OnInit, OnDestroy {
       .enrollOne(this.currentCourse, student)
       .subscribe((evt) => {
         this.isLoading = false;
+        if (evt !== null) {
+          this.toastService.success('enroll success');
+        }
+
         // trigger reload
         this._reloadStudents$.next(null);
+
       });
   }
 
@@ -115,12 +140,21 @@ export class CourseDashboard implements OnInit, OnDestroy {
       console.log(`Dialog result: ${result}`);
       if (result !== null && result !== undefined) {
         this.toastService.success('update success!');
-        //this._currentCourseName$.next(result.name);
+        // this._currentCourseName$.next(result.name);
 
         // reload data parent
         this.utilsService.reloadCurses();
         // reload data this
-        this.router.navigate(['teacher/' + result.name]);
+
+        // se cambia il nome ricarico la pagina al nuovo path
+        // altrimenti aggiorno solo il corso senza ricaricare la pagina
+        if (this.currentCourse.name !== result.name) {
+          this.router.navigate(['teacher/' + result.name]);
+        } else {
+          this._reloadCourse$.next(null);
+        }
+
+
 
 
       }
@@ -135,5 +169,6 @@ export class CourseDashboard implements OnInit, OnDestroy {
     if (this.courseSubscription) this.courseSubscription.unsubscribe();
     if (this.routeSubscription) this.routeSubscription.unsubscribe();
     if (this.enrollSubscription) this.enrollSubscription.unsubscribe();
+    if (this.unenrollSubscription) this.unenrollSubscription.unsubscribe();
   }
 }
