@@ -17,7 +17,7 @@ import { CourseDialogComponent } from '../course-dialog/course-dialog.component'
   styleUrls: ['./course-dashboard.sass'],
 })
 export class CourseDashboard implements OnInit, OnDestroy {
-  tabs = [
+  /* tabs = [
     {
       value: 'students',
       path: 'students',
@@ -26,17 +26,17 @@ export class CourseDashboard implements OnInit, OnDestroy {
       value: 'vms',
       path: 'vms',
     },
-  ];
+  ]; */
   currentPath = '';
   private _currentCourseName$: BehaviorSubject<string> = new BehaviorSubject(
     null
   );
   private _reloadStudents$: BehaviorSubject<void> = new BehaviorSubject(null);
-  private _reloadCourse$: BehaviorSubject<void> = new BehaviorSubject(null);
 
   private courseSubscription: Subscription;
   private routeSubscription: Subscription;
   private enrollSubscription: Subscription;
+  private unenrollSubscription: Subscription;
   private dialogSubscription: Subscription;
 
   studentsDB$: Observable<Student[]>;
@@ -95,6 +95,35 @@ export class CourseDashboard implements OnInit, OnDestroy {
     );
   }
 
+  unEnrollStudents(studentsId: Array<string>) {
+    console.log('going to unenroll students', studentsId)
+    this.isLoading = true;
+    this.unenrollSubscription = this.courseService
+      .unEnrollMany(this.currentCourse, studentsId)
+      .subscribe((evt: Array<boolean>) => {
+        this.isLoading = false;
+        if (evt !== null) {
+          let countError = 0;
+          evt.forEach(r => {
+            if (!r)
+              countError++;
+          })
+
+          if (countError === 0) {
+            this.toastService.success(' students correctly unenrolled')
+          } else {
+            this.toastService.info(countError + ' students failed of ' + evt.length)
+
+          }
+          console.log('delete students', evt);
+        }
+
+        // trigger reload
+        this._reloadStudents$.next(null);
+      })
+
+  }
+
   enrollStudent(student: Student) {
     this.isLoading = true;
 
@@ -102,8 +131,10 @@ export class CourseDashboard implements OnInit, OnDestroy {
       .enrollOne(this.currentCourse, student)
       .subscribe((evt) => {
         this.isLoading = false;
+        this.toastService.success('enroll success');
         // trigger reload
         this._reloadStudents$.next(null);
+
       });
   }
 
@@ -115,7 +146,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
       console.log(`Dialog result: ${result}`);
       if (result !== null && result !== undefined) {
         this.toastService.success('update success!');
-        //this._currentCourseName$.next(result.name);
+        // this._currentCourseName$.next(result.name);
 
         // reload data parent
         this.utilsService.reloadCurses();

@@ -29,24 +29,6 @@ export class StudentService {
     return this.http.get<Student[]>(url).pipe(catchError((e) => this.handleError(e)));
   }
 
-  /* Multiple  PATCH */
-  // if course id= 0 unenrolled
-  updateEnrolled(students: Student[], courseName: string) {
-    const urls = [];
-    const url = BASE_PATH + '/students/';
-    students.forEach((student) => {
-      urls.push(url + student.id);
-    });
-
-    return combineLatest(
-      students.map((student) => {
-        return this.http.patch(url + student.id, student);
-      })
-    ).pipe(
-      tap((evt) => console.log('update enrolled')),
-      catchError((e) => this.handleError(e))
-    );
-  }
 
   private handleError(error) {
     let errorMessage = '';

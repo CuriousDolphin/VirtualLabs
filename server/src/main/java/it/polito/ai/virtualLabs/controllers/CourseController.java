@@ -69,14 +69,14 @@ public class CourseController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found");
         }
     }
-    @DeleteMapping("/{name}/unEnrollMany")
+    @PatchMapping("/{name}/unEnrollMany")
     List<Boolean> unenrollMany(@RequestBody List<String> studentIds,@PathVariable("name") String courseName){
         try {
             List<Boolean> ris = teamService.removeStudentsFromCourse(studentIds, courseName);
             return ris;
         } catch (CourseNotFoundException ce) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
-        } 
+        }
     }
 
     @PostMapping("/{name}/enrollMany")
@@ -176,7 +176,6 @@ public class CourseController {
         }catch (CourseNotFoundException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
         }
-
     }
 
     @PatchMapping("/{name}")

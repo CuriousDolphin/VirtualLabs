@@ -49,6 +49,15 @@ export class CourseService {
       .pipe(catchError((e) => this.handleError(e)));
   }
 
+  unEnrollMany(course: Course, studentIds: Array<string>): Observable<Array<boolean>> {
+    const url = BASE_PATH + 'courses/' + course.name + '/unEnrollMany';
+    return this.http
+      .patch<Array<string>>(url, studentIds)
+      .pipe(catchError((e) => this.handleError(e)));
+  }
+
+
+
   private handleError(error) {
     let errorMessage = '';
     if (error.error instanceof ErrorEvent) {

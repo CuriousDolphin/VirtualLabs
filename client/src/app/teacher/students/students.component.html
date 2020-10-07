@@ -1,46 +1,20 @@
 <div class="search-container" fxLayout="row" fxLayoutAlign="start stretch">
   <form class="my-form">
-    <mat-form-field
-      class="form-small"
-      style="width: 300px"
-      appearance="outline"
-    >
+    <mat-form-field class="form-small" style="width: 300px" appearance="outline">
       <mat-label>Search student</mat-label>
-      <input
-        type="text"
-        placeholder="search student"
-        matInput
-        [formControl]="myControl"
-        [matAutocomplete]="auto"
-      />
-      <mat-autocomplete
-        autoActiveFirstOption
-        #auto="matAutocomplete"
-        [displayWith]="displayFn"
-        (optionSelected)="selectStudentToAdd($event.option.value)"
-      >
-        <mat-option
-          *ngFor="let option of filteredOptions | async"
-          [value]="option"
-        >
+      <input type="text" placeholder="search student" matInput [formControl]="myControl" [matAutocomplete]="auto" />
+      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayFn"
+        (optionSelected)="selectStudentToAdd($event.option.value)">
+        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
           {{ option.name }} ({{ option.id }})
         </mat-option>
       </mat-autocomplete>
     </mat-form-field>
   </form>
-  <button
-    mat-raised-button
-    [disabled]="!studentToAdd"
-    (click)="addStudentToTable()"
-  >
+  <button mat-raised-button [disabled]="!studentToAdd" (click)="addStudentToTable()">
     ADD
   </button>
-  <div
-    fxLayout="row"
-    fxLayoutAlign="space-between center"
-    *ngIf="studentToAdd"
-    class="student-detail"
-  >
+  <div fxLayout="row" fxLayoutAlign="space-between center" *ngIf="studentToAdd" class="student-detail">
     <mat-icon class="mr-1"> person_add </mat-icon>
     {{ studentToAdd.name }} {{ studentToAdd.lastName }} ({{
       studentToAdd.email
@@ -55,18 +29,13 @@
   <table mat-table [dataSource]="dataSource" class="elevation-z6" matSort>
     <ng-container matColumnDef="select">
       <th mat-header-cell *matHeaderCellDef>
-        <mat-checkbox
-          (change)="$event ? masterToggle() : null"
+        <mat-checkbox (change)="$event ? masterToggle() : null"
           [checked]="selectedStudents.hasValue() && isAllSelected()"
-          [indeterminate]="selectedStudents.hasValue() && !isAllSelected()"
-        ></mat-checkbox>
+          [indeterminate]="selectedStudents.hasValue() && !isAllSelected()"></mat-checkbox>
       </th>
       <td mat-cell *matCellDef="let student">
-        <mat-checkbox
-          (click)="$event.stopPropagation()"
-          (change)="$event ? toggleStudent(student) : null"
-          [checked]="selectedStudents.isSelected(student)"
-        ></mat-checkbox>
+        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? toggleStudent(student) : null"
+          [checked]="selectedStudents.isSelected(student)"></mat-checkbox>
       </td>
     </ng-container>
     <ng-container matColumnDef="id">
@@ -89,22 +58,13 @@
     <tr mat-header-row *matHeaderRowDef="colsToDisplay"></tr>
     <tr mat-row *matRowDef="let row; columns: colsToDisplay"></tr>
   </table>
-  <mat-paginator
-    [pageSizeOptions]="[5, 10, 20]"
-    showFirstLastButtons
-  ></mat-paginator>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
   <div class="button-area">
-    <button
-      color="accent"
-      [disabled]="selectedStudents.isEmpty()"
-      mat-raised-button
-      (click)="deleteSelectedStudent()"
-    >
+    <button color="accent" [disabled]="selectedStudents.isEmpty()" mat-raised-button (click)="deleteSelectedStudents()">
       Delete Selected
     </button>
 
     <span *ngFor="let student of selectedStudents.selected">
-      {{ student.id }} ,</span
-    >
+      {{ student.id }} ,</span>
   </div>
 </div>
