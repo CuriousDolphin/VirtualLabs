@@ -22,6 +22,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
     null
   );
   private _reloadStudents$: BehaviorSubject<void> = new BehaviorSubject(null);
+  private _reloadCourse$: BehaviorSubject<void> = new BehaviorSubject(null);
 
   private courseSubscription: Subscription;
   private routeSubscription: Subscription;
@@ -59,18 +60,18 @@ export class CourseDashboard implements OnInit, OnDestroy {
     });
 
     // get current course after name changes and reload course is triggered
-    this.currentCourse$ =
-      this._currentCourseName$
+    this.currentCourse$ = combineLatest([this._currentCourseName$, this._reloadCourse$])
 
-        .pipe(
-          tap(() => (this.isLoading = true)),
-          switchMap((name) => {
-            if (name) return this.courseService.getCourse(name);
-          }),
-          tap((course) => {
-            this.currentCourse = course;
-          })
-        );
+      .pipe(
+        map(([name, reload]) => name),
+        tap(() => (this.isLoading = true)),
+        switchMap((name) => {
+          if (name) return this.courseService.getCourse(name);
+        }),
+        tap((course) => {
+          this.currentCourse = course;
+        })
+      );
 
     this.enrolledStudents$ = combineLatest([
       this.currentCourse$,
@@ -144,7 +145,16 @@ export class CourseDashboard implements OnInit, OnDestroy {
         // reload data parent
         this.utilsService.reloadCurses();
         // reload data this
-        this.router.navigate(['teacher/' + result.name]);
+
+        // se cambia il nome ricarico la pagina al nuovo path
+        // altrimenti aggiorno solo il corso senza ricaricare la pagina
+        if (this.currentCourse.name !== result.name) {
+          this.router.navigate(['teacher/' + result.name]);
+        } else {
+          this._reloadCourse$.next(null);
+        }
+
+
 
 
       }

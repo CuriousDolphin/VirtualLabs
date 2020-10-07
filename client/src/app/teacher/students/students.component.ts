@@ -71,7 +71,7 @@ export class StudentsComponent implements OnInit {
   addStudentToTable() {
     if (
       this.studentToAdd &&
-      _.findIndex(this.dataSource.data, this.studentToAdd) == -1
+      _.findIndex(this.dataSource.data, this.studentToAdd) === -1
     ) {
       this.selectedStudents.clear();
       // emit here
