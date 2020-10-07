@@ -35,6 +35,7 @@ import { CourseDialogComponent } from './teacher/course-dialog/course-dialog.com
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ToastComponent } from './utils/toast/toast.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
   declarations: [
@@ -74,7 +75,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatChipsModule,
     FlexLayoutModule,
     MatSlideToggleModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatCardModule
   ],
   providers: [
     {
