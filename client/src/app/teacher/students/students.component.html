@@ -1,28 +1,45 @@
-<div class="search-container" fxLayout="row" fxLayoutAlign="start stretch">
-  <form class="my-form">
-    <mat-form-field class="form-small" style="width: 300px" appearance="outline">
-      <mat-label>Search student</mat-label>
-      <input type="text" placeholder="search student" matInput [formControl]="myControl" [matAutocomplete]="auto" />
-      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayFn"
-        (optionSelected)="selectStudentToAdd($event.option.value)">
-        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-          {{ option.name }} ({{ option.id }})
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-  </form>
-  <button mat-raised-button color="accent" [disabled]="!studentToAdd" (click)="addStudentToTable()"
-    style="border-radius: 20px;">
-    <mat-icon> person_add </mat-icon>
-  </button>
-  <div fxLayout="row" fxLayoutAlign="space-between center" *ngIf="studentToAdd" class="student-detail">
+<div class="search-container" fxLayout="row" fxLayoutAlign="space-between stretch">
 
-    {{ studentToAdd.name }} {{ studentToAdd.lastName }} ({{
+  <div fxLayout="row" fxLayoutAlign="start stretch">
+    <form class="my-form">
+      <mat-form-field class="form-small" style="width: 300px" appearance="outline">
+        <mat-label>Search student</mat-label>
+        <input type="text" placeholder="search student" matInput [formControl]="myControl" [matAutocomplete]="auto" />
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayFn"
+          (optionSelected)="selectStudentToAdd($event.option.value)">
+          <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+            {{ option.name }} ({{ option.id }})
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </form>
+    <button mat-raised-button color="accent" [disabled]="!studentToAdd" (click)="addStudentToTable()" class="radius-20">
+      <mat-icon> person_add </mat-icon>
+    </button>
+    <div fxLayout="row" fxLayoutAlign="space-between center" *ngIf="studentToAdd" class="student-detail">
+
+      {{ studentToAdd.name }} {{ studentToAdd.lastName }} ({{
       studentToAdd.email
     }})
+    </div>
   </div>
+
+  <!-- upload file -->
+  <div>
+
+    <button (click)="uploader.click()" mat-flat-button class="radius-20" matTooltip="Enroll students from csv,
+    if students do not exist, they will be added automatically" style="background-color: transparent;">
+      csv
+      <mat-icon color="primary"> note_add </mat-icon>
+
+    </button>
+    <input hidden #uploader type="file" id="file" (change)="handleFileInput($event.target.files)">
+
+  </div>
+
 </div>
 <mat-divider></mat-divider>
+
 
 <div class="container">
   <h3>Elenco studenti iscritti al corso</h3>

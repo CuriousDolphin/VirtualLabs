@@ -34,6 +34,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { CourseDialogComponent } from './teacher/course-dialog/course-dialog.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ToastComponent } from './utils/toast/toast.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { ToastComponent } from './utils/toast/toast.component';
     MatSnackBarModule,
     MatChipsModule,
     FlexLayoutModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatTooltipModule
   ],
   providers: [
     {
