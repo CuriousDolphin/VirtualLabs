@@ -17,16 +17,6 @@ import { CourseDialogComponent } from '../course-dialog/course-dialog.component'
   styleUrls: ['./course-dashboard.sass'],
 })
 export class CourseDashboard implements OnInit, OnDestroy {
-  /* tabs = [
-    {
-      value: 'students',
-      path: 'students',
-    },
-    {
-      value: 'vms',
-      path: 'vms',
-    },
-  ]; */
   currentPath = '';
   private _currentCourseName$: BehaviorSubject<string> = new BehaviorSubject(
     null
@@ -131,7 +121,10 @@ export class CourseDashboard implements OnInit, OnDestroy {
       .enrollOne(this.currentCourse, student)
       .subscribe((evt) => {
         this.isLoading = false;
-        this.toastService.success('enroll success');
+        if (evt !== null) {
+          this.toastService.success('enroll success');
+        }
+
         // trigger reload
         this._reloadStudents$.next(null);
 
@@ -166,5 +159,6 @@ export class CourseDashboard implements OnInit, OnDestroy {
     if (this.courseSubscription) this.courseSubscription.unsubscribe();
     if (this.routeSubscription) this.routeSubscription.unsubscribe();
     if (this.enrollSubscription) this.enrollSubscription.unsubscribe();
+    if (this.unenrollSubscription) this.unenrollSubscription.unsubscribe();
   }
 }

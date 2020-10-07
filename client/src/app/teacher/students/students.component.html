@@ -11,11 +11,12 @@
       </mat-autocomplete>
     </mat-form-field>
   </form>
-  <button mat-raised-button [disabled]="!studentToAdd" (click)="addStudentToTable()">
-    ADD
+  <button mat-raised-button color="accent" [disabled]="!studentToAdd" (click)="addStudentToTable()"
+    style="border-radius: 20px;">
+    <mat-icon> person_add </mat-icon>
   </button>
   <div fxLayout="row" fxLayoutAlign="space-between center" *ngIf="studentToAdd" class="student-detail">
-    <mat-icon class="mr-1"> person_add </mat-icon>
+
     {{ studentToAdd.name }} {{ studentToAdd.lastName }} ({{
       studentToAdd.email
     }})

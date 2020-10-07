@@ -39,7 +39,7 @@ export class CourseService {
 
   addCourse(course: Course) {
     const url = BASE_PATH + 'courses/';
-    return this.http.post<Course>(url, course).pipe(catchError(this.handleError));
+    return this.http.post<Course>(url, course).pipe(catchError((e) => this.handleError(e)));
 
   }
   enrollOne(course: Course, student: Student): Observable<void> {

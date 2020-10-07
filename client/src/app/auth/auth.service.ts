@@ -51,7 +51,7 @@ export class AuthService {
       }),
       catchError((e) => {
         console.log('ERRORE LOGIN');
-        this.toastService.error("Login failed");
+        this.toastService.error('Login failed');
         return of(null);
       })
     );
@@ -65,6 +65,7 @@ export class AuthService {
       const user: User = JSON.parse(atob(token.split('.')[1]));
       if (user.exp < now) {
         console.log('TOKEN SCADUTO', user.exp, now);
+        this.toastService.warning('Please login again', 'Token expired')
         // scaduto
         this.logout();
 
@@ -81,5 +82,6 @@ export class AuthService {
   logout() {
     this.currentUserSubject$.next(null);
     localStorage.removeItem('token');
+    this.toastService.success('user logged out')
   }
 }
