@@ -5,10 +5,19 @@
     </button>
     <span>Virtual Labs</span>
     <span class="fill-remaining-space"></span>
-    <button *ngIf="!isLogged; else showLogout" mat-button class="right" (click)="goToLogin()">
-      Login
-      <mat-icon class="ml-1">account_circle</mat-icon>
-    </button>
+    <div *ngIf="!isLogged; then showLogin else showLogout">
+    </div>
+    <ng-template #showLogin>
+      <button mat-button class="right" (click)="goToLogin()">
+        Login
+        <mat-icon class="ml-1">account_circle</mat-icon>
+      </button>
+      <button mat-button class="left" (click)="goToRegister()"> 
+        Register 
+        <mat-icon class="ml-1">input</mat-icon>
+      </button>
+        
+    </ng-template>
     <ng-template #showLogout>
       <button mat-button class="right" (click)="logout()">
         {{ user?.sub }}

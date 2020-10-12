@@ -68,6 +68,9 @@ export class AppComponent implements OnInit, OnDestroy {
     this.openLoginDialog();
     // this.router.navigate(['home'], { queryParams: { doLogin: true } });
   }
+  goToRegister() {
+    this.openRegisterDialog();
+  }
   private openLoginDialog(redirectTo?: string) {
     if (this.dialogSubscription) this.dialogSubscription.unsubscribe();
 
@@ -80,7 +83,7 @@ export class AppComponent implements OnInit, OnDestroy {
       // const nextLink = _.get(history.state, 'nextlink', 'home');
 
 
-      // TOFO HANDLE THIS in base al ruolo dell'user,se role_teacher go to teacher else..
+      // TODO HANDLE THIS in base al ruolo dell'user,se role_teacher go to teacher else..
       const nextLink = 'teacher'
       if (result === true) {
         this.toastService.success('Login success!')
@@ -95,5 +98,8 @@ export class AppComponent implements OnInit, OnDestroy {
   logout() {
     this.authService.logout();
     this.router.navigate(['home']);
+  }
+  private openRegisterDialog() {
+
   }
 }
