@@ -80,4 +80,22 @@ export class AuthService {
     this.currentUserSubject$.next(null);
     localStorage.removeItem('token');
   }
+
+  register(username: string, password: string, name: string, lastName: string): Observable<any> {
+    const body = {
+      username,
+      password,
+      name,
+      lastName
+    };
+    return this.http.post(BASE_PATH + 'register', body).pipe(
+      tap((evt) => {
+        console.log(evt.toString());
+      }),
+      catchError((e) => {
+        console.log('ERRORE REGISTRAZIONE');
+        return of(null);
+      })
+    );
+  }
 }

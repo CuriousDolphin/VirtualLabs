@@ -9,6 +9,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import * as _ from 'lodash';
 import { ToastService } from './services/toast.service';
 import { UtilsService } from './services/utils.service';
+import { RegisterDialogComponent } from './auth/register-dialog/register-dialog.component';
 
 @Component({
   selector: 'app-root',
@@ -100,6 +101,20 @@ export class AppComponent implements OnInit, OnDestroy {
     this.router.navigate(['home']);
   }
   private openRegisterDialog() {
+    //Se ha già una subscription faccio un unsubscribe
+    if (this.dialogSubscription) this.dialogSubscription.unsubscribe();
+
+    const dialogRef = this.dialog.open(RegisterDialogComponent);
+
+    this.dialogSubscription = dialogRef.afterClosed().subscribe((result) => {
+      console.log(`Dialog result: ${result}`);
+      if (result === true) {
+        this.toastService.success('Register with success! Please confirm your email.')
+        this.router.navigate(['home']);
+      } else {
+        //this.router.navigate(['home']);
+      }
+    });
 
   }
 }

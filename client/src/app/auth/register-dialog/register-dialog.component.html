@@ -1,0 +1,43 @@
+<h1 mat-dialog-title>Register</h1>
+<div mat-dialog-content>
+    <div class="main-container" [formGroup]="registerForm">
+        <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Enter your email</mat-label>
+            <input matInput placeholder="someone@example.com" formControlName="email" required />
+            <mat-error *ngIf="registerForm.controls['email'].invalid">Not a valid email</mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Enter your password</mat-label>
+            <input type="password" matInput formControlName="password" required />
+            <mat-error *ngIf="registerForm.controls['password'].invalid">Not a valid password</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Enter your first name</mat-label>
+            <input type="text" matInput formControlName="firstName" required />
+            <mat-error *ngIf="registerForm.controls['firstName'].invalid">Insert your first name</mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Enter your last name</mat-label>
+            <input type="text" matInput formControlName="lastName" required />
+            <mat-error *ngIf="registerForm.controls['lastName'].invalid">Insert your last name</mat-error>
+        </mat-form-field>
+
+        <mat-label class="my_label" *ngIf="showError">
+            Error during registration,check your data to continue.
+        </mat-label>
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button [disabled]="!registerForm.valid" mat-raised-button color="primary" (click)="attemptRegister()">
+        Register
+    </button>
+    <button mat-button color="primary" (click)="cancel()">Cancel</button>
+    <mat-spinner *ngIf="isLoading" [diameter]="24"></mat-spinner>
+</div>
+
+<!-- TODO:  spostare il register dall'auth service. 
+            se il register avviene con successo ridirigere sulla home, altrimenti nulla.
+            la register-dialog component dovrebbe essere ok, in auth.service c'è la register che è da fare
+            da fare lato server
+-->

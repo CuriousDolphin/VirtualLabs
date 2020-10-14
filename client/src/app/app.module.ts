@@ -33,6 +33,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { CourseDialogComponent } from './teacher/course-dialog/course-dialog.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { RegisterDialogComponent } from './auth/register-dialog/register-dialog.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     TeacherComponent,
     CourseDashboard,
     CourseDialogComponent,
+    RegisterDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -80,6 +82,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     },
   ],
   bootstrap: [AppComponent],
-  entryComponents: [LoginDialogComponent],
+  entryComponents: [LoginDialogComponent, RegisterDialogComponent],
 })
 export class AppModule { }

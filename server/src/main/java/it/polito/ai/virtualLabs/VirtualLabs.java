@@ -39,7 +39,6 @@ public class VirtualLabs {
             @Override
             public void run(String... args) throws Exception {
                 try{
-
                     courses.save(Course.builder()
                             .name("Programmazione di sistema")
                             .acronym("pds")
@@ -68,12 +67,14 @@ public class VirtualLabs {
                             .username("student@studenti.polito.it")
                             .password(passwordEncoder.encode("pwd"))
                             .roles(Arrays.asList( "ROLE_STUDENT"))
+                            .enabled(true)
                             .build()
                     );
                     users.save(User.builder()
                             .username("teacher@polito.it")
                             .password(passwordEncoder.encode("pwd"))
                             .roles(Arrays.asList( "ROLE_PROF"))
+                            .enabled(true)
                             .build()
                     );
 
@@ -81,6 +82,7 @@ public class VirtualLabs {
                             .username("admin@polito.it")
                             .password(passwordEncoder.encode("pwd"))
                             .roles(Arrays.asList("ROLE_STUDENT","ROLE_PROF", "ROLE_ADMIN"))
+                            .enabled(true)
                             .build()
                     );
 
