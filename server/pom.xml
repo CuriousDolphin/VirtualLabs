@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>it.polito.ai</groupId>
-    <artifactId>lab2</artifactId>
+    <artifactId>virtual_lab_server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>VirtualLabs</name>
     <description>Virtual labs backend</description>
