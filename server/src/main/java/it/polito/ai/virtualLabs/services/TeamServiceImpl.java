@@ -59,7 +59,7 @@ public class TeamServiceImpl implements TeamService {
         c.setAcronym(course.getAcronym());
         c.setEnabled(course.isEnabled());
         c.setMax(course.getMax());
-        c.setMin(course.getMax());
+        c.setMin(course.getMin());
         c.setName(course.getName());
 
         this.courseRepository.save(c);
