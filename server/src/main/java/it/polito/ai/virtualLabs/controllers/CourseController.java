@@ -81,7 +81,8 @@ public class CourseController {
     // csv
     @PostMapping("/{name}/addAndEnroll")
     List<Boolean> enrollMany(@RequestParam("file") MultipartFile file, @PathVariable("name") String courseName) {
-        if (!file.getContentType().equals("text/csv"))
+
+        if (!file.getContentType().equals("text/csv") && !file.getContentType().equals("application/vnd.ms-excel"))
             throw new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, file.getContentType());
         if (file.isEmpty()) throw new ResponseStatusException(HttpStatus.CONFLICT);
         try {
