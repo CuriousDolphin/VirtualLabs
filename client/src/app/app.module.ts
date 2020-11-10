@@ -36,6 +36,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ToastComponent } from './utils/toast/toast.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
+import { StudentComponent } from './student/student/student.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { MatCardModule } from '@angular/material/card';
     CourseDashboard,
     CourseDialogComponent,
     ToastComponent,
+    StudentComponent,
   ],
   imports: [
     BrowserModule,
