@@ -5,6 +5,7 @@ web application project made with love with:
 - MariaDb
 
 ## Run DB
+make a folder in server called db_data, this will be the shared volume with db container.
 go in server folder and run:
 
 - `docker-compose up`
