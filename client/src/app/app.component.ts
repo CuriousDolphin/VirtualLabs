@@ -1,19 +1,19 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatSidenav } from '@angular/material/sidenav';
-import { MatDialog } from '@angular/material/dialog';
-import { LoginDialogComponent } from './auth/login-dialog/login-dialog.component';
-import { Subscription } from 'rxjs';
-import { AuthService } from './auth/auth.service';
-import { User } from './models/user.model';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import * as _ from 'lodash';
-import { ToastService } from './services/toast.service';
-import { UtilsService } from './services/utils.service';
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { MatSidenav } from "@angular/material/sidenav";
+import { MatDialog } from "@angular/material/dialog";
+import { LoginDialogComponent } from "./auth/login-dialog/login-dialog.component";
+import { Subscription } from "rxjs";
+import { AuthService } from "./auth/auth.service";
+import { User } from "./models/user.model";
+import { ActivatedRoute, Params, Router } from "@angular/router";
+import * as _ from "lodash";
+import { ToastService } from "./services/toast.service";
+import { UtilsService } from "./services/utils.service";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.sass'],
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.sass"],
 })
 export class AppComponent implements OnInit, OnDestroy {
   @ViewChild(MatSidenav) sidenav: MatSidenav;
@@ -31,20 +31,19 @@ export class AppComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private utilsService: UtilsService
-  ) { }
+  ) {}
   ngOnInit() {
-
     // if route have param "do login" open login dialog
     this.routeSubscription = this.route.queryParams.subscribe(
       (params: Params) => {
-        if (params.doLogin === 'true') {
+        if (params.doLogin === "true") {
           this.openLoginDialog();
         }
       }
     );
     this.userSubscription = this.authService.currentUser$.subscribe(
       (user: User) => {
-        console.log('user subscription ', user);
+        console.log("user subscription ", user);
         if (user != null) {
           this.isLogged = true;
           this.user = user;
@@ -78,22 +77,24 @@ export class AppComponent implements OnInit, OnDestroy {
 
       // se non c'e' il campo nextlink nello state default home
       // const nextLink = _.get(history.state, 'nextlink', 'home');
-
-
-      // TOFO HANDLE THIS in base al ruolo dell'user,se role_teacher go to teacher else..
-      const nextLink = 'teacher'
       if (result === true) {
-        this.toastService.success('Login success')
+        let nextLink = "";
+        if (this.authService.hasRoleTeacher()) {
+          nextLink = "teacher";
+        } else {
+          nextLink = "student";
+        }
+        this.toastService.success("Login success,redirect to " + nextLink);
         // se il login e' andato bene e devo ridiriggere verso un altra pagina
-        console.log('REDIRECT TO', nextLink);
+        console.log("REDIRECT TO", nextLink);
         this.router.navigate([nextLink]);
       } else {
-        this.router.navigate(['home']);
+        this.router.navigate(["home"]);
       }
     });
   }
   logout() {
     this.authService.logout();
-    this.router.navigate(['home']);
+    this.router.navigate(["home"]);
   }
 }
