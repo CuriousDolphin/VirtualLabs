@@ -42,7 +42,7 @@ public class VirtualLabs {
             public void run(String... args) throws Exception {
                 try{
 
-                   /* courses.save(Course.builder()
+                    courses.save(Course.builder()
                             .name("Programmazione di sistema")
                             .acronym("pds")
                             .enabled(true)
@@ -86,7 +86,7 @@ public class VirtualLabs {
                             .password(passwordEncoder.encode("pwd"))
                             .roles(Arrays.asList( "ROLE_STUDENT"))
                             .build()
-                    ); */
+                    );
 
                     // add students associated with user
                     students.save(
