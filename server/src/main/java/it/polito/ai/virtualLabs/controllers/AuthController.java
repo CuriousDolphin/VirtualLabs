@@ -1,5 +1,8 @@
 package it.polito.ai.virtualLabs.controllers;
 
+import it.polito.ai.virtualLabs.entities.Student;
+import it.polito.ai.virtualLabs.repositories.CourseRepository;
+import it.polito.ai.virtualLabs.repositories.StudentRepository;
 import it.polito.ai.virtualLabs.repositories.UserRepository;
 import it.polito.ai.virtualLabs.security.AuthenticationRequest;
 import it.polito.ai.virtualLabs.security.JwtTokenProvider;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -28,14 +32,26 @@ public class AuthController {
     @Autowired
     UserRepository users;
 
+    @Autowired
+    StudentRepository studentRepository;
+
     @PostMapping("/signin")
     public ResponseEntity signin(@RequestBody AuthenticationRequest data) {
         try {
-            String username = data.getUsername();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, data.getPassword()));
-            String token = jwtTokenProvider.createToken(username, this.users.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username " + username + "not found")).getRoles());
+            String email = data.getUsername();
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, data.getPassword()));
+
+            String id ="";
+            Optional<Student> s=studentRepository.findByEmailIgnoreCase(email);
+            if(s.isPresent())
+                id=s.get().getId();
+
+            String token = jwtTokenProvider.createToken(
+                    email,
+                    this.users.findByUsername(email)
+                            .orElseThrow(() -> new UsernameNotFoundException("Username " + email + "not found")).getRoles(),id);
             Map<Object, Object> model = new HashMap<>();
-            model.put("username", username);
+            model.put("username", email);
             model.put("token", token);
             return ok(model);
         } catch (AuthenticationException e) {

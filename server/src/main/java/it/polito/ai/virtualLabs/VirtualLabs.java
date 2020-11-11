@@ -1,7 +1,9 @@
 package it.polito.ai.virtualLabs;
 import it.polito.ai.virtualLabs.entities.Course;
+import it.polito.ai.virtualLabs.entities.Student;
 import it.polito.ai.virtualLabs.entities.User;
 import it.polito.ai.virtualLabs.repositories.CourseRepository;
+import it.polito.ai.virtualLabs.repositories.StudentRepository;
 import it.polito.ai.virtualLabs.repositories.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -32,7 +34,7 @@ public class VirtualLabs {
         SpringApplication.run(VirtualLabs.class, args);
     }
     @Bean
-    CommandLineRunner runner(UserRepository users, CourseRepository courses, PasswordEncoder passwordEncoder ) {
+    CommandLineRunner runner(UserRepository users, CourseRepository courses, StudentRepository students, PasswordEncoder passwordEncoder ) {
         return new CommandLineRunner() {
 
 
@@ -40,7 +42,7 @@ public class VirtualLabs {
             public void run(String... args) throws Exception {
                 try{
 
-                    courses.save(Course.builder()
+                   /* courses.save(Course.builder()
                             .name("Programmazione di sistema")
                             .acronym("pds")
                             .enabled(true)
@@ -64,12 +66,8 @@ public class VirtualLabs {
                             .max(100)
                             .build()
                     );
-                    users.save(User.builder()
-                            .username("student@studenti.polito.it")
-                            .password(passwordEncoder.encode("pwd"))
-                            .roles(Arrays.asList( "ROLE_STUDENT"))
-                            .build()
-                    );
+
+
                     users.save(User.builder()
                             .username("teacher@polito.it")
                             .password(passwordEncoder.encode("pwd"))
@@ -83,14 +81,32 @@ public class VirtualLabs {
                             .roles(Arrays.asList("ROLE_STUDENT","ROLE_PROF", "ROLE_ADMIN"))
                             .build()
                     );
+                    users.save(User.builder()
+                            .username("student@studenti.polito.it")
+                            .password(passwordEncoder.encode("pwd"))
+                            .roles(Arrays.asList( "ROLE_STUDENT"))
+                            .build()
+                    ); */
+
+                    // add students associated with user
+                    students.save(
+                            Student.builder()
+                                    .id("s263138")
+                                    .email("student@studenti.polito.it")
+                                    .name("MARIO")
+                                    .lastName("ROSSI")
+                                    .build()
+                    );
+
+
 
                 }catch (Exception e){
-                    System.out.println("Exception insert user: "+e.getMessage().toString());
+                    System.out.println("Exception insert : "+e.getMessage().toString());
                 }
 
-                System.out.println("printing all users...");
-                users.findAll().forEach(v ->  System.out.println(" User :" + v.toString()));
                 courses.findAll().forEach(v ->  System.out.println(" Course :" + v.toString()));
+                users.findAll().forEach(v ->  System.out.println(" User :" + v.toString()));
+                students.findAll().forEach(v ->  System.out.println(" Student :" + v.toString()));
 
 
 
