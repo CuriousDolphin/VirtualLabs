@@ -36,19 +36,21 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(jwtProperties.getSecretKey().getBytes());
     }
 
-    public String createToken(String username, List<String> roles) {
+    public String createToken(String username, List<String> roles,String id) {
 
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("roles", roles);
+        claims.put("userId",id);
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + jwtProperties.getValidityInMs());
 
         return Jwts.builder()//
+
                 .setClaims(claims)//
                 .setIssuedAt(now)//
                 .setExpiration(validity)//
-                .signWith(SignatureAlgorithm.HS256, secretKey)//
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
