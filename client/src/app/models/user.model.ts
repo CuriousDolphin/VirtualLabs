@@ -3,4 +3,5 @@ export interface User {
   exp: number; // token expiration
   sub: string; // username
   roles: string[];
+  userId: string;
 }

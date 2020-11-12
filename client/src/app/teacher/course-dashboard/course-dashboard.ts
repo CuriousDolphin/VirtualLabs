@@ -54,9 +54,8 @@ export class CourseDashboard implements OnInit, OnDestroy {
 
     // take the name of the route (course name)
     this.routeSubscription = this.route.url.subscribe((evt) => {
-      (this.currentPath = evt[0].path),
-        console.log("tab route change", "data", this.currentPath);
       const name = evt[0].path;
+      console.log("teacher course dashboard route change", "data", name);
       if (name) {
         this._currentCourseName$.next(name);
       }

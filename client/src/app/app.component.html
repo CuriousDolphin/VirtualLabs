@@ -1,11 +1,25 @@
 <div class="main-div">
-  <mat-toolbar color="primary" class="mat-elevation-z4 tbar">
-    <button *ngIf="isLogged" mat-icon-button class="mr-1" (click)="toggleForMenuClick()">
+  <mat-toolbar
+    color="primary"
+    class="tbar"
+    [ngClass]="{ 'mat-elevation-z4': isLogged }"
+  >
+    <button
+      *ngIf="isLogged"
+      mat-icon-button
+      class="mr-1"
+      (click)="toggleForMenuClick()"
+    >
       <mat-icon>menu</mat-icon>
     </button>
-    <span>Virtual Labs</span>
+    <span *ngIf="isLogged">Virtual Labs</span>
     <span class="fill-remaining-space"></span>
-    <button *ngIf="!isLogged; else showLogout" mat-button class="right" (click)="goToLogin()">
+    <button
+      *ngIf="!isLogged; else showLogout"
+      mat-button
+      class="right"
+      (click)="goToLogin()"
+    >
       Login
       <mat-icon class="ml-1">account_circle</mat-icon>
     </button>
@@ -15,7 +29,6 @@
         <mat-icon class="ml-1">exit_to_app</mat-icon>
       </button>
     </ng-template>
-
   </mat-toolbar>
 
   <router-outlet></router-outlet>
