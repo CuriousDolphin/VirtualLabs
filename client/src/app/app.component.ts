@@ -47,6 +47,16 @@ export class AppComponent implements OnInit, OnDestroy {
         if (user != null) {
           this.isLogged = true;
           this.user = user;
+
+          // REDIRECT
+          let nextLink = "";
+          if (this.authService.hasRoleTeacher()) {
+            nextLink = "teacher";
+          } else {
+            nextLink = "student";
+          }
+          this.toastService.success("redirect to " + nextLink);
+          this.router.navigate([nextLink]);
         } else {
           this.isLogged = false;
           this.user = null;
