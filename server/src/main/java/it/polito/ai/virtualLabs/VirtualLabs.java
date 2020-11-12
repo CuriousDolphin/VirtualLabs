@@ -69,6 +69,7 @@ public class VirtualLabs {
 
 
                     users.save(User.builder()
+                            .id("sTeacher")
                             .username("teacher@polito.it")
                             .password(passwordEncoder.encode("pwd"))
                             .roles(Arrays.asList( "ROLE_PROF"))
@@ -76,22 +77,25 @@ public class VirtualLabs {
                     );
 
                     users.save(User.builder()
+                            .id("sADMIN")
                             .username("admin@polito.it")
                             .password(passwordEncoder.encode("pwd"))
                             .roles(Arrays.asList("ROLE_STUDENT","ROLE_PROF", "ROLE_ADMIN"))
                             .build()
                     );
                     users.save(User.builder()
+                            .id("sStudent")
                             .username("student@studenti.polito.it")
                             .password(passwordEncoder.encode("pwd"))
                             .roles(Arrays.asList( "ROLE_STUDENT"))
                             .build()
                     );
 
+
                     // add students associated with user
                     students.save(
                             Student.builder()
-                                    .id("s263138")
+                                    .id("sStudent")
                                     .email("student@studenti.polito.it")
                                     .name("MARIO")
                                     .lastName("ROSSI")

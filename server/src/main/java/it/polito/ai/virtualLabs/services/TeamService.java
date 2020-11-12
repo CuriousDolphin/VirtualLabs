@@ -59,7 +59,7 @@ public interface TeamService {
     List<Boolean> addAndEnroll(Reader r, String courseName);
 
     // assumo che l'username del principal sia lo stesso dell'id dello studente
-    @PreAuthorize("(#studentId == authentication.principal.username and hasRole('ROLE_STUDENT')) or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("(#studentId == authentication.principal.id and hasRole('ROLE_STUDENT')) or hasRole('ROLE_ADMIN')")
     List<CourseDTO> getCourses(String studentId);
 
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
