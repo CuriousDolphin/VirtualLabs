@@ -38,7 +38,7 @@ export class StudentComponent implements OnInit {
     private utilsService: UtilsService,
     public dialog: MatDialog,
     private toastService: ToastService,
-    private studenService: StudentService,
+    private studentService: StudentService,
     private authService: AuthService
   ) {}
 
@@ -57,7 +57,7 @@ export class StudentComponent implements OnInit {
         this._reloadSubject$.pipe(
           tap(() => (this.isLoading = true)),
           switchMap(() =>
-            this.studenService.getCoursesByStudentId(User.userId)
+            this.studentService.getCoursesByStudentId(User.userId)
           ),
           tap(() => (this.isLoading = false))
         )
