@@ -54,6 +54,9 @@ export class AuthService {
       })
     );
   }
+  getUserId(): string {
+    return this.currentUserSubject$.value.userId;
+  }
 
   hasRoleTeacher(): boolean {
     const token = this.getToken();

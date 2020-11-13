@@ -13,6 +13,7 @@ import * as _ from "lodash";
 import { environment } from "src/environments/environment";
 import { ToastService } from "./toast.service";
 import { Course } from "../models/course.model";
+import { Team } from "../models/team.model";
 const BASE_PATH = environment.apiUrl;
 
 @Injectable({
@@ -34,9 +35,19 @@ export class StudentService {
       .pipe(catchError((e) => this.handleError(e)));
   }
   getCoursesByStudentId(studentId: string): Observable<Course[]> {
-    const url = BASE_PATH + "students/"+studentId+"/courses";
+    const url = BASE_PATH + "students/" + studentId + "/courses";
     return this.http
       .get<Course[]>(url)
+      .pipe(catchError((e) => this.handleError(e)));
+  }
+
+  getTeamsByStudentIdCourseName(
+    studentId: string,
+    courseName: string
+  ): Observable<Team[]> {
+    const url = BASE_PATH + "courses/" + courseName + "/teams/" + studentId;
+    return this.http
+      .get<Team[]>(url)
       .pipe(catchError((e) => this.handleError(e)));
   }
 

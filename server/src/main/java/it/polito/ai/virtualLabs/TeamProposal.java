@@ -14,5 +14,5 @@ public class TeamProposal{
     @NotEmpty
     String name;
     @NotNull
-    List<String> members;
+    List<String> members; //students id
 }

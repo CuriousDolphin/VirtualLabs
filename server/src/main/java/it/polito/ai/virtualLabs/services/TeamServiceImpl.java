@@ -269,13 +269,23 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-
     public List<TeamDTO> getTeamsForStudent(String studentId) {
         if (!studentRepository.existsById(studentId)) throw new StudentNotFoundException();
         return this.studentRepository.findByIdIgnoreCase(studentId)
                 .get()
                 .getTeams()
                 .stream()
+                .map(team -> modelMapper.map(team, TeamDTO.class))
+                .collect(Collectors.toList());
+    }
+    @Override
+    public List<TeamDTO> getTeamsForStudentCourse(String studentId,String courseName) {
+        if (!studentRepository.existsById(studentId)) throw new StudentNotFoundException();
+        return this.studentRepository.findByIdIgnoreCase(studentId)
+                .get()
+                .getTeams()
+                .stream()
+                .filter(team -> team.getName().equals(courseName))
                 .map(team -> modelMapper.map(team, TeamDTO.class))
                 .collect(Collectors.toList());
     }
@@ -354,7 +364,7 @@ public class TeamServiceImpl implements TeamService {
 
 
     @Override
-    public List<TeamDTO> getTeamForCourse(String courseName) {
+    public List<TeamDTO> getTeamsForCourse(String courseName) {
         // check esistenza corso
         if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
 

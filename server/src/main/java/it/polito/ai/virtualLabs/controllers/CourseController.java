@@ -145,13 +145,25 @@ public class CourseController {
     @GetMapping("/{name}/teams")
     List<TeamDTO> getTeams(@PathVariable("name") String name) {
         try{
-            return teamService.getTeamForCourse(name);
+            return teamService.getTeamsForCourse(name);
 
 
         }catch (CourseNotFoundException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
         }
     }
+
+    @GetMapping("/{name}/teams/{idStudent}")
+    List<TeamDTO> getStudentCourseTeam(@PathVariable("name") String name,@PathVariable("idStudent") String idStudent) {
+        try{
+            return teamService.getTeamsForStudentCourse(idStudent,name);
+
+
+        }catch (CourseNotFoundException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
+        }
+    }
+
     @GetMapping("/{name}/studentsInTeam")
     List<StudentDTO> getStudentsInTeam(@PathVariable("name") String name) {
         try{

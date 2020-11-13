@@ -4,8 +4,11 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from "rxjs";
 import { switchMap, tap, map, shareReplay } from "rxjs/operators";
 import { Course } from "src/app/models/course.model";
 import { CourseService } from "src/app/services/course.service";
+import { StudentService } from "../../services/student.service";
 import { ToastService } from "src/app/services/toast.service";
 import { UtilsService } from "src/app/services/utils.service";
+import { Team } from "src/app/models/team.model";
+import { AuthService } from "src/app/auth/auth.service";
 
 @Component({
   selector: "app-course-dashboard",
@@ -23,6 +26,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
   currentCourse: Course;
   currentCourse$: Observable<Course>;
+  studentTeams$: Observable<Team[]>;
 
   isLoading = false;
   constructor(
@@ -30,6 +34,8 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
     private utilsService: UtilsService,
     private courseService: CourseService,
     private toastService: ToastService,
+    private studentService: StudentService,
+    private authService: AuthService,
     private router: Router
   ) {}
 
@@ -54,6 +60,13 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
         this.currentCourse = course;
       }),
       tap(() => (this.isLoading = false))
+    );
+
+    this.studentTeams$ = this._currentCourseName$.pipe(
+      switchMap((courseName) => {
+        if (courseName)
+          return this.studentService.getTeamsByStudentIdCourseName(this.authService.getUserId(),courseName);
+      })
     );
   }
 
