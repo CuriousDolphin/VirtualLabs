@@ -65,9 +65,14 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
     this.studentTeams$ = this._currentCourseName$.pipe(
       switchMap((courseName) => {
         if (courseName)
-          return this.studentService.getTeamsByStudentIdCourseName(this.authService.getUserId(),courseName);
+          return this.studentService.getTeamsByStudentIdCourseName(
+            this.authService.getUserId(),
+            courseName
+          );
       })
     );
+
+    this.studentTeams$.subscribe((e) => console.log("TEAM STUDENTE: ", e));
   }
 
   ngOnDestroy(): void {
