@@ -16,9 +16,11 @@
 </mat-toolbar>
 
 <mat-tab-group>
-  <mat-tab label="Team">
+  <mat-tab label="Teams">
     <!--only this scroll-->
-    <div class="tab-container"></div>
+    <div class="tab-container">
+      <app-teams [teams]="studentTeams$ | async"></app-teams>
+    </div>
   </mat-tab>
   <mat-tab label="VM"> Content 2 </mat-tab>
   <mat-tab label="Assignment"> Content 2 </mat-tab>
