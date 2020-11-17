@@ -11,11 +11,11 @@ import java.sql.Timestamp;
 public class PaperSnapshot {
     @Id
     @GeneratedValue
-    Long id;
-    String content;
-    Timestamp submissionDate;
+    private Long id;
+    private String content;
+    private Timestamp submissionDate;
     @ManyToOne
     @JoinColumn(name = "paper_id")
-    Paper paper;
+    private Paper paper;
 
 }

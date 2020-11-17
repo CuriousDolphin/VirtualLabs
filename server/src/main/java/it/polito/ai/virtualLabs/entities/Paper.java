@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -11,16 +12,26 @@ import java.util.List;
 public class Paper {
     @Id
     @GeneratedValue
-    Long id;
-    Integer status;
-    Integer vote;
-    Timestamp lastUpdateTime;
+    private Long id;
+    private Integer status;
+    private Integer vote;
+    private Timestamp lastUpdateTime;
     @ManyToOne
     @JoinColumn(name = "assignment_id")
-    Assignment assignment;
+    private Assignment assignment;
     @ManyToOne
     @JoinColumn(name = "student_id")
-    Student student;
+    private Student student;
     @OneToMany(mappedBy = "paper")
-    List<PaperSnapshot> paperSnapshots;
+    private List<PaperSnapshot> paperSnapshots = new ArrayList<>();
+
+    public void addPaperSnapshot(PaperSnapshot paperSnapshot) {
+        if(!paperSnapshot.getPaper().equals(this)) paperSnapshot.setPaper(this);
+        if(!paperSnapshots.contains(paperSnapshot)) paperSnapshots.add(paperSnapshot);
+    }
+
+    public void removeSnapshot(PaperSnapshot paperSnapshot) {
+        if(paperSnapshot.getPaper().equals(this)) paperSnapshot.setPaper(null);
+        if(paperSnapshots.contains(paperSnapshot)) paperSnapshots.remove(paperSnapshot);
+    }
 }
