@@ -3,10 +3,10 @@ package it.polito.ai.virtualLabs.services;
 import it.polito.ai.virtualLabs.controllers.NotificationController;
 import it.polito.ai.virtualLabs.dtos.TeamDTO;
 import it.polito.ai.virtualLabs.entities.Team;
-import it.polito.ai.virtualLabs.entities.TeamToken;
+import it.polito.ai.virtualLabs.entities.TokenTeam;
 import it.polito.ai.virtualLabs.exceptions.TokenNotFoundException;
 import it.polito.ai.virtualLabs.repositories.TeamRepository;
-import it.polito.ai.virtualLabs.repositories.TeamTokenRepository;
+import it.polito.ai.virtualLabs.repositories.TokenTeamRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -34,7 +34,7 @@ public class NotificationServiceImpl implements NotificationService{
     TeamService teamService;
 
     @Autowired
-    TeamTokenRepository tokenRepository;
+    TokenTeamRepository tokenRepository;
 
     @Autowired
     ModelMapper modelMapper;
@@ -46,7 +46,7 @@ public class NotificationServiceImpl implements NotificationService{
     public void cleanToken() {
         Timestamp t = new Timestamp(System.currentTimeMillis());
         System.out.println("SCHEDULED TASK "+t);
-        List<TeamToken> expired=tokenRepository.findAllByExpiryBefore(t);
+        List<TokenTeam> expired=tokenRepository.findAllByExpiryBefore(t);
         System.out.println("FOUNDED  "+expired.size()+" EXPIRED TOKEN");
 
         ArrayList<Long> teamsId = new ArrayList<Long>();
@@ -82,7 +82,7 @@ public class NotificationServiceImpl implements NotificationService{
 
 
     private Long checkToken(String token){ // controlla la validita del token, se valido lo elimina e ritorna il team id
-        Optional<TeamToken> t=tokenRepository.findById(token);
+        Optional<TokenTeam> t=tokenRepository.findById(token);
         if(t.isEmpty()) {
             System.out.println("TOKEN NON ESISTE");
             throw  new TokenNotFoundException();
@@ -119,7 +119,7 @@ public class NotificationServiceImpl implements NotificationService{
         Long teamId=checkToken(token);
         if (teamId == null) return false;
 
-        List<TeamToken> list=tokenRepository.findAllByTeamId(teamId);
+        List<TokenTeam> list=tokenRepository.findAllByTeamId(teamId);
 
         list.forEach(t -> tokenRepository.delete(t));
         teamService.evictTeam(teamId);
@@ -133,7 +133,7 @@ public class NotificationServiceImpl implements NotificationService{
     public void notifyTeam(TeamDTO teamDto, List<String> memberIds) {
         long now = System.currentTimeMillis();
         memberIds.forEach(id ->{
-            TeamToken t = new TeamToken();
+            TokenTeam t = new TokenTeam();
             t.setId(UUID.randomUUID().toString());
             t.setExpiryDate(new Timestamp(now +3600000));
             t.setStudentId(id);

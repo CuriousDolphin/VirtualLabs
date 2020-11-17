@@ -8,12 +8,12 @@ import it.polito.ai.virtualLabs.dtos.TeamDTO;
 import it.polito.ai.virtualLabs.entities.Course;
 import it.polito.ai.virtualLabs.entities.Student;
 import it.polito.ai.virtualLabs.entities.Team;
-import it.polito.ai.virtualLabs.entities.TeamToken;
+import it.polito.ai.virtualLabs.entities.TokenTeam;
 import it.polito.ai.virtualLabs.exceptions.*;
 import it.polito.ai.virtualLabs.repositories.CourseRepository;
 import it.polito.ai.virtualLabs.repositories.StudentRepository;
 import it.polito.ai.virtualLabs.repositories.TeamRepository;
-import it.polito.ai.virtualLabs.repositories.TeamTokenRepository;
+import it.polito.ai.virtualLabs.repositories.TokenTeamRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ public class TeamServiceImpl implements TeamService {
     TeamRepository teamRepository;
 
     @Autowired
-    TeamTokenRepository tokenRepository;
+    TokenTeamRepository tokenRepository;
 
 
     @Autowired
@@ -418,7 +418,7 @@ public class TeamServiceImpl implements TeamService {
     public List<TeamDTO> getPendingTeamsForStudent(String studentId){
         if (!studentRepository.existsById(studentId)) throw new StudentNotFoundException();
 
-        List<TeamToken> tokens = tokenRepository.findAllByStudentId(studentId);
+        List<TokenTeam> tokens = tokenRepository.findAllByStudentId(studentId);
 
         List<TeamDTO> tmp = null;
 

@@ -2,19 +2,16 @@ package it.polito.ai.virtualLabs.entities;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
 @Data
-public class TeamToken {
+public class TokenTeam {
     @Id
     String id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "team_id")
     Team team;
 
