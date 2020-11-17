@@ -58,12 +58,15 @@ public interface TeamService {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     List<Boolean> addAndEnroll(Reader r, String courseName);
 
-    // assumo che l'username del principal sia lo steddo dell'id dello studente
-    @PreAuthorize("(#studentId == authentication.principal.username and hasRole('ROLE_STUDENT')) or hasRole('ROLE_ADMIN')")
+    // assumo che l'username del principal sia lo stesso dell'id dello studente
+    @PreAuthorize("(#studentId == authentication.principal.id and hasRole('ROLE_STUDENT')) or hasRole('ROLE_ADMIN')")
     List<CourseDTO> getCourses(String studentId);
 
-    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
+    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT')")
     List<TeamDTO> getTeamsForStudent(String studentId);
+
+    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT')")
+    List<TeamDTO> getTeamsForStudentCourse(String studentId,String courseName);
 
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     List<StudentDTO> getMembers(Long teamId);
@@ -71,8 +74,8 @@ public interface TeamService {
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT')")
     TeamDTO proposeTeam(String courseId,String name,List<String> memberIds);
 
-    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or hasRole('ROLE_STUDENT')")
-    List<TeamDTO> getTeamForCourse(String courseName);
+    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') ")
+    List<TeamDTO> getTeamsForCourse(String courseName);
 
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or hasRole('ROLE_STUDENT')")
     List<StudentDTO> getStudentsInTeams(String courseName);

@@ -17,4 +17,5 @@ public class CustomUserDetailsService implements UserDetailsService {
         return this.users.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username: " + username + " not found"));
     }
+
 }

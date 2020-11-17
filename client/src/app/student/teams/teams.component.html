@@ -1,0 +1,30 @@
+<div class="container">
+  <div *ngIf="hasTeam && team !== null; else noStudentTeam">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>
+          {{ team.name }}
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content style="padding: 16px">
+        <mat-divider></mat-divider>
+        <h3>Members:</h3>
+        <mat-list>
+          <div *ngFor="let student of team.members">
+            <mat-list-item>
+              <mat-icon mat-list-icon>person</mat-icon>
+              {{ student.id }} {{ student.name }}
+              {{ student.lastName }}
+            </mat-list-item>
+          </div>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <ng-template #noStudentTeam>
+    <h2>
+      Sorry you dont have an activated team. PLACE HERE LOGIC TO CREATE NEW TEAM
+      AND SEE PENDING REQUESTS
+    </h2>
+  </ng-template>
+</div>
