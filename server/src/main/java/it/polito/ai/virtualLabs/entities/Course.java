@@ -28,12 +28,12 @@ public class Course {
     private int min;
     private int max;
     private boolean enabled;
-
     @ManyToMany(mappedBy = "courses")
     private List<Student> students = new ArrayList<>();
-
     @OneToMany(mappedBy = "course")
     private List<Team> teams;
+    @OneToMany(mappedBy = "course")
+    private List<Assignment> assignments;
 
     public void addStudent(Student s){
         if(!this.students.contains(s))  this.students.add(s);

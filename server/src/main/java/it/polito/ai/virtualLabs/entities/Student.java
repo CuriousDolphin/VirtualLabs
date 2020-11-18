@@ -23,7 +23,8 @@ public class Student {
     List<Course> courses = new ArrayList<>();
     @ManyToMany(mappedBy = "members")
     List<Team> teams= new ArrayList<>();
-
+    @OneToMany(mappedBy = "student")
+    List<Paper> papers;
     @Id
    // @Setter(AccessLevel.NONE)
    // @Getter(AccessLevel.NONE)
