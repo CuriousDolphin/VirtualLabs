@@ -2,10 +2,15 @@ package it.polito.ai.virtualLabs.services;
 
 import it.polito.ai.virtualLabs.controllers.NotificationController;
 import it.polito.ai.virtualLabs.dtos.TeamDTO;
-import it.polito.ai.virtualLabs.entities.Token;
+import it.polito.ai.virtualLabs.entities.Student;
+import it.polito.ai.virtualLabs.entities.Team;
+import it.polito.ai.virtualLabs.entities.TokenTeam;
 import it.polito.ai.virtualLabs.exceptions.TokenNotFoundException;
+import it.polito.ai.virtualLabs.repositories.StudentRepository;
 import it.polito.ai.virtualLabs.repositories.TeamRepository;
-import it.polito.ai.virtualLabs.repositories.TokenRepository;
+import it.polito.ai.virtualLabs.repositories.TokenTeamRepository;
+import javafx.util.Pair;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -27,26 +32,33 @@ public class NotificationServiceImpl implements NotificationService{
     @Autowired
     public JavaMailSender emailSender;
 
+
     @Autowired
     TeamService teamService;
 
     @Autowired
-    TokenRepository tokenRepository;
+    TokenTeamRepository tokenRepository;
+
+    @Autowired
+    StudentRepository studentRepository;
+
+    @Autowired
+    ModelMapper modelMapper;
+
 
     @Autowired
     TeamRepository teamRepository;
     @Scheduled(fixedRate = 1000*60*60) // every hour
     public void cleanToken() {
-
         Timestamp t = new Timestamp(System.currentTimeMillis());
         System.out.println("SCHEDULED TASK "+t);
-        List<Token> expired=tokenRepository.findAllByExpiryBefore(t);
+        List<TokenTeam> expired=tokenRepository.findAllByExpiryBefore(t);
         System.out.println("FOUNDED  "+expired.size()+" EXPIRED TOKEN");
 
         ArrayList<Long> teamsId = new ArrayList<Long>();
 
         expired.forEach(token ->{
-            teamsId.add(token.getTeamId());
+            teamsId.add(token.getTeam().getId());
             tokenRepository.delete(token);
         });
 
@@ -56,18 +68,11 @@ public class NotificationServiceImpl implements NotificationService{
                     teamRepository.deleteById(id);
                     System.out.println("Eliminato team "+id);
                 }
-
-
             }catch(Exception e){
                 System.out.println("Errore nel rimuovere il team "+e.toString());
                 continue;
             }
-
-
-
         }
-
-
     }
 
 
@@ -81,8 +86,9 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
 
-    private Long checkToken(String token){ // controlla la validita del token, se valido lo elimina e ritorna il team id
-        Optional<Token> t=tokenRepository.findById(token);
+
+    private Pair<Student,Team> checkToken(String token){ // controlla la validita del token, se valido lo elimina,aggiunge il team allo studente e ritorna il team id
+        Optional<TokenTeam> t = tokenRepository.findById(token);
         if(t.isEmpty()) {
             System.out.println("TOKEN NON ESISTE");
             throw  new TokenNotFoundException();
@@ -92,35 +98,44 @@ public class NotificationServiceImpl implements NotificationService{
             System.out.println("TOKEN SCADUTO");
             throw  new TokenNotFoundException();
         }
-        Long teamId=t.get().getTeamId();
+
+       // Long teamId=t.get().getTeam().getId();
+        String studentId  = t.get().getStudentId();
+        Student student=studentRepository.findByIdIgnoreCase(studentId).get();
+        Team team=t.get().getTeam();
+
         tokenRepository.delete(t.get()); // elimino il token
-        return teamId;
+        return new Pair<Student,Team>(student,team);
 
     }
 
     @Override
     public boolean confirm(String token)
     {
+        Pair<Student,Team> res= checkToken(token);
+        Student s=res.getKey();
+        Team team=res.getValue();
+        Long teamId =team.getId();
+        s.addTeam(team);
 
-
-        Long teamId=checkToken(token);
         if (teamId == null) return false;
 
         if(tokenRepository.findAllByTeamId(teamId).size() > 0) {
             System.out.println("Ci sono ancora token pendenti =(");
             return false;
+        }else{
+            teamService.activateTeam(teamId);
+            return true;
         }
 
-        teamService.activateTeam(teamId);
-        return true;
     }
 
     @Override
     public boolean reject(String token) {
-        Long teamId=checkToken(token);
+        Long teamId=checkToken(token).getValue().getId();
         if (teamId == null) return false;
 
-        List<Token> list=tokenRepository.findAllByTeamId(teamId);
+        List<TokenTeam> list=tokenRepository.findAllByTeamId(teamId);
 
         list.forEach(t -> tokenRepository.delete(t));
         teamService.evictTeam(teamId);
@@ -131,19 +146,21 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     @Async
-    public void notifyTeam(TeamDTO dto, List<String> memberIds) {
+    public void notifyTeam(TeamDTO teamDto, List<String> memberIds) {
         long now = System.currentTimeMillis();
         memberIds.forEach(id ->{
-            Token t = new Token();
+            TokenTeam t = new TokenTeam();
             t.setId(UUID.randomUUID().toString());
             t.setExpiryDate(new Timestamp(now +3600000));
-            t.setTeamId(dto.getId());
+            t.setStudentId(id);
+            t.setTeam(modelMapper.map(teamDto, Team.class));
+            //t.setTeamId(dto.getId());
 
             tokenRepository.save(t);
 
             String confirmLink = linkTo(NotificationController.class).slash("confirm").slash(t.getId()).toString();
             String rejectLink = linkTo(NotificationController.class).slash("reject").slash(t.getId()).toString();
-            String subject="You have invited to join group "+dto.getName();
+            String subject="You have invited to join group "+ teamDto.getName();
             String text ="confirm:  "+confirmLink+"\n reject: "+rejectLink;
 
             sendMessage('s'+id+"@studenti.polito.it",subject,text);

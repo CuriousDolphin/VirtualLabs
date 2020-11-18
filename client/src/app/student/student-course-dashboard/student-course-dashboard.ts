@@ -9,6 +9,7 @@ import { ToastService } from "src/app/services/toast.service";
 import { UtilsService } from "src/app/services/utils.service";
 import { Team } from "src/app/models/team.model";
 import { AuthService } from "src/app/auth/auth.service";
+import { Student } from "src/app/models/student.model";
 
 @Component({
   selector: "app-course-dashboard",
@@ -27,7 +28,8 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   currentCourse: Course;
   currentCourse$: Observable<Course>;
   studentTeams$: Observable<Team[]>;
-
+  studentsNotInTeams$: Observable<Student[]>;
+  studentId: String;
   isLoading = false;
   constructor(
     private route: ActivatedRoute,
@@ -41,6 +43,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log("student dashboard on init");
+    this.studentId = this.authService.getUserId();
 
     // take the name of the route (course name)
     this.routeSubscription = this.route.url.subscribe((evt) => {
@@ -70,6 +73,17 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
             this.authService.getUserId(),
             courseName
           );
+      }),
+      tap(() => (this.isLoading = false))
+    );
+
+    this.studentsNotInTeams$ = this._currentCourseName$.pipe(
+      tap(
+        () => ((this.isLoading = true), console.log("get student not in team"))
+      ),
+      switchMap((courseName) => {
+        if (courseName)
+          return this.courseService.getStudentsNotInTeam(courseName);
       }),
       tap(() => (this.isLoading = false))
     );

@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Team } from "src/app/models/team.model";
 import * as _ from "lodash";
+import { Student } from "src/app/models/student.model";
+import { Course } from "src/app/models/course.model";
 
 @Component({
   selector: "app-teams",
@@ -11,7 +13,9 @@ export class TeamsComponent implements OnInit {
   _teams: Team[];
   hasTeam = false;
   team: Team;
-
+  @Input() studentId: String;
+  @Input() currentCourse: Course;
+  @Input() studentsNotInTeams: Student[];
   @Input() set teams(teams: Team[]) {
     if (teams != null) {
       this._teams = teams;

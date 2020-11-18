@@ -23,6 +23,7 @@
   <mat-tab label="students">
     <!--only this scroll-->
     <div class="tab-container">
+      
       <app-students [studentsDB]="studentsDB$ | async" [enrolledStudents]="enrolledStudents$ | async"
         (addStudent)="enrollStudent($event)" (deleteStudents)="unEnrollStudents($event)"
         (uploadCsv)="uploadCsv($event)">
