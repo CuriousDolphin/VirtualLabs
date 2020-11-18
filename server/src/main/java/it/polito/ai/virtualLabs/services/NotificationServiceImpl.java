@@ -2,11 +2,14 @@ package it.polito.ai.virtualLabs.services;
 
 import it.polito.ai.virtualLabs.controllers.NotificationController;
 import it.polito.ai.virtualLabs.dtos.TeamDTO;
+import it.polito.ai.virtualLabs.entities.Student;
 import it.polito.ai.virtualLabs.entities.Team;
 import it.polito.ai.virtualLabs.entities.TokenTeam;
 import it.polito.ai.virtualLabs.exceptions.TokenNotFoundException;
+import it.polito.ai.virtualLabs.repositories.StudentRepository;
 import it.polito.ai.virtualLabs.repositories.TeamRepository;
 import it.polito.ai.virtualLabs.repositories.TokenTeamRepository;
+import javafx.util.Pair;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -35,6 +38,9 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Autowired
     TokenTeamRepository tokenRepository;
+
+    @Autowired
+    StudentRepository studentRepository;
 
     @Autowired
     ModelMapper modelMapper;
@@ -81,8 +87,8 @@ public class NotificationServiceImpl implements NotificationService{
 
 
 
-    private Long checkToken(String token){ // controlla la validita del token, se valido lo elimina e ritorna il team id
-        Optional<TokenTeam> t=tokenRepository.findById(token);
+    private Pair<Student,Team> checkToken(String token){ // controlla la validita del token, se valido lo elimina,aggiunge il team allo studente e ritorna il team id
+        Optional<TokenTeam> t = tokenRepository.findById(token);
         if(t.isEmpty()) {
             System.out.println("TOKEN NON ESISTE");
             throw  new TokenNotFoundException();
@@ -92,31 +98,41 @@ public class NotificationServiceImpl implements NotificationService{
             System.out.println("TOKEN SCADUTO");
             throw  new TokenNotFoundException();
         }
-        Long teamId=t.get().getTeam().getId();
+
+       // Long teamId=t.get().getTeam().getId();
+        String studentId  = t.get().getStudentId();
+        Student student=studentRepository.findByIdIgnoreCase(studentId).get();
+        Team team=t.get().getTeam();
+
         tokenRepository.delete(t.get()); // elimino il token
-        return teamId;
+        return new Pair<Student,Team>(student,team);
 
     }
 
     @Override
     public boolean confirm(String token)
     {
+        Pair<Student,Team> res= checkToken(token);
+        Student s=res.getKey();
+        Team team=res.getValue();
+        Long teamId =team.getId();
+        s.addTeam(team);
 
-        Long teamId=checkToken(token);
         if (teamId == null) return false;
 
         if(tokenRepository.findAllByTeamId(teamId).size() > 0) {
             System.out.println("Ci sono ancora token pendenti =(");
             return false;
+        }else{
+            teamService.activateTeam(teamId);
+            return true;
         }
 
-        teamService.activateTeam(teamId);
-        return true;
     }
 
     @Override
     public boolean reject(String token) {
-        Long teamId=checkToken(token);
+        Long teamId=checkToken(token).getValue().getId();
         if (teamId == null) return false;
 
         List<TokenTeam> list=tokenRepository.findAllByTeamId(teamId);
