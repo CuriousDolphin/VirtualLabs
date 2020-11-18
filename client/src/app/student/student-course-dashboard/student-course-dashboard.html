@@ -19,7 +19,12 @@
   <mat-tab label="Teams">
     <!--only this scroll-->
     <div class="tab-container">
-      <app-teams [teams]="studentTeams$ | async"></app-teams>
+      <app-teams
+        [studentId]="studentId"
+        [currentCourse]="currentCourse"
+        [teams]="studentTeams$ | async"
+        [studentsNotInTeams]="studentsNotInTeams$ | async"
+      ></app-teams>
     </div>
   </mat-tab>
   <mat-tab label="VM"> Content 2 </mat-tab>

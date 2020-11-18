@@ -104,6 +104,44 @@ public class VirtualLabs {
 
 
 
+                    // add students associated with user
+                    students.save(
+                            Student.builder()
+                                    .id("sGiovanni")
+                                    .email("giovanni@studenti.polito.it")
+                                    .name("giovanni")
+                                    .lastName("storti")
+                                    .build()
+                    );
+                    users.save(User.builder()
+                            .id("sGiovanni")
+                            .username("giovanni@studenti.polito.it")
+                            .password(passwordEncoder.encode("pwd"))
+                            .roles(Arrays.asList( "ROLE_STUDENT"))
+                            .build()
+                    );
+
+                    users.save(User.builder()
+                            .id("sFranco")
+                            .username("franco@studenti.polito.it")
+                            .password(passwordEncoder.encode("pwd"))
+                            .roles(Arrays.asList( "ROLE_STUDENT"))
+                            .build()
+                    );
+
+
+                    // add students associated with user
+                    students.save(
+                            Student.builder()
+                                    .id("sFranco")
+                                    .email("franco@studenti.polito.it")
+                                    .name("FRANCO")
+                                    .lastName("MODEM")
+                                    .build()
+                    );
+
+
+
                 }catch (Exception e){
                     System.out.println("Exception insert : "+e.getMessage().toString());
                 }
