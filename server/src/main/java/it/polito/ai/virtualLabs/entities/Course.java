@@ -35,9 +35,6 @@ public class Course {
     @OneToMany(mappedBy = "course")
     private List<Team> teams;
 
-    @OneToOne
-    private VmModel vmModel;
-
     public void addStudent(Student s){
         if(!this.students.contains(s))  this.students.add(s);
         if(!s.getCourses().contains(this))  s.addCourse(this);
@@ -70,7 +67,7 @@ public class Course {
         return this.name.toUpperCase();
     }*/
     public void setName(String name){
-        System.out.println("SETTINGG NAME"+name);
+        System.out.println("SETTING NAME "+name);
         this.name=name.toUpperCase();
     }
 }

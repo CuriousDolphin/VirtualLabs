@@ -1,13 +1,18 @@
 package it.polito.ai.virtualLabs.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.util.List;
 
 @Data
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class VmModel {
 
     @Id
@@ -19,7 +24,8 @@ public class VmModel {
     @NotEmpty
     private String image;
 
-    @OneToOne
+    @OneToOne()
+    @JoinColumn(name = "course_id")
     Course course;
 
 }
