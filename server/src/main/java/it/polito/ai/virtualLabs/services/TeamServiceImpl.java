@@ -49,7 +49,7 @@ public class TeamServiceImpl implements TeamService {
             if (course.getName() != null && !course.getName().equals("")) {
                 Course newCourse = modelMapper.map(course, Course.class);
                 VmModel newVmModel = VmModel.builder()
-                        .name("VmModelDefault-"+course.getName())
+                        .name("VmModelDefault-"+course.getAcronym())
                         .image("ThisIsTheDefaultVmImage")
                         .course(newCourse)
                         .build();
