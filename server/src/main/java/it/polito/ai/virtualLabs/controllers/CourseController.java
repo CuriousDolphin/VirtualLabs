@@ -104,8 +104,10 @@ public class CourseController {
     TeamDTO proposeTeam(@Valid @RequestBody(required = true) TeamProposal proposal, @PathVariable("name") String courseName, BindingResult result) {
 
         try {
+            System.out.println("___________________________________________________"+proposal.toString());
 
             TeamDTO team = teamService.proposeTeam(courseName, proposal.getName(), proposal.getMembers());
+            System.out.println("____________________222222222222222222222222_______________________________"+courseName);
             notificationService.notifyTeam(team,proposal.getMembers());
 
             return team;
@@ -123,7 +125,9 @@ public class CourseController {
         } catch (StudentAlreadyHaveTeam se) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Student  already have a team");
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.toString());
+            System.out.println("___________________________________________________"+e.toString());
+
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
     }
 

@@ -109,7 +109,12 @@
       </mat-card-content>
       <mat-divider></mat-divider>
       <mat-card-actions class="button-area">
-        <button color="accent" [disabled]="isCreateTeamDisabled()" mat-button>
+        <button
+          color="primary"
+          [disabled]="isCreateTeamDisabled()"
+          mat-button
+          (click)="emitProposal()"
+        >
           <mat-icon> add_task </mat-icon>
 
           Create Team and notify students.

@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { Team } from "src/app/models/team.model";
 import * as _ from "lodash";
 import { Student } from "src/app/models/student.model";
 import { Course } from "src/app/models/course.model";
 import { SelectionModel } from "@angular/cdk/collections";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { TeamProposal } from "src/app/models/teamProposal.model";
 
 @Component({
   selector: "app-teams",
@@ -17,8 +18,8 @@ export class TeamsComponent implements OnInit {
   team: Team;
   selectedStudents = new SelectionModel<Student>(true, []);
   teamForm: FormGroup;
-
-  @Input() studentId: String;
+  @Output() createTeam = new EventEmitter<TeamProposal>();
+  @Input() studentId: string;
   @Input() currentCourse: Course;
   @Input() studentsNotInTeams: Student[];
   @Input() set teams(teams: Team[]) {
@@ -62,5 +63,18 @@ export class TeamsComponent implements OnInit {
       return true;
     }
     return false;
+  }
+  emitProposal() {
+    let tmp: TeamProposal = {
+      name: this.teamForm.get("name").value,
+      daysTimeout: this.teamForm.get("timeout").value,
+      owner: this.studentId,
+      members: [],
+    };
+
+    this.selectedStudents.selected.forEach((s: Student) =>
+      tmp.members.push(s.id)
+    );
+    this.createTeam.emit(tmp);
   }
 }

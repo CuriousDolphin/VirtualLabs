@@ -314,23 +314,25 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
 
-    public TeamDTO proposeTeam(String courseId, String name, List<String> memberIds) {
-        // check esistenza corso
-        if (!courseRepository.existsById(courseId))
-            throw new CourseNotFoundException();
+    public TeamDTO proposeTeam(String courseName, String name, List<String> memberIds) {
 
+        // check esistenza corso
+        if (!courseRepository.existsCourseByName(courseName))
+            throw new CourseNotFoundException();
+        System.out.println("=======================1"+courseName+" "+name+" "+memberIds.toString());
         // course enabled
-        Course course = courseRepository.findByNameIgnoreCase(courseId).get();
+        Course course = courseRepository.findByNameIgnoreCase(courseName).get();
         if (!course.isEnabled())
             throw new CourseNotEnabled();
 
         // course limit min and max
         if (memberIds.size() > course.getMax() || memberIds.size() < course.getMin())
             throw new CourseMinMax();
-
+        System.out.println("=======================3");
         List<String> tmp = new ArrayList<>();
         memberIds.forEach(
                 studentId -> {
+                    System.out.println("======================="+studentId);
                     // check esistenza studente
                     if (!studentRepository.existsById(studentId))
                         throw new StudentNotFoundException();
@@ -354,22 +356,28 @@ public class TeamServiceImpl implements TeamService {
                     tmp.add(studentId);
                 }
         );
+        System.out.println("=======================4");
 
         // inserimento team
         TeamDTO teamDTO = new TeamDTO();
         teamDTO.setName(name);
         Team newTeam = teamRepository.save(modelMapper.map(teamDTO, Team.class));
+        System.out.println("=======================5");
         System.out.println("new team saved " + newTeam.toString());
 
         newTeam.setCourse(course);
+        System.out.println("=======================6");
 
-        memberIds.forEach(
+        tmp.forEach(
                 s -> {
                     newTeam.addMembers(studentRepository.findByIdIgnoreCase(s).get());
                 }
         );
+        System.out.println("=======================7");
 
         course.addTeam(newTeam);
+        System.out.println("=======================8");
+
 
         return modelMapper.map(newTeam, TeamDTO.class);
     }

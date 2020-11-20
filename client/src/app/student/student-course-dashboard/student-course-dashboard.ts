@@ -10,6 +10,7 @@ import { UtilsService } from "src/app/services/utils.service";
 import { Team } from "src/app/models/team.model";
 import { AuthService } from "src/app/auth/auth.service";
 import { Student } from "src/app/models/student.model";
+import { TeamProposal } from "src/app/models/teamProposal.model";
 
 @Component({
   selector: "app-course-dashboard",
@@ -22,7 +23,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
     null
   );
   private _reloadCourse$: BehaviorSubject<void> = new BehaviorSubject(null);
-
+  private createTeamSubsctiption: Subscription;
   private courseSubscription: Subscription;
   private routeSubscription: Subscription;
   currentCourse: Course;
@@ -87,6 +88,12 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       }),
       tap(() => (this.isLoading = false))
     );
+  }
+
+  createTeam(proposal: TeamProposal) {
+    this.courseService
+      .proposeTeam(this.currentCourse.name, proposal)
+      .subscribe();
   }
 
   ngOnDestroy(): void {
