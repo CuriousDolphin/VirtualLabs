@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
+//TODO ADD OWNER
 @Entity
 @Data
 public class Team {
@@ -20,8 +20,12 @@ public class Team {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(unique=true)
     private String name;
     private int status;
+
+    @OneToOne
+    Student owner;
 
     public void setCourse(Course c) {
         if (c == null) {
@@ -38,7 +42,9 @@ public class Team {
     }
 
     public void addMembers(Student s) {
+        System.out.println("ADD MEMBER 0"+this.members.toString());
         if (!this.members.contains(s)) this.members.add(s);
+        System.out.println("ADD MEMBER 1");
         if (!s.getTeams().contains(this)) s.addTeam(this);
 
     }

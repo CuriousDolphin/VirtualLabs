@@ -104,11 +104,10 @@ public class CourseController {
     TeamDTO proposeTeam(@Valid @RequestBody(required = true) TeamProposal proposal, @PathVariable("name") String courseName, BindingResult result) {
 
         try {
-            System.out.println("___________________________________________________"+proposal.toString());
+            System.out.println("_______________________"+proposal.toString());
 
-            TeamDTO team = teamService.proposeTeam(courseName, proposal.getName(), proposal.getMembers());
-            System.out.println("____________________222222222222222222222222_______________________________"+courseName);
-            notificationService.notifyTeam(team,proposal.getMembers());
+            TeamDTO team = teamService.proposeTeam(courseName, proposal.getName(), proposal.getMembers(),proposal.getOwner(),proposal.getDaysTimeout());
+            notificationService.notifyTeam(team,proposal.getMembers(),proposal.getDaysTimeout());
 
             return team;
 
@@ -123,7 +122,7 @@ public class CourseController {
         } catch (StudentDuplicate se) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Student  DUPLICATE");
         } catch (StudentAlreadyHaveTeam se) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Student  already have a team");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Student  already have a enabled team");
         } catch (Exception e) {
             System.out.println("___________________________________________________"+e.toString());
 

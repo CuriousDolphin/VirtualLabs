@@ -21,5 +21,5 @@ public class TeamProposal{
     @NotNull
     @Min(1)
     @Max(30)
-    Number daysTimeout;
+    Integer daysTimeout;
 }

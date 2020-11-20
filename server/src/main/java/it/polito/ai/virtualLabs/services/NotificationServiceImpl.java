@@ -76,14 +76,14 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
 
-    public void sendMessage(String address, String subject, String body){
+    /*public void sendMessage(String address, String subject, String body){
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo("s263138@studenti.polito.it");
         message.setSubject(subject);
         message.setText(body);
         emailSender.send(message);
 
-    }
+    }*/
 
 
 
@@ -145,25 +145,24 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    @Async
-    public void notifyTeam(TeamDTO teamDto, List<String> memberIds) {
+    public void notifyTeam(TeamDTO teamDto, List<String> memberIds,Integer timeoutDays) {
         long now = System.currentTimeMillis();
         memberIds.forEach(id ->{
             TokenTeam t = new TokenTeam();
             t.setId(UUID.randomUUID().toString());
-            t.setExpiryDate(new Timestamp(now +3600000));
+            t.setExpiryDate(new Timestamp(now +timeoutDays*24*3600));
             t.setStudentId(id);
             t.setTeam(modelMapper.map(teamDto, Team.class));
             //t.setTeamId(dto.getId());
 
             tokenRepository.save(t);
 
-            String confirmLink = linkTo(NotificationController.class).slash("confirm").slash(t.getId()).toString();
+            /* String confirmLink = linkTo(NotificationController.class).slash("confirm").slash(t.getId()).toString();
             String rejectLink = linkTo(NotificationController.class).slash("reject").slash(t.getId()).toString();
             String subject="You have invited to join group "+ teamDto.getName();
             String text ="confirm:  "+confirmLink+"\n reject: "+rejectLink;
 
-            sendMessage('s'+id+"@studenti.polito.it",subject,text);
+            sendMessage('s'+id+"@studenti.polito.it",subject,text); */
 
         });
 

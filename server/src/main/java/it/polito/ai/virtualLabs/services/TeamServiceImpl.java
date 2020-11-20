@@ -314,12 +314,11 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
 
-    public TeamDTO proposeTeam(String courseName, String name, List<String> memberIds) {
-
+    public TeamDTO proposeTeam(String courseName, String name, List<String> memberIds ,String ownerId, Integer timeoutDays) {
+        Student owner = studentRepository.findByIdIgnoreCase(ownerId).get();
         // check esistenza corso
         if (!courseRepository.existsCourseByName(courseName))
             throw new CourseNotFoundException();
-        System.out.println("=======================1"+courseName+" "+name+" "+memberIds.toString());
         // course enabled
         Course course = courseRepository.findByNameIgnoreCase(courseName).get();
         if (!course.isEnabled())
@@ -328,11 +327,9 @@ public class TeamServiceImpl implements TeamService {
         // course limit min and max
         if (memberIds.size() > course.getMax() || memberIds.size() < course.getMin())
             throw new CourseMinMax();
-        System.out.println("=======================3");
-        List<String> tmp = new ArrayList<>();
+        List<Student> members = new ArrayList<>();
         memberIds.forEach(
                 studentId -> {
-                    System.out.println("======================="+studentId);
                     // check esistenza studente
                     if (!studentRepository.existsById(studentId))
                         throw new StudentNotFoundException();
@@ -345,35 +342,29 @@ public class TeamServiceImpl implements TeamService {
 
                     // check studente iscritto ad altri team nello stesso corso
                     s.getTeams().forEach(team -> {
-                        if (team.getCourse().equals(course))
+                        if (team.getCourse().equals(course) && team.getStatus() ==1)
                             throw new StudentAlreadyHaveTeam();
                     });
 
                     // check studente duplicato
-                    if (tmp.contains(studentId))
+                    if (members.contains(s))
                         throw new StudentDuplicate();
 
-                    tmp.add(studentId);
+                    members.add(s);
                 }
         );
-        System.out.println("=======================4");
+
+        members.add(owner);
 
         // inserimento team
         TeamDTO teamDTO = new TeamDTO();
         teamDTO.setName(name);
         Team newTeam = teamRepository.save(modelMapper.map(teamDTO, Team.class));
-        System.out.println("=======================5");
-        System.out.println("new team saved " + newTeam.toString());
 
+        newTeam.setOwner(owner);
         newTeam.setCourse(course);
-        System.out.println("=======================6");
-
-        tmp.forEach(
-                s -> {
-                    newTeam.addMembers(studentRepository.findByIdIgnoreCase(s).get());
-                }
-        );
-        System.out.println("=======================7");
+        newTeam.setMembers(members);
+        System.out.println("new team saved " + newTeam.toString());
 
         course.addTeam(newTeam);
         System.out.println("=======================8");
