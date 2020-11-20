@@ -22,31 +22,99 @@
     </mat-card>
   </div>
   <ng-template #noStudentTeam>
-    <h2>
+    <!--  <h2>
       Sorry you dont have an activated team. You can create new one or accept
       pending requests;
-    </h2>
-    <mat-card>
+    </h2> -->
+    <mat-card style="width: fit-content">
       <mat-card-header>
         <mat-card-title> Create team </mat-card-title>
       </mat-card-header>
 
       <mat-card-content style="padding: 16px">
         <mat-divider></mat-divider>
-        <h3>Available students:</h3>
-        <div class="list-student">
-          <mat-list>
-            <div *ngFor="let student of studentsNotInTeams">
-              <mat-list-item *ngIf="!student.id.includes(studentId)">
-                <input type="checkbox" />
-                <mat-icon mat-list-icon>person</mat-icon>
-                {{ student.id }} {{ student.name }}
-                {{ student.lastName }}
-              </mat-list-item>
+        <div
+          fxLayout="row"
+          fxLayoutAlign="space-between stretch"
+          style="padding: 16px"
+        >
+          <div>
+            <div fxLayout="row" fxLayoutAlign="start center">
+              <mat-icon class="ml-1 mr-1">person</mat-icon>
+              <h2>Available students</h2>
             </div>
-          </mat-list>
+
+            <mat-list class="list-student">
+              <div *ngFor="let student of studentsNotInTeams">
+                <mat-list-item *ngIf="!student.id.includes(studentId)">
+                  <mat-checkbox
+                    mat-mat-list-icon
+                    class="ml-1 mr-1"
+                    (click)="$event.stopPropagation()"
+                    (change)="$event ? toggleStudent(student) : null"
+                    [checked]="selectedStudents.isSelected(student)"
+                  ></mat-checkbox>
+
+                  {{ student.name }}
+                  {{ student.lastName }}
+                </mat-list-item>
+              </div>
+            </mat-list>
+            <p class="ml-1 mr-1">
+              * min {{ currentCourse?.min }} max {{ currentCourse?.max }}
+            </p>
+            <div class="p-16">
+              <span *ngFor="let student of selectedStudents.selected">
+                {{ student.id }} ,</span
+              >
+            </div>
+          </div>
+
+          <div class="form-container ml-1 mr-1">
+            <div fxLayout="row" fxLayoutAlign="start center">
+              <mat-icon class="ml-1 mr-1">edit</mat-icon>
+              <h2>Team info</h2>
+            </div>
+
+            <div [formGroup]="teamForm">
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Enter team name</mat-label>
+                <input
+                  matInput
+                  placeholder="Our Awesome team"
+                  formControlName="name"
+                  required
+                />
+                <mat-error *ngIf="teamForm.controls['name'].invalid"
+                  >Not a valid name</mat-error
+                >
+              </mat-form-field>
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Timeout (days)</mat-label>
+                <input
+                  type="number"
+                  matInput
+                  formControlName="timeout"
+                  min="1"
+                  max="30"
+                  required
+                />
+                <mat-error *ngIf="teamForm.controls['timeout'].invalid"
+                  >Not a valid Timeout (min 0, max 30) days
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
         </div>
       </mat-card-content>
+      <mat-divider></mat-divider>
+      <mat-card-actions class="button-area">
+        <button color="accent" [disabled]="isCreateTeamDisabled()" mat-button>
+          <mat-icon> add_task </mat-icon>
+
+          Create Team and notify students.
+        </button>
+      </mat-card-actions>
     </mat-card>
   </ng-template>
 </div>

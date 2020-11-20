@@ -3,6 +3,8 @@ import { Team } from "src/app/models/team.model";
 import * as _ from "lodash";
 import { Student } from "src/app/models/student.model";
 import { Course } from "src/app/models/course.model";
+import { SelectionModel } from "@angular/cdk/collections";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 
 @Component({
   selector: "app-teams",
@@ -13,6 +15,9 @@ export class TeamsComponent implements OnInit {
   _teams: Team[];
   hasTeam = false;
   team: Team;
+  selectedStudents = new SelectionModel<Student>(true, []);
+  teamForm: FormGroup;
+
   @Input() studentId: String;
   @Input() currentCourse: Course;
   @Input() studentsNotInTeams: Student[];
@@ -33,7 +38,29 @@ export class TeamsComponent implements OnInit {
     }
   }
 
-  constructor() {}
+  constructor(public fb: FormBuilder) {
+    this.teamForm = this.fb.group({
+      name: ["", [Validators.required, Validators.minLength(3)]],
+      timeout: ["", [Validators.required]],
+    });
+  }
 
   ngOnInit(): void {}
+  toggleStudent(student: Student) {
+    this.selectedStudents.toggle(student);
+  }
+  isCreateTeamDisabled() {
+    if (
+      this.currentCourse != null &&
+      (this.selectedStudents.selected.length > this.currentCourse.max ||
+        this.selectedStudents.selected.length < this.currentCourse.min)
+    ) {
+      return true;
+    }
+
+    if (this.teamForm.invalid) {
+      return true;
+    }
+    return false;
+  }
 }

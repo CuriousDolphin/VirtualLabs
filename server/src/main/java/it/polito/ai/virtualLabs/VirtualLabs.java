@@ -46,7 +46,7 @@ public class VirtualLabs {
                             .name("Programmazione di sistema")
                             .acronym("pds")
                             .enabled(true)
-                            .min(10)
+                            .min(1)
                             .max(100)
                             .build()
                     );
@@ -54,7 +54,7 @@ public class VirtualLabs {
                             .name("Machine Learning")
                             .acronym("ML")
                             .enabled(true)
-                            .min(10)
+                            .min(1)
                             .max(100)
                             .build()
                     );
@@ -62,7 +62,7 @@ public class VirtualLabs {
                             .name("Applicazioni Internet")
                             .acronym("AI")
                             .enabled(true)
-                            .min(10)
+                            .min(1)
                             .max(100)
                             .build()
                     );
