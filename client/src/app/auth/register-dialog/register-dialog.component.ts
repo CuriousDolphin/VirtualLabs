@@ -5,6 +5,8 @@ import {
   Validators,
   FormGroup,
   FormBuilder,
+  ValidatorFn,
+  AbstractControl
 } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { Subscription } from 'rxjs';
@@ -14,6 +16,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './register-dialog.component.html',
   styleUrls: ['./register-dialog.component.sass']
 })
+
 export class RegisterDialogComponent implements OnInit {
 
   registerForm: FormGroup;
@@ -27,7 +30,7 @@ export class RegisterDialogComponent implements OnInit {
     private authService: AuthService
   ) {
     this.registerForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, Validators.email,isStudentOrTeacher()]],
       password: ['', [Validators.required, Validators.minLength(3)]],
       firstName: ['', [Validators.required, Validators.minLength(1)]],
       lastName: ['', [Validators.required, Validators.minLength(1)]],
@@ -67,4 +70,10 @@ export class RegisterDialogComponent implements OnInit {
     if (this.authSubscription) this.authSubscription.unsubscribe();
   }
 
+}
+
+export function isStudentOrTeacher(): ValidatorFn {  
+  return (control: AbstractControl): { [key: string]: any } | null =>  
+      (control.value?.toLowerCase().endsWith('@studenti.polito.it') || control.value?.toLowerCase().endsWith('@polito.it') )
+          ? null : {wrongDomain: control.value};
 }

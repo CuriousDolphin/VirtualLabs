@@ -89,9 +89,6 @@ export class AuthService {
       lastName
     };
     return this.http.post(BASE_PATH + 'register', body).pipe(
-      tap((evt) => {
-        console.log(evt.toString());
-      }),
       catchError((e) => {
         console.log('ERRORE REGISTRAZIONE');
         return of(null);

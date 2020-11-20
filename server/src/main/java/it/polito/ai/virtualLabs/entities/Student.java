@@ -1,12 +1,13 @@
 package it.polito.ai.virtualLabs.entities;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Builder
 @Data
 @Entity
 public class Student {
