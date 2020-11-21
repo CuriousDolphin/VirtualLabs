@@ -26,8 +26,8 @@ import static java.util.stream.Collectors.toList;
 @AllArgsConstructor
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    Long id;
+    @NotEmpty
+    String id;
     @NotEmpty
     @Column(unique = true)
     private String username;

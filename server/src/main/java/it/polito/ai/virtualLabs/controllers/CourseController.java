@@ -31,6 +31,8 @@ public class CourseController {
     @Autowired
     TeamService teamService;
 
+
+
     @Autowired
     NotificationService notificationService;
 
@@ -69,10 +71,20 @@ public class CourseController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found");
         }
     }
-
-    @PostMapping("/{name}/enrollMany")
+    @PatchMapping("/{name}/unEnrollMany")
+    List<Boolean> unenrollMany(@RequestBody List<String> studentIds,@PathVariable("name") String courseName){
+        try {
+            List<Boolean> ris = teamService.removeStudentsFromCourse(studentIds, courseName);
+            return ris;
+        } catch (CourseNotFoundException ce) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
+        }
+    }
+    // csv
+    @PostMapping("/{name}/addAndEnroll")
     List<Boolean> enrollMany(@RequestParam("file") MultipartFile file, @PathVariable("name") String courseName) {
-        if (!file.getContentType().equals("text/csv"))
+
+        if (!file.getContentType().equals("text/csv") && !file.getContentType().equals("application/vnd.ms-excel"))
             throw new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, file.getContentType());
         if (file.isEmpty()) throw new ResponseStatusException(HttpStatus.CONFLICT);
         try {
@@ -118,9 +130,6 @@ public class CourseController {
 
     @GetMapping("/{name}")
     CourseDTO getOne(@PathVariable("name") String name) {
-
-
-
         try{
             Optional<CourseDTO> course = teamService.getCourse(name);
             if (course.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, name);
@@ -135,13 +144,35 @@ public class CourseController {
     @GetMapping("/{name}/teams")
     List<TeamDTO> getTeams(@PathVariable("name") String name) {
         try{
-            return teamService.getTeamForCourse(name);
+            return teamService.getTeamsForCourse(name);
 
 
         }catch (CourseNotFoundException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
         }
     }
+
+    @GetMapping("/{name}/teams/{idStudent}")
+    List<TeamDTO> getStudentCourseTeam(@PathVariable("name") String name,@PathVariable("idStudent") String idStudent) {
+        try{
+            return teamService.getTeamsForStudentCourse(idStudent,name);
+
+
+        }catch (CourseNotFoundException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
+        }
+    }
+
+    @GetMapping("/{name}/pendingTeams/{idStudent}")
+    List<TeamDTO> getStudentPendingTeams(@PathVariable("name") String name,@PathVariable("idStudent") String idStudent) {
+        try{
+            return teamService.getPendingTeamsForStudent(idStudent);
+
+        }catch (CourseNotFoundException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
+        }
+    }
+
     @GetMapping("/{name}/studentsInTeam")
     List<StudentDTO> getStudentsInTeam(@PathVariable("name") String name) {
         try{
@@ -167,23 +198,10 @@ public class CourseController {
         }catch (CourseNotFoundException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
         }
-
     }
 
     @PatchMapping("/{name}")
     CourseDTO updateCourse(@RequestBody @Valid CourseDTO course, @PathVariable("name") String courseName) {
-        /* if (!input.containsKey("enabled")) throw new ResponseStatusException(HttpStatus.CONFLICT);
-        try {
-            if(input.get("enabled")==true){
-                teamService.enableCourse(courseName);
-            }else{
-                teamService.disableCourse(courseName);
-            }
-        } catch (CourseNotFoundException ce) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
-        }
-
-         */
 
         try {
             CourseDTO c=teamService.updateCourse(course,courseName);

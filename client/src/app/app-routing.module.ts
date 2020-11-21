@@ -1,42 +1,49 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { StudentsComponent } from './teacher/students/students.component';
-import { VmsComponent } from './teacher/vms/vms.component';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { AuthGuard } from './auth/auth.guard';
-import { TeacherComponent } from './teacher/teacher.component';
-import { CourseDashboard } from './teacher/course-dashboard/course-dashboard';
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
+import { HomeComponent } from "./home/home.component";
+import { StudentsComponent } from "./teacher/students/students.component";
+import { VmsComponent } from "./teacher/vms/vms.component";
+import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
+import { TeacherComponent } from "./teacher/teacher.component";
+import { CourseDashboard } from "./teacher/course-dashboard/course-dashboard";
+import { TeacherGuard } from "./auth/teacher.guard";
+import { StudentComponent } from "./student/student.component";
+import { StudentGuard } from "./auth/student.guard";
+import { StudentCourseDashboard } from "./student/student-course-dashboard/student-course-dashboard";
 const routes: Routes = [
-  { path: 'home', component: HomeComponent },
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: "home", component: HomeComponent },
+  { path: "", redirectTo: "home", pathMatch: "full" },
 
   {
-    path: 'teacher',
+    path: "teacher",
     component: TeacherComponent,
     children: [
       {
-        path: ':id_course',
+        path: ":id_course",
         component: CourseDashboard,
-        canActivate: [AuthGuard],
+        canActivate: [TeacherGuard],
       },
-      /* {
-        path:':id/**',
-        component: TabContComponent,
-
-        canActivate: [AuthGuard],
-
-
-      }, */
     ],
-    canActivate: [AuthGuard],
+    canActivate: [TeacherGuard],
+  },
+  {
+    path: "student",
+    component: StudentComponent,
+    children: [
+      {
+        path: ":id_course",
+        component: StudentCourseDashboard,
+        canActivate: [StudentGuard],
+      },
+    ],
+    canActivate: [StudentGuard],
   },
 
-  { path: '**', component: PageNotFoundComponent },
+  { path: "**", component: PageNotFoundComponent },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: "legacy" })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

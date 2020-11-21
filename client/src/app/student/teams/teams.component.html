@@ -1,0 +1,52 @@
+<div class="container">
+  <div *ngIf="hasTeam && team !== null; else noStudentTeam">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>
+          {{ team.name }}
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content style="padding: 16px">
+        <mat-divider></mat-divider>
+        <h3>Members:</h3>
+        <mat-list>
+          <div *ngFor="let student of team.members">
+            <mat-list-item>
+              <mat-icon mat-list-icon>person</mat-icon>
+              {{ student.id }} {{ student.name }}
+              {{ student.lastName }}
+            </mat-list-item>
+          </div>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <ng-template #noStudentTeam>
+    <h2>
+      Sorry you dont have an activated team. You can create new one or accept
+      pending requests;
+    </h2>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title> Create team </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content style="padding: 16px">
+        <mat-divider></mat-divider>
+        <h3>Available students:</h3>
+        <div class="list-student">
+          <mat-list>
+            <div *ngFor="let student of studentsNotInTeams">
+              <mat-list-item *ngIf="!student.id.includes(studentId)">
+                <input type="checkbox" />
+                <mat-icon mat-list-icon>person</mat-icon>
+                {{ student.id }} {{ student.name }}
+                {{ student.lastName }}
+              </mat-list-item>
+            </div>
+          </mat-list>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </ng-template>
+</div>

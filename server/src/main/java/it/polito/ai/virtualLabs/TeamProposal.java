@@ -7,6 +7,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+
 @Data
 public class TeamProposal{
     @NotBlank
@@ -14,5 +15,9 @@ public class TeamProposal{
     @NotEmpty
     String name;
     @NotNull
-    List<String> members;
+    List<String> members; //students id
+    @NotBlank
+    @NotNull
+    @NotEmpty
+    String owner;
 }

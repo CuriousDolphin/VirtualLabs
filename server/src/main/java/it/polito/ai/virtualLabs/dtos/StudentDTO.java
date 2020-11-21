@@ -20,6 +20,7 @@ public class StudentDTO extends RepresentationModel<StudentDTO> {
     private String name;
     @CsvBindByName
     private String lastName;
+    @CsvBindByName
     @NotBlank
     @NotNull
     private String email;

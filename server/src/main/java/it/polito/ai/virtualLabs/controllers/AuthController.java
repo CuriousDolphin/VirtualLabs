@@ -6,6 +6,7 @@ import it.polito.ai.virtualLabs.entities.Teacher;
 import it.polito.ai.virtualLabs.entities.User;
 import it.polito.ai.virtualLabs.repositories.StudentRepository;
 import it.polito.ai.virtualLabs.repositories.TeacherRepository;
+import it.polito.ai.virtualLabs.repositories.CourseRepository;
 import it.polito.ai.virtualLabs.repositories.UserRepository;
 import it.polito.ai.virtualLabs.security.AuthenticationRequest;
 import it.polito.ai.virtualLabs.security.JwtTokenProvider;
@@ -45,14 +46,26 @@ public class AuthController {
     @Autowired
     TeacherRepository teachers;
 
+    @Autowired
+    StudentRepository studentRepository;
+
     @PostMapping("/signin")
     public ResponseEntity signin(@RequestBody AuthenticationRequest data) {
         try {
-            String username = data.getUsername();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, data.getPassword()));
-            String token = jwtTokenProvider.createToken(username, this.users.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username " + username + "not found")).getRoles());
+            String email = data.getUsername();
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, data.getPassword()));
+
+            String id ="";
+            Optional<Student> s=studentRepository.findByEmailIgnoreCase(email);
+            if(s.isPresent())
+                id=s.get().getId();
+
+            String token = jwtTokenProvider.createToken(
+                    email,
+                    this.users.findByUsername(email)
+                            .orElseThrow(() -> new UsernameNotFoundException("Username " + email + "not found")).getRoles(),id);
             Map<Object, Object> model = new HashMap<>();
-            model.put("username", username);
+            model.put("username", email);
             model.put("token", token);
             return ok(model);
         } catch (AuthenticationException e) {
@@ -65,7 +78,8 @@ public class AuthController {
     {
         if(users.findByUsername(username).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists!");
-        User u = User.builder().username(username)
+        User u = User.builder().id(username.split("@")[0])
+                .username(username)
                 .password(passwordEncoder.encode(psw))
                 .enabled(false)
                 .build();
@@ -85,7 +99,7 @@ public class AuthController {
             Student student;
             Optional<Teacher> optTeacher;
             Teacher teacher;
-            if(username.endsWith("@studenti.polito.it"))
+            if(username.endsWith("@studenti.polito.it") && username.startsWith("s"))
             {
                 user = AddGenericUser(username,psw);
                 String id = username.split("@")[0];
@@ -112,12 +126,11 @@ public class AuthController {
                     students.save(student);
                 }
             }
-            else if(username.endsWith("@polito.it"))
+            else if(username.endsWith("@polito.it") && username.startsWith("d"))
             {
                 user = AddGenericUser(username,psw);
                 String id = username.split("@")[0];
                 optTeacher = teachers.findByIdIgnoreCase(id);
-                System.out.println("sono vivo 2");
                 if(optTeacher.isPresent())
                 {
                     //TODO: può essere che u nteacher sia già esistente senza essere registrato come user? penso di no
@@ -133,7 +146,6 @@ public class AuthController {
                             .lastName(data.getLastName())
                             .build();
                     teachers.save(teacher);
-                    System.out.println("sono vivo 3");
                 }
             }
             else

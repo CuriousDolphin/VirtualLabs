@@ -5,6 +5,7 @@ import {
   Input,
   Output,
   EventEmitter,
+  ElementRef
 } from '@angular/core';
 import { Student } from '../../models/student.model';
 import { Observable } from 'rxjs';
@@ -38,8 +39,9 @@ export class StudentsComponent implements OnInit {
     }
   }
   allStudents = []; // for autocomplete
-  @Output() deleteStudents = new EventEmitter<Student[]>();
+  @Output() deleteStudents = new EventEmitter<string[]>();
   @Output() addStudent = new EventEmitter<Student>();
+  @Output() uploadCsv = new EventEmitter<any>();
   myControl = new FormControl();
   filteredOptions: Observable<Student[]>;
   colsToDisplay = ['select', 'id', 'name', 'firstName'];
@@ -49,6 +51,8 @@ export class StudentsComponent implements OnInit {
 
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild('uploader') myInputVariable: ElementRef;
+
   ngOnInit(): void {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
@@ -63,7 +67,12 @@ export class StudentsComponent implements OnInit {
   displayFn(student: Student): string {
     return student && student.lastName ? student.name + ' ' + student.id : '';
   }
+  uploadFile(event) {
+    this.uploadCsv.emit(event[0]) // outputs the first file
+    this.myInputVariable.nativeElement.value = ''; // reset input
 
+
+  }
   selectStudentToAdd(student: Student) {
     console.log(student);
     this.studentToAdd = student;
@@ -71,7 +80,7 @@ export class StudentsComponent implements OnInit {
   addStudentToTable() {
     if (
       this.studentToAdd &&
-      _.findIndex(this.dataSource.data, this.studentToAdd) == -1
+      _.findIndex(this.dataSource.data, this.studentToAdd) === -1
     ) {
       this.selectedStudents.clear();
       // emit here
@@ -98,12 +107,14 @@ export class StudentsComponent implements OnInit {
     this.isAllSelected()
       ? this.selectedStudents.clear()
       : this.dataSource.data.forEach((student) =>
-          this.selectedStudents.select(student)
-        );
+        this.selectedStudents.select(student)
+      );
   }
 
-  deleteSelectedStudent() {
-    this.deleteStudents.emit(this.selectedStudents.selected);
+  deleteSelectedStudents() {
+    const arr: Array<string> = [];
+    this.selectedStudents.selected.forEach((student: Student) => arr.push(student.id))
+    this.deleteStudents.emit(arr);
     this.selectedStudents.clear();
   }
   toggleStudent(student: Student) {

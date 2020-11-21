@@ -11,6 +11,7 @@ import {
 import { AuthService } from '../auth.service';
 import { Subscription } from 'rxjs';
 
+
 @Component({
   selector: 'app-register-dialog',
   templateUrl: './register-dialog.component.html',
@@ -72,8 +73,13 @@ export class RegisterDialogComponent implements OnInit {
 
 }
 
+//TODO validatore matricosa (s o d succeduta da solo numeri)
 export function isStudentOrTeacher(): ValidatorFn {  
   return (control: AbstractControl): { [key: string]: any } | null =>  
-      (control.value?.toLowerCase().endsWith('@studenti.polito.it') || control.value?.toLowerCase().endsWith('@polito.it') )
+      //((studente and start with s) or (docente and start with d)) and (check solo numeri dopo lettera)
+      ( (control.value?.toLowerCase().endsWith('@studenti.polito.it') && control.value?.toLowerCase().startsWith("s") ) 
+      || (control.value?.toLowerCase().endsWith('@polito.it') && control.value?.toLowerCase().startsWith("d")) 
+      //&& Number(control.value?.toLowerCase().split("@")[0].substr(1)) != NaN && !isNaN(Number('as'))
+      )
           ? null : {wrongDomain: control.value};
 }

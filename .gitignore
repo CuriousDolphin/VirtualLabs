@@ -100,3 +100,6 @@ server/src/main/.DS_Store
 server/src/main/.DS_Store
 server/src/main/java/it/polito/.DS_Store
 
+/server/db_data/db_test
+/server/db_data/**
+/server/db_data/*

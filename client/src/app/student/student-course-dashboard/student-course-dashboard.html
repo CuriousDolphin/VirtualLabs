@@ -1,0 +1,47 @@
+<div class="loader" *ngIf="isLoading">
+  <mat-spinner></mat-spinner>
+</div>
+<mat-toolbar *ngIf="currentCourse$ | async" style="color: rgb(32 32 32 / 87%)">
+  <span>{{currentCourse?.name}}</span>
+  <div class="subtitle">{{currentCourse?.acronym}}</div>
+
+  <div fxFlex fxLayout="row" class="ml-1">
+    <div class="my-chip" color="primary">
+      min:{{currentCourse?.min}} max:{{currentCourse?.max}}
+    </div>
+    <div class="my-chip" color="primary">
+      enabled:{{currentCourse?.enabled}}
+    </div>
+  </div>
+</mat-toolbar>
+
+<mat-tab-group>
+  <mat-tab label="Teams">
+    <!--only this scroll-->
+    <div class="tab-container">
+      <app-teams
+        [studentId]="studentId"
+        [currentCourse]="currentCourse"
+        [teams]="studentTeams$ | async"
+        [studentsNotInTeams]="studentsNotInTeams$ | async"
+      ></app-teams>
+    </div>
+  </mat-tab>
+  <mat-tab label="VM"> Content 2 </mat-tab>
+  <mat-tab label="Assignment"> Content 2 </mat-tab>
+</mat-tab-group>
+
+<!-- <nav mat-tab-nav-bar class="white-smoke">
+  <a
+    mat-tab-link
+    *ngFor="let tab of tabs"
+    [routerLink]="tab.path"
+    [state]="currentCourse"
+    routerLinkActive
+    #rla="routerLinkActive"
+    [active]="rla.isActive"
+  >
+    {{ tab.value }}
+  </a>
+</nav>
+<router-outlet></router-outlet> -->

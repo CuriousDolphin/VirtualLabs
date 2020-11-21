@@ -5,21 +5,12 @@
       <div class="loader" *ngIf="isLoading">
         <mat-spinner></mat-spinner>
       </div>
-
-
       <mat-nav-list class="my-list">
-
         <div *ngFor="let course of courses$ | async">
           <mat-divider> </mat-divider>
           <mat-list-item [routerLink]="[course.name]" [state]="course"> {{course.name}} </mat-list-item>
           <mat-divider> </mat-divider>
-
-
         </div>
-        <!--  <mat-list-item [routerLink]="['applicazioni-internet/students']">
-          App Internet
-        </mat-list-item> -->
-
       </mat-nav-list>
       <button mat-raised-button color="primary" style="border-radius: 20px;margin-top: 16px;" (click)="createCourse()">
         <mat-icon>
@@ -29,13 +20,8 @@
       </button>
 
     </div>
-
-
   </mat-sidenav>
   <mat-sidenav-content>
-
-
-
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>
