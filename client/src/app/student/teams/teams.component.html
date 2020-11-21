@@ -12,7 +12,7 @@
         <mat-list>
           <div *ngFor="let student of team.members">
             <mat-list-item>
-              <mat-icon mat-list-icon>person</mat-icon>
+              <mat-icon matListIcon>person</mat-icon>
               {{ student.id }} {{ student.name }}
               {{ student.lastName }}
             </mat-list-item>
@@ -26,7 +26,7 @@
       Sorry you dont have an activated team. You can create new one or accept
       pending requests;
     </h2> -->
-    <mat-card style="width: fit-content">
+    <mat-card>
       <mat-card-header>
         <mat-card-title> Create team </mat-card-title>
       </mat-card-header>
@@ -35,7 +35,9 @@
         <mat-divider></mat-divider>
         <div
           fxLayout="row"
-          fxLayoutAlign="space-between stretch"
+          fxLayout.xs="column"
+          fxLayout.sm="column"
+          fxLayoutAlign="space-evenly stretch"
           style="padding: 16px"
         >
           <div>
@@ -121,5 +123,173 @@
         </button>
       </mat-card-actions>
     </mat-card>
+    <mat-divider style="margin-top: 24px; margin-bottom: 24px"></mat-divider>
+
+    <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
+      <div fxFlex>
+        <mat-card-header>
+          <mat-card-title>Your Requests</mat-card-title></mat-card-header
+        >
+        <p *ngIf="_userRequests?.length == 0" class="p-16">
+          Youn don't have created any team proposal.
+        </p>
+        <div class="p-16">
+          <mat-accordion multi>
+            <mat-expansion-panel *ngFor="let team of _userRequests">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{ team.name }}
+                </mat-panel-title>
+                <mat-panel-description>
+                  {{ team.members.length }} members invited
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <div class="expansion-content">
+                <mat-list>
+                  <mat-list-item *ngFor="let student of team.members">
+                    <div
+                      fxLayout="row"
+                      fxLayoutAlign="space-between center"
+                      style="width: 100%"
+                    >
+                      <mat-icon>account_circle</mat-icon>
+                      <p>
+                        {{ student.name }}
+                        {{ student.lastName }}
+                      </p>
+                      <div
+                        *ngIf="
+                          isTeamConfirmedByStudent(student.id, team);
+                          else pending
+                        "
+                        style="
+                          margin-left: 16px;
+                          color: #25b94b;
+                          font-weight: 500;
+                        "
+                        fxLayout="row"
+                        fxLayoutAlign="space-between center"
+                      >
+                        <mat-icon class="mr-1">check</mat-icon>
+                        <p>Confirmed</p>
+                      </div>
+                      <ng-template #pending>
+                        <div
+                          style="
+                            margin-left: 16px;
+                            color: #ffa90d;
+                            font-weight: 500;
+                          "
+                          fxLayout="row"
+                          fxLayoutAlign="space-between center"
+                        >
+                          <mat-icon class="mr-1">schedule</mat-icon>
+                          <p>Pending</p>
+                        </div>
+                      </ng-template>
+                    </div>
+                  </mat-list-item>
+                </mat-list>
+                <p class="p-16">
+                  Expiry date: {{ team.expiry_date | date: "medium" }}
+                </p>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+      </div>
+
+      <div fxFlex>
+        <mat-card-header>
+          <mat-card-title>Pending Requests</mat-card-title></mat-card-header
+        >
+        <p *ngIf="_pendingRequests?.length == 0" class="p-16">
+          Youn don't have pending team requests.
+        </p>
+        <div class="p-16">
+          <mat-accordion multi>
+            <mat-expansion-panel *ngFor="let team of _pendingRequests">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{ team.name }}
+                </mat-panel-title>
+                <mat-panel-description>
+                  Owner :
+                  {{ team.owner.name }} {{ team.owner.lastName }}, ({{
+                    team.members.length
+                  }}) members
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <div class="expansion-content">
+                <mat-list>
+                  <div *ngFor="let student of team.members">
+                    <mat-list-item
+                      *ngIf="studentId && studentId !== student.id"
+                    >
+                      <div
+                        fxLayout="row"
+                        fxLayoutAlign="space-between center"
+                        style="width: 100%"
+                      >
+                        <mat-icon>account_circle</mat-icon>
+                        <p>
+                          {{ student.name }}
+                          {{ student.lastName }}
+                        </p>
+                        <div
+                          *ngIf="
+                            isTeamConfirmedByStudent(student.id, team);
+                            else pending
+                          "
+                          style="
+                            margin-left: 16px;
+                            color: #25b94b;
+                            font-weight: 500;
+                          "
+                          fxLayout="row"
+                          fxLayoutAlign="space-between center"
+                        >
+                          <mat-icon class="mr-1">check</mat-icon>
+                          <p>Confirmed</p>
+                        </div>
+                        <ng-template #pending>
+                          <div
+                            style="
+                              margin-left: 16px;
+                              color: #ffa90d;
+                              font-weight: 500;
+                            "
+                            fxLayout="row"
+                            fxLayoutAlign="space-between center"
+                          >
+                            <mat-icon class="mr-1">schedule</mat-icon>
+                            <p>Pending</p>
+                          </div>
+                        </ng-template>
+                      </div>
+                    </mat-list-item>
+                  </div>
+                </mat-list>
+                <p class="p-16">
+                  Expiry date: {{ team.expiry_date | date: "medium" }}
+                </p>
+              </div>
+              <mat-action-row>
+                <button mat-button color="warn" (click)="_rejectTeam(team)">
+                  <mat-icon class="mr-1">delete</mat-icon> Reject
+                </button>
+                <button
+                  mat-button
+                  style="color: #25b94b"
+                  (click)="_confirmTeam(team)"
+                >
+                  <mat-icon class="mr-1">check</mat-icon> Confirm
+                </button>
+              </mat-action-row>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+      </div>
+    </div>
   </ng-template>
 </div>

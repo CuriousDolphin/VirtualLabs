@@ -16,9 +16,13 @@ export class TeamsComponent implements OnInit {
   _teams: Team[];
   hasTeam = false;
   team: Team;
+  _userRequests: Team[];
+  _pendingRequests: Team[];
   selectedStudents = new SelectionModel<Student>(true, []);
   teamForm: FormGroup;
   @Output() createTeam = new EventEmitter<TeamProposal>();
+  @Output() confirmTeam = new EventEmitter<Team>();
+  @Output() rejectTeam = new EventEmitter<Team>();
   @Input() studentId: string;
   @Input() currentCourse: Course;
   @Input() studentsNotInTeams: Student[];
@@ -28,28 +32,57 @@ export class TeamsComponent implements OnInit {
 
       // has activated team
       this.team = _.find(this._teams, (team) => team.status === 1);
+
       if (this.team != null) {
         this.hasTeam = true;
         console.log("User have a team: ", this.team);
       } else {
         this.hasTeam = false;
+        this._userRequests = _.filter(
+          this._teams,
+          (team) => team.owner.id == this.studentId
+        );
+        this._pendingRequests = _.filter(
+          this._teams,
+          (team) => team.owner.id != this.studentId
+        );
       }
+      this.initPage();
 
       console.log("Retrieved student teams", this._teams);
     }
   }
 
   constructor(public fb: FormBuilder) {
+    this.initPage();
+  }
+  initPage() {
     this.teamForm = this.fb.group({
       name: ["", [Validators.required, Validators.minLength(3)]],
-      timeout: ["", [Validators.required]],
+      timeout: [
+        1,
+        [Validators.required, Validators.min(1), Validators.max(30)],
+      ],
     });
+    this.selectedStudents.clear();
+  }
+  _confirmTeam(team: Team) {
+    this.confirmTeam.emit(team);
+  }
+  _rejectTeam(team: Team) {
+    this.rejectTeam.emit(team);
   }
 
   ngOnInit(): void {}
   toggleStudent(student: Student) {
     this.selectedStudents.toggle(student);
   }
+
+  isTeamConfirmedByStudent(studentId: string, team: Team) {
+    if (team.members_status[studentId] == "Confirmed") return true;
+    return false;
+  }
+
   isCreateTeamDisabled() {
     if (
       this.currentCourse != null &&

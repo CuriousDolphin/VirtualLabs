@@ -23,6 +23,8 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
     null
   );
   private _reloadCourse$: BehaviorSubject<void> = new BehaviorSubject(null);
+  private _reloadTeams$: BehaviorSubject<void> = new BehaviorSubject(null);
+
   private createTeamSubsctiption: Subscription;
   private courseSubscription: Subscription;
   private routeSubscription: Subscription;
@@ -55,10 +57,14 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       }
     });
     // get current course after name changes and reload course is triggered
-    this.currentCourse$ = this._currentCourseName$.pipe(
+    this.currentCourse$ = combineLatest([
+      this._currentCourseName$,
+      this._reloadCourse$,
+    ]).pipe(
+      map(([courseName, reload]) => courseName),
       tap(() => (this.isLoading = true)),
-      switchMap((name) => {
-        if (name) return this.courseService.getCourse(name);
+      switchMap((courseName) => {
+        if (courseName) return this.courseService.getCourse(courseName);
       }),
       tap((course) => {
         this.currentCourse = course;
@@ -66,8 +72,12 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       tap(() => (this.isLoading = false))
     );
 
-    this.studentTeams$ = this._currentCourseName$.pipe(
+    this.studentTeams$ = combineLatest([
+      this._currentCourseName$,
+      this._reloadTeams$,
+    ]).pipe(
       tap(() => (this.isLoading = true)),
+      map(([courseName, reload]) => courseName),
       switchMap((courseName) => {
         if (courseName)
           return this.studentService.getTeamsByStudentIdCourseName(
@@ -78,7 +88,11 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       tap(() => (this.isLoading = false))
     );
 
-    this.studentsNotInTeams$ = this._currentCourseName$.pipe(
+    this.studentsNotInTeams$ = combineLatest([
+      this._currentCourseName$,
+      this._reloadTeams$,
+    ]).pipe(
+      map(([courseName, reload]) => courseName),
       tap(
         () => ((this.isLoading = true), console.log("get student not in team"))
       ),
@@ -91,9 +105,25 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   }
 
   createTeam(proposal: TeamProposal) {
-    this.courseService
-      .proposeTeam(this.currentCourse.name, proposal)
-      .subscribe();
+    this.courseService.proposeTeam(this.currentCourse.name, proposal).subscribe(
+      (data) => {
+        this.toastService.success(
+          "Team propose success ! Team members will be notified."
+        );
+        this._reloadTeams();
+      },
+      (error) => {
+        this.toastService.error("Error in team propose, try again later");
+        this._reloadTeams();
+      }
+    );
+  }
+  _reloadTeams() {
+    this._reloadTeams$.next();
+  }
+  reloadData() {
+    this._reloadCourse$.next();
+    this._reloadTeams$.next();
   }
 
   ngOnDestroy(): void {

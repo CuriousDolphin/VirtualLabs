@@ -150,7 +150,7 @@ public class NotificationServiceImpl implements NotificationService{
         memberIds.forEach(id ->{
             TokenTeam t = new TokenTeam();
             t.setId(UUID.randomUUID().toString());
-            t.setExpiryDate(new Timestamp(now +timeoutDays*24*3600));
+            t.setExpiryDate(new Timestamp(now +timeoutDays*24*3600*1000));
             t.setStudentId(id);
             t.setTeam(modelMapper.map(teamDto, Team.class));
             //t.setTeamId(dto.getId());

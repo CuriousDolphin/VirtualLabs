@@ -22,6 +22,7 @@ import javax.transaction.Transactional;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -58,7 +59,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public CourseDTO updateCourse(CourseDTO course, String courseName){
+    public CourseDTO updateCourse(CourseDTO course, String courseName) {
         //if (!courseRepository.existsById(courseName)) throw new CourseNotFoundException();
         if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
 
@@ -71,7 +72,7 @@ public class TeamServiceImpl implements TeamService {
 
         this.courseRepository.save(c);
 
-        return modelMapper.map(c,CourseDTO.class);
+        return modelMapper.map(c, CourseDTO.class);
 
     }
 
@@ -154,9 +155,10 @@ public class TeamServiceImpl implements TeamService {
 
         return true;
     }
+
     // unenroll multiple students
     @Override
-    public List<Boolean> removeStudentsFromCourse(List<String> studentIds, String courseName){
+    public List<Boolean> removeStudentsFromCourse(List<String> studentIds, String courseName) {
         if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
 
 
@@ -176,9 +178,10 @@ public class TeamServiceImpl implements TeamService {
 
 
     }
+
     // enroll single student
     @Override
-    public boolean removeStudentFromCourse(String studentId, String courseName){
+    public boolean removeStudentFromCourse(String studentId, String courseName) {
         if (!studentRepository.existsById(studentId)) throw new StudentNotFoundException();
 
         Course c = courseRepository.findByNameIgnoreCase(courseName).get();
@@ -285,21 +288,57 @@ public class TeamServiceImpl implements TeamService {
                 .map(team -> modelMapper.map(team, TeamDTO.class))
                 .collect(Collectors.toList());
     }
+
     @Override
-    public List<TeamDTO> getTeamsForStudentCourse(String studentId,String courseName) {
+    public List<TeamDTO> getTeamsForStudentCourse(String studentId, String courseName) {
         if (!studentRepository.existsById(studentId)) throw new StudentNotFoundException();
         if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
 
-        return this.studentRepository.findByIdIgnoreCase(studentId)
+        List<TeamDTO> teams = this.studentRepository.findByIdIgnoreCase(studentId)
                 .get()
                 .getTeams()
                 .stream()
                 .filter(team ->
-                     team.getCourse().getName().toLowerCase().equals(courseName.toLowerCase())
+                        team.getCourse().getName().toLowerCase().equals(courseName.toLowerCase())
                 )
                 .map(team ->
-                    modelMapper.map(team, TeamDTO.class))
+                        modelMapper.map(team, TeamDTO.class))
                 .collect(Collectors.toList());
+
+        // check status for each
+        System.out.println(teams.toString());
+
+        teams.forEach(
+                teamDTO -> {
+
+
+                    Map<String, String> studentsStatus = new java.util.HashMap<>(Map.of());
+                    teamDTO.getMembers().forEach(
+                            studentDTO -> {
+                                System.out.println("=======" + studentDTO.getId());
+
+                                if (!tokenRepository.existsByTeamAndStudentId(modelMapper.map(teamDTO, Team.class), studentDTO.getId())) {
+                                    studentsStatus.put(studentDTO.getId(), "Confirmed");
+                                } else {
+                                    studentsStatus.put(studentDTO.getId(), "Pending");
+
+                                    // se e' un team pendente aggiungo ulteriori informazioni
+                                    if (studentDTO.getId().equals( studentId)) {
+                                        TokenTeam token = tokenRepository.getByTeamAndStudentId(modelMapper.map(teamDTO, Team.class), studentId);
+
+                                        teamDTO.setConfirmation_token(token.getId());
+                                        teamDTO.setExpiry_date(token.getExpiryDate());
+                                    }
+                                }
+                            }
+                    );
+
+                    teamDTO.setMembers_status(studentsStatus);
+
+                });
+
+
+        return teams;
     }
 
     @Override
@@ -314,7 +353,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
 
-    public TeamDTO proposeTeam(String courseName, String name, List<String> memberIds ,String ownerId, Integer timeoutDays) {
+    public TeamDTO proposeTeam(String courseName, String name, List<String> memberIds, String ownerId, Integer timeoutDays) {
         Student owner = studentRepository.findByIdIgnoreCase(ownerId).get();
         // check esistenza corso
         if (!courseRepository.existsCourseByName(courseName))
@@ -342,7 +381,7 @@ public class TeamServiceImpl implements TeamService {
 
                     // check studente iscritto ad altri team nello stesso corso
                     s.getTeams().forEach(team -> {
-                        if (team.getCourse().equals(course) && team.getStatus() ==1)
+                        if (team.getCourse().equals(course) && team.getStatus() == 1)
                             throw new StudentAlreadyHaveTeam();
                     });
 
@@ -414,7 +453,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public List<TeamDTO> getPendingTeamsForStudent(String studentId){
+    public List<TeamDTO> getPendingTeamsForStudent(String studentId) {
         if (!studentRepository.existsById(studentId)) throw new StudentNotFoundException();
 
         List<TokenTeam> tokens = tokenRepository.findAllByStudentId(studentId);
@@ -422,9 +461,9 @@ public class TeamServiceImpl implements TeamService {
         List<TeamDTO> tmp = null;
 
         tokens.forEach(teamToken ->
-                    tmp.add(modelMapper.map(teamToken.getTeam(),TeamDTO.class))
-                );
-        return  tmp;
+                tmp.add(modelMapper.map(teamToken.getTeam(), TeamDTO.class))
+        );
+        return tmp;
 
 
     }
