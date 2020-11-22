@@ -45,7 +45,10 @@ public class VirtualLabs {
 
                 generateMockUsers(userRepository, passwordEncoder);
 
-                System.out.println("printing all users...");
+                System.out.println("Printing all courses:");
+                courseRepository.findAll().forEach(v ->  System.out.println(" Course :" + v.toString()));
+                System.out.println("Printing all users:");
+                userRepository.findAll().forEach(v ->  System.out.println(" User :" + v.toString()));
 
             }
         };
@@ -103,12 +106,14 @@ public class VirtualLabs {
     public void generateMockUsers(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         try {
             userRepository.save(User.builder()
+                    .id("sStudent")
                     .username("student@studenti.polito.it")
                     .password(passwordEncoder.encode("pwd"))
                     .roles(Arrays.asList("ROLE_STUDENT"))
                     .build()
             );
             userRepository.save(User.builder()
+                    .id("sTeacher")
                     .username("teacher@polito.it")
                     .password(passwordEncoder.encode("pwd"))
                     .roles(Arrays.asList("ROLE_PROF"))
@@ -116,6 +121,7 @@ public class VirtualLabs {
             );
 
             userRepository.save(User.builder()
+                    .id("sADMIN")
                     .username("admin@polito.it")
                     .password(passwordEncoder.encode("pwd"))
                     .roles(Arrays.asList("ROLE_STUDENT", "ROLE_PROF", "ROLE_ADMIN"))
