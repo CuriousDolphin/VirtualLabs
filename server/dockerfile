@@ -1,7 +1,7 @@
-FROM mariadb:latest
-EXPOSE 3306
+FROM adoptopenjdk/openjdk11
 ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
-RUN addgroup -S app && adduser -S app -G app
-USER  app
-ENTRYPOINT ["java","-jar","/app.jar"]
+COPY ${JAR_FILE} application.jar
+EXPOSE 8080
+#ENTRYPOINT ["java","-jar","--spring.datasource.url=jdbc:mysql://mariadb:3306/db_test /application.jar"]
+
+ENTRYPOINT ["sh","-c","java -Dspring.datasource.url=jdbc:mysql://mariadb:3306/db_test -jar /application.jar"]
