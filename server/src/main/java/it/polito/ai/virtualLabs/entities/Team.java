@@ -1,6 +1,9 @@
 package it.polito.ai.virtualLabs.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -8,6 +11,9 @@ import java.util.List;
 //TODO ADD OWNER
 @Entity
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Team {
     @ManyToOne
     @JoinColumn(name = "course_id")
@@ -17,6 +23,10 @@ public class Team {
             joinColumns = @JoinColumn(name = "team_id"),
             inverseJoinColumns = @JoinColumn(name = "student_id"))
     List<Student> members = new ArrayList<>();
+    @OneToMany(mappedBy = "team")
+    private List<VmInstance> vmInstances;
+    @OneToMany(mappedBy = "team")
+    private List<VmConfiguration> vmConfigurations;
     @Id
     @GeneratedValue
     private Long id;

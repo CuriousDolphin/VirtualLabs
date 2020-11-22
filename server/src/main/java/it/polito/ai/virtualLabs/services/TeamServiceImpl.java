@@ -9,11 +9,13 @@ import it.polito.ai.virtualLabs.entities.Course;
 import it.polito.ai.virtualLabs.entities.Student;
 import it.polito.ai.virtualLabs.entities.Team;
 import it.polito.ai.virtualLabs.entities.TokenTeam;
+import it.polito.ai.virtualLabs.entities.VmModel;
 import it.polito.ai.virtualLabs.exceptions.*;
 import it.polito.ai.virtualLabs.repositories.CourseRepository;
 import it.polito.ai.virtualLabs.repositories.StudentRepository;
 import it.polito.ai.virtualLabs.repositories.TeamRepository;
 import it.polito.ai.virtualLabs.repositories.TokenTeamRepository;
+import it.polito.ai.virtualLabs.repositories.VmModelRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,6 +45,8 @@ public class TeamServiceImpl implements TeamService {
 
     @Autowired
     ModelMapper modelMapper;
+    @Autowired
+    VmModelRepository vmModelRepository;
 
 
     @Override
@@ -51,7 +55,14 @@ public class TeamServiceImpl implements TeamService {
             return false;
         } else {
             if (course.getName() != null && !course.getName().equals("")) {
-                courseRepository.save(modelMapper.map(course, Course.class));
+                Course newCourse = modelMapper.map(course, Course.class);
+                VmModel newVmModel = VmModel.builder()
+                        .name("VmModelDefault-"+course.getAcronym())
+                        .image("ThisIsTheDefaultVmImage")
+                        .course(newCourse)
+                        .build();
+                vmModelRepository.save(newVmModel);
+                courseRepository.save(newCourse);
                 return true;
             }
             return false;
