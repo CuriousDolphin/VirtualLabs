@@ -1,13 +1,7 @@
 package it.polito.ai.virtualLabs;
 
-import it.polito.ai.virtualLabs.entities.Course;
-import it.polito.ai.virtualLabs.entities.Student;
-import it.polito.ai.virtualLabs.entities.User;
-import it.polito.ai.virtualLabs.entities.VmModel;
-import it.polito.ai.virtualLabs.repositories.CourseRepository;
-import it.polito.ai.virtualLabs.repositories.StudentRepository;
-import it.polito.ai.virtualLabs.repositories.UserRepository;
-import it.polito.ai.virtualLabs.repositories.VmModelRepository;
+import it.polito.ai.virtualLabs.entities.*;
+import it.polito.ai.virtualLabs.repositories.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -35,13 +29,13 @@ public class VirtualLabs {
     }
 
     @Bean
-    CommandLineRunner runner(UserRepository userRepository, CourseRepository courseRepository, PasswordEncoder passwordEncoder, VmModelRepository vmModelRepository) {
+    CommandLineRunner runner(UserRepository userRepository, CourseRepository courseRepository, PasswordEncoder passwordEncoder, VmModelRepository vmModelRepository, VmConfigurationRepository vmConfigurationRepository) {
         return new CommandLineRunner() {
 
             @Override
             public void run(String... args) throws Exception {
 
-                generateMockCourses(courseRepository, vmModelRepository);
+                generateMockCourses(courseRepository, vmModelRepository, vmConfigurationRepository);
 
                 generateMockUsers(userRepository, passwordEncoder);
 
@@ -55,7 +49,7 @@ public class VirtualLabs {
     }
 
     /* generates (if not already exist) mock courses and relatives vmmodels */
-    public void generateMockCourses(CourseRepository cr, VmModelRepository vmr) {
+    public void generateMockCourses(CourseRepository cr, VmModelRepository vmr, VmConfigurationRepository vcr) {
         try {
             cr.save(Course.builder()
                     .name("Programmazione di Sistema")
@@ -80,23 +74,56 @@ public class VirtualLabs {
                     .build());
 
             Course course = cr.findByNameIgnoreCase("Programmazione Di Sistema").get();
-            vmr.save(VmModel.builder()
+            VmModel newVmModel = VmModel.builder()
                     .name("VmModelDefault-" + course.getAcronym())
                     .image("ThisIsTheDefaultVmImage")
                     .course(course)
-                    .build());
+                    .build();
+            vmr.save(newVmModel);
+            VmConfiguration newVmConfiguration = VmConfiguration.builder()
+                    .team(null)
+                    .vmModel(newVmModel)
+                    .maxVcpusPerVm(5)
+                    .maxRamPerVm(500)
+                    .maxDiskPerVm(500)
+                    .maxRunningVms(2)
+                    .maxVms(4)
+                    .build();
+            vcr.save(newVmConfiguration);
             course = cr.findByNameIgnoreCase("Machine Learning").get();
-            vmr.save(VmModel.builder()
+            newVmModel = VmModel.builder()
                     .name("VmModelDefault-" + course.getAcronym())
                     .image("ThisIsTheDefaultVmImage")
                     .course(course)
-                    .build());
+                    .build();
+            vmr.save(newVmModel);
+            newVmConfiguration = VmConfiguration.builder()
+                    .team(null)
+                    .vmModel(newVmModel)
+                    .maxVcpusPerVm(5)
+                    .maxRamPerVm(500)
+                    .maxDiskPerVm(500)
+                    .maxRunningVms(2)
+                    .maxVms(4)
+                    .build();
+            vcr.save(newVmConfiguration);
             course = cr.findByNameIgnoreCase("Applicazioni Internet").get();
-            vmr.save(VmModel.builder()
+            newVmModel = VmModel.builder()
                     .name("VmModelDefault-" + course.getAcronym())
                     .image("ThisIsTheDefaultVmImage")
                     .course(course)
-                    .build());
+                    .build();
+            vmr.save(newVmModel);
+            newVmConfiguration = VmConfiguration.builder()
+                    .team(null)
+                    .vmModel(newVmModel)
+                    .maxVcpusPerVm(5)
+                    .maxRamPerVm(500)
+                    .maxDiskPerVm(500)
+                    .maxRunningVms(2)
+                    .maxVms(4)
+                    .build();
+            vcr.save(newVmConfiguration);
         } catch (Exception e) {
             System.out.println("Exception insert courses/vmmodels: " + e.getMessage());
         }

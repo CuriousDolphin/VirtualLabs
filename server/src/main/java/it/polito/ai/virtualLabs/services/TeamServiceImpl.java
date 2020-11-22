@@ -5,17 +5,9 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import it.polito.ai.virtualLabs.dtos.CourseDTO;
 import it.polito.ai.virtualLabs.dtos.StudentDTO;
 import it.polito.ai.virtualLabs.dtos.TeamDTO;
-import it.polito.ai.virtualLabs.entities.Course;
-import it.polito.ai.virtualLabs.entities.Student;
-import it.polito.ai.virtualLabs.entities.Team;
-import it.polito.ai.virtualLabs.entities.TokenTeam;
-import it.polito.ai.virtualLabs.entities.VmModel;
+import it.polito.ai.virtualLabs.entities.*;
 import it.polito.ai.virtualLabs.exceptions.*;
-import it.polito.ai.virtualLabs.repositories.CourseRepository;
-import it.polito.ai.virtualLabs.repositories.StudentRepository;
-import it.polito.ai.virtualLabs.repositories.TeamRepository;
-import it.polito.ai.virtualLabs.repositories.TokenTeamRepository;
-import it.polito.ai.virtualLabs.repositories.VmModelRepository;
+import it.polito.ai.virtualLabs.repositories.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,6 +39,8 @@ public class TeamServiceImpl implements TeamService {
     ModelMapper modelMapper;
     @Autowired
     VmModelRepository vmModelRepository;
+    @Autowired
+    VmConfigurationRepository vmConfigurationRepository;
 
 
     @Override
@@ -56,13 +50,25 @@ public class TeamServiceImpl implements TeamService {
         } else {
             if (course.getName() != null && !course.getName().equals("")) {
                 Course newCourse = modelMapper.map(course, Course.class);
+                //default VmModel
                 VmModel newVmModel = VmModel.builder()
                         .name("VmModelDefault-"+course.getAcronym())
                         .image("ThisIsTheDefaultVmImage")
                         .course(newCourse)
                         .build();
+                //default VmConfiguration
+                VmConfiguration newVmConfiguration = VmConfiguration.builder()
+                        .team(null)
+                        .vmModel(newVmModel)
+                        .maxVcpusPerVm(5)
+                        .maxRamPerVm(500)
+                        .maxDiskPerVm(500)
+                        .maxRunningVms(2)
+                        .maxVms(4)
+                        .build();
                 vmModelRepository.save(newVmModel);
                 courseRepository.save(newCourse);
+                vmConfigurationRepository.save(newVmConfiguration);
                 return true;
             }
             return false;

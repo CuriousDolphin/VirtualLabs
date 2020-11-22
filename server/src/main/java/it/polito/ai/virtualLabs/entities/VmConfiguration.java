@@ -1,12 +1,19 @@
 package it.polito.ai.virtualLabs.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class VmConfiguration {
 
     @Id
@@ -21,14 +28,14 @@ public class VmConfiguration {
     @JoinColumn(name = "VmModel_id")
     VmModel vmModel;
 
-    @NotEmpty
+    @NotNull
     private int maxVcpusPerVm;
-    @NotEmpty
+    @NotNull
     private int maxRamPerVm;
-    @NotEmpty
-    private int maxDisksPerVm;
-    @NotEmpty
+    @NotNull
+    private int maxDiskPerVm;
+    @NotNull
     private int maxRunningVms;
-    @NotEmpty
+    @NotNull
     private int maxVms;
 }
