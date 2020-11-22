@@ -12,6 +12,7 @@ import { catchError, map, retry, tap } from "rxjs/operators";
 import * as _ from "lodash";
 import { environment } from "src/environments/environment";
 import { Course } from "../models/course.model";
+import { TeamProposal } from "../models/teamProposal.model";
 import { NetErr } from "../models/error.model";
 import { ToastService } from "./toast.service";
 const BASE_PATH = environment.apiUrl;
@@ -84,6 +85,20 @@ export class CourseService {
     return this.http
       .get<Student[]>(url)
       .pipe(catchError((e) => this.handleError(e)));
+  }
+  proposeTeam(courseName: string, proposal: TeamProposal): Observable<any> {
+    const url = BASE_PATH + "courses/" + courseName + "/proposeTeam";
+    return this.http
+      .post(url, proposal)
+      .pipe(catchError((e) => this.handleError(e)));
+  }
+  confirmTeam(token: string): Observable<any> {
+    const url = BASE_PATH + "notification/confirm/" + token;
+    return this.http.get(url).pipe(catchError((e) => this.handleError(e)));
+  }
+  rejectTeam(token: string): Observable<any> {
+    const url = BASE_PATH + "notification/reject/" + token;
+    return this.http.get(url).pipe(catchError((e) => this.handleError(e)));
   }
 
   private handleError(error) {

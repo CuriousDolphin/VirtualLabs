@@ -14,6 +14,8 @@ public interface CourseRepository extends JpaRepository<Course,String> {
 
     Optional<Course> findByNameIgnoreCase(String name);
 
+    boolean existsCourseByName(String name);
+
 
 
 
