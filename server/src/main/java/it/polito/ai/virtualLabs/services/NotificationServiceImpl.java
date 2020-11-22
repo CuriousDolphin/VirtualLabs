@@ -9,7 +9,8 @@ import it.polito.ai.virtualLabs.exceptions.TokenNotFoundException;
 import it.polito.ai.virtualLabs.repositories.StudentRepository;
 import it.polito.ai.virtualLabs.repositories.TeamRepository;
 import it.polito.ai.virtualLabs.repositories.TokenTeamRepository;
-import javafx.util.Pair;
+import lombok.Builder;
+import lombok.Data;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -87,7 +88,7 @@ public class NotificationServiceImpl implements NotificationService{
 
 
 
-    private Pair<Student,Team> checkToken(String token){ // controlla la validita del token, se valido lo elimina,aggiunge il team allo studente e ritorna il team id
+    private StudentTeamPair checkToken(String token){ // controlla la validita del token, se valido lo elimina,aggiunge il team allo studente e ritorna il team id
         Optional<TokenTeam> t = tokenRepository.findById(token);
         if(t.isEmpty()) {
             System.out.println("TOKEN NON ESISTE");
@@ -105,16 +106,18 @@ public class NotificationServiceImpl implements NotificationService{
         Team team=t.get().getTeam();
 
         tokenRepository.delete(t.get()); // elimino il token
-        return new Pair<Student,Team>(student,team);
+        return StudentTeamPair.builder().student(student).team(team).build();
+        //return new Pair<Student,Team>(student,team);
 
     }
 
     @Override
     public boolean confirm(String token)
     {
-        Pair<Student,Team> res= checkToken(token);
-        Student s=res.getKey();
-        Team team=res.getValue();
+        //Pair<Student,Team> res= checkToken(token);
+        StudentTeamPair res=checkToken(token);
+        Student s=res.getStudent();
+        Team team=res.getTeam();
         Long teamId =team.getId();
         s.addTeam(team);
 
@@ -132,7 +135,7 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     public boolean reject(String token) {
-        Long teamId=checkToken(token).getValue().getId();
+        Long teamId=checkToken(token).getTeam().getId();
         if (teamId == null) return false;
 
         List<TokenTeam> list=tokenRepository.findAllByTeamId(teamId);
@@ -162,9 +165,16 @@ public class NotificationServiceImpl implements NotificationService{
             String subject="You have invited to join group "+ teamDto.getName();
             String text ="confirm:  "+confirmLink+"\n reject: "+rejectLink;
 
-            sendMessage('s'+id+"@studenti.polito.it",subject,text); */
+            sendMessage('s'+id+"@studenti.polito.it",Ssubject,text); */
 
         });
 
     }
+}
+
+@Builder
+@Data
+class StudentTeamPair{
+    Student student;
+    Team team;
 }
