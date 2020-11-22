@@ -25,7 +25,9 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   private _reloadCourse$: BehaviorSubject<void> = new BehaviorSubject(null);
   private _reloadTeams$: BehaviorSubject<void> = new BehaviorSubject(null);
 
-  private createTeamSubsctiption: Subscription;
+  private createTeamSubscription: Subscription;
+  private confirmTeamSubscription: Subscription;
+  private rejectTeamSubscription: Subscription;
   private courseSubscription: Subscription;
   private routeSubscription: Subscription;
   currentCourse: Course;
@@ -105,18 +107,59 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   }
 
   createTeam(proposal: TeamProposal) {
-    this.courseService.proposeTeam(this.currentCourse.name, proposal).subscribe(
-      (data) => {
-        this.toastService.success(
-          "Team propose success ! Team members will be notified."
-        );
-        this._reloadTeams();
-      },
-      (error) => {
-        this.toastService.error("Error in team propose, try again later");
-        this._reloadTeams();
-      }
-    );
+    if (this.createTeamSubscription) this.createTeamSubscription.unsubscribe();
+
+    this.createTeamSubscription = this.courseService
+      .proposeTeam(this.currentCourse.name, proposal)
+      .subscribe(
+        (data) => {
+          this.toastService.success(
+            "Team propose success ! Team members will be notified."
+          );
+          this._reloadTeams();
+        },
+        (error) => {
+          this.toastService.error("Error in team propose, try again later");
+          this._reloadTeams();
+        }
+      );
+  }
+  confirmTeam(team: Team) {
+    if (this.confirmTeamSubscription)
+      this.confirmTeamSubscription.unsubscribe();
+
+    this.confirmTeamSubscription = this.courseService
+      .confirmTeam(team.confirmation_token)
+      .subscribe(
+        (data) => {
+          this.toastService.success("Team confirm success ! \n");
+          this._reloadTeams();
+        },
+        (error) => {
+          this.toastService.error(
+            "Error in team confirmation, try again later \n" + error
+          );
+          this._reloadTeams();
+        }
+      );
+  }
+  rejectTeam(team: Team) {
+    if (this.rejectTeamSubscription) this.rejectTeamSubscription.unsubscribe();
+
+    this.rejectTeamSubscription = this.courseService
+      .rejectTeam(team.confirmation_token)
+      .subscribe(
+        (data) => {
+          this.toastService.success("Team confirm success ! \n");
+          this._reloadTeams();
+        },
+        (error) => {
+          this.toastService.error(
+            "Error in team confirmation, try again later \n" + error
+          );
+          this._reloadTeams();
+        }
+      );
   }
   _reloadTeams() {
     this._reloadTeams$.next();
@@ -129,5 +172,6 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.courseSubscription) this.courseSubscription.unsubscribe();
     if (this.routeSubscription) this.routeSubscription.unsubscribe();
+    if (this.createTeamSubscription) this.createTeamSubscription.unsubscribe();
   }
 }

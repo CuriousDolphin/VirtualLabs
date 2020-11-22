@@ -123,7 +123,7 @@ public class NotificationServiceImpl implements NotificationService{
         if(tokenRepository.findAllByTeamId(teamId).size() > 0) {
             System.out.println("Ci sono ancora token pendenti =(");
             return false;
-        }else{
+        }else{ // tutti hanno confermato, attivo il team
             teamService.activateTeam(teamId);
             return true;
         }

@@ -4,8 +4,9 @@
 
 export const environment = {
   production: false,
-  apiUrl: '/api/', // proxed
-  authUrl: '/auth/'
+  apiUrl: "/api/", // proxed
+  authUrl: "/auth/",
+  notificationUrl: "/notification/",
 };
 
 /*

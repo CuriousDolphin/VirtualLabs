@@ -7,6 +7,6 @@ export interface Team {
   members: Student[];
   owner: Student;
   members_status: any;
-  confirmationToken?: string;
+  confirmation_token?: string;
   expiry_date?: string;
 }

@@ -22,17 +22,18 @@
     </mat-card>
   </div>
   <ng-template #noStudentTeam>
-    <!--  <h2>
-      Sorry you dont have an activated team. You can create new one or accept
-      pending requests;
-    </h2> -->
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title> Create team </mat-card-title>
-      </mat-card-header>
-
+    <mat-card-header>
+      <mat-card-title>Propose Team</mat-card-title></mat-card-header
+    >
+    <p *ngIf="_userRequests?.length > 0" class="p-16">
+      You have already proposed a team, you will be propose new team only when
+      all invited stedents reject/confirm your precedent proposal.
+    </p>
+    <mat-card
+      *ngIf="_userRequests?.length == 0"
+      style="margin-top: 24px; margin-bottom: 24px"
+    >
       <mat-card-content style="padding: 16px">
-        <mat-divider></mat-divider>
         <div
           fxLayout="row"
           fxLayout.xs="column"
@@ -153,7 +154,10 @@
                       style="width: 100%"
                     >
                       <mat-icon>account_circle</mat-icon>
-                      <p>
+                      <p fxLayout="row" fxLayoutAlign="start center">
+                        <mat-icon *ngIf="studentId && studentId === student.id"
+                          >star</mat-icon
+                        >
                         {{ student.name }}
                         {{ student.lastName }}
                       </p>
@@ -190,7 +194,7 @@
                     </div>
                   </mat-list-item>
                 </mat-list>
-                <p class="p-16">
+                <p class="p-16" *ngIf="team.expiry_date">
                   Expiry date: {{ team.expiry_date | date: "medium" }}
                 </p>
               </div>
@@ -223,16 +227,18 @@
               <div class="expansion-content">
                 <mat-list>
                   <div *ngFor="let student of team.members">
-                    <mat-list-item
-                      *ngIf="studentId && studentId !== student.id"
-                    >
+                    <mat-list-item>
                       <div
                         fxLayout="row"
                         fxLayoutAlign="space-between center"
                         style="width: 100%"
                       >
                         <mat-icon>account_circle</mat-icon>
-                        <p>
+                        <p fxLayout="row" fxLayoutAlign="start center">
+                          <mat-icon
+                            *ngIf="studentId && studentId === student.id"
+                            >star</mat-icon
+                          >
                           {{ student.name }}
                           {{ student.lastName }}
                         </p>
@@ -270,21 +276,29 @@
                     </mat-list-item>
                   </div>
                 </mat-list>
-                <p class="p-16">
+                <p class="p-16" *ngIf="team.expiry_date">
                   Expiry date: {{ team.expiry_date | date: "medium" }}
                 </p>
               </div>
               <mat-action-row>
-                <button mat-button color="warn" (click)="_rejectTeam(team)">
-                  <mat-icon class="mr-1">delete</mat-icon> Reject
-                </button>
-                <button
-                  mat-button
-                  style="color: #25b94b"
-                  (click)="_confirmTeam(team)"
-                >
-                  <mat-icon class="mr-1">check</mat-icon> Confirm
-                </button>
+                <div *ngIf="team.confirmation_token; else alreadyConfirmed">
+                  <button mat-button color="warn" (click)="_rejectTeam(team)">
+                    <mat-icon class="mr-1">delete</mat-icon> Reject
+                  </button>
+                  <button
+                    mat-button
+                    style="color: #25b94b"
+                    (click)="_confirmTeam(team)"
+                  >
+                    <mat-icon class="mr-1">check</mat-icon> Confirm
+                  </button>
+                </div>
+                <ng-template #alreadyConfirmed>
+                  <p>
+                    You have already confirmed this proposal, you must wait all
+                    other partecipants to confirm/reject this proposal
+                  </p>
+                </ng-template>
               </mat-action-row>
             </mat-expansion-panel>
           </mat-accordion>

@@ -92,6 +92,14 @@ export class CourseService {
       .post(url, proposal)
       .pipe(catchError((e) => this.handleError(e)));
   }
+  confirmTeam(token: string): Observable<any> {
+    const url = BASE_PATH + "notification/confirm/" + token;
+    return this.http.get(url).pipe(catchError((e) => this.handleError(e)));
+  }
+  rejectTeam(token: string): Observable<any> {
+    const url = BASE_PATH + "notification/reject/" + token;
+    return this.http.get(url).pipe(catchError((e) => this.handleError(e)));
+  }
 
   private handleError(error) {
     let errorMessage = "";
