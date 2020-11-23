@@ -22,7 +22,7 @@ public class Assignment {
     @JoinColumn(name = "course_id")
     private Course course;
     @OneToMany(mappedBy = "assignment")
-    private List<Paper> papers = new ArrayList<>();
+    private List<Paper> papers;
 
     public void addPaper(Paper paper) {
         if(!paper.getAssignment().equals(this)) paper.setAssignment(this);

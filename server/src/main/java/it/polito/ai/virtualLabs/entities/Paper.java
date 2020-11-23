@@ -1,5 +1,6 @@
 package it.polito.ai.virtualLabs.entities;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -24,7 +25,7 @@ public class Paper {
     @JoinColumn(name = "student_id")
     private Student student;
     @OneToMany(mappedBy = "paper")
-    private List<PaperSnapshot> paperSnapshots = new ArrayList<>();
+    private List<PaperSnapshot> paperSnapshots;
 
     public void addPaperSnapshot(PaperSnapshot paperSnapshot) {
         if(!paperSnapshot.getPaper().equals(this)) paperSnapshot.setPaper(this);
