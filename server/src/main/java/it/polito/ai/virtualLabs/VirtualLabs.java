@@ -1,10 +1,13 @@
 package it.polito.ai.virtualLabs;
+
 import it.polito.ai.virtualLabs.entities.Course;
 import it.polito.ai.virtualLabs.entities.Student;
 import it.polito.ai.virtualLabs.entities.User;
+import it.polito.ai.virtualLabs.entities.VmModel;
 import it.polito.ai.virtualLabs.repositories.CourseRepository;
 import it.polito.ai.virtualLabs.repositories.StudentRepository;
 import it.polito.ai.virtualLabs.repositories.UserRepository;
+import it.polito.ai.virtualLabs.repositories.VmModelRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,10 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-
 
 @SpringBootApplication
 public class VirtualLabs {
@@ -33,90 +33,103 @@ public class VirtualLabs {
     public static void main(String[] args) {
         SpringApplication.run(VirtualLabs.class, args);
     }
-    @Bean
-    CommandLineRunner runner(UserRepository users, CourseRepository courses, StudentRepository students, PasswordEncoder passwordEncoder ) {
-        return new CommandLineRunner() {
 
+    @Bean
+    CommandLineRunner runner(UserRepository userRepository, CourseRepository courseRepository, PasswordEncoder passwordEncoder, VmModelRepository vmModelRepository) {
+        return new CommandLineRunner() {
 
             @Override
             public void run(String... args) throws Exception {
-                try{
 
-                    courses.save(Course.builder()
-                            .name("Programmazione di sistema")
-                            .acronym("pds")
-                            .enabled(true)
-                            .min(10)
-                            .max(100)
-                            .build()
-                    );
-                    courses.save(Course.builder()
-                            .name("Machine Learning")
-                            .acronym("ML")
-                            .enabled(true)
-                            .min(10)
-                            .max(100)
-                            .build()
-                    );
-                    courses.save(Course.builder()
-                            .name("Applicazioni Internet")
-                            .acronym("AI")
-                            .enabled(true)
-                            .min(10)
-                            .max(100)
-                            .build()
-                    );
+                generateMockCourses(courseRepository, vmModelRepository);
 
+                generateMockUsers(userRepository, passwordEncoder);
 
-                    users.save(User.builder()
-                            .id("sTeacher")
-                            .username("teacher@polito.it")
-                            .password(passwordEncoder.encode("pwd"))
-                            .roles(Arrays.asList( "ROLE_PROF"))
-                            .build()
-                    );
-
-                    users.save(User.builder()
-                            .id("sADMIN")
-                            .username("admin@polito.it")
-                            .password(passwordEncoder.encode("pwd"))
-                            .roles(Arrays.asList("ROLE_STUDENT","ROLE_PROF", "ROLE_ADMIN"))
-                            .build()
-                    );
-                    users.save(User.builder()
-                            .id("sStudent")
-                            .username("student@studenti.polito.it")
-                            .password(passwordEncoder.encode("pwd"))
-                            .roles(Arrays.asList( "ROLE_STUDENT"))
-                            .build()
-                    );
-
-
-                    // add students associated with user
-                    students.save(
-                            Student.builder()
-                                    .id("sStudent")
-                                    .email("student@studenti.polito.it")
-                                    .name("MARIO")
-                                    .lastName("ROSSI")
-                                    .build()
-                    );
-
-
-
-                }catch (Exception e){
-                    System.out.println("Exception insert : "+e.getMessage().toString());
-                }
-
-                courses.findAll().forEach(v ->  System.out.println(" Course :" + v.toString()));
-                users.findAll().forEach(v ->  System.out.println(" User :" + v.toString()));
-                students.findAll().forEach(v ->  System.out.println(" Student :" + v.toString()));
-
-
+                System.out.println("Printing all courses:");
+                courseRepository.findAll().forEach(v ->  System.out.println(" Course :" + v.toString()));
+                System.out.println("Printing all users:");
+                userRepository.findAll().forEach(v ->  System.out.println(" User :" + v.toString()));
 
             }
         };
     }
 
+    /* generates (if not already exist) mock courses and relatives vmmodels */
+    public void generateMockCourses(CourseRepository cr, VmModelRepository vmr) {
+        try {
+            cr.save(Course.builder()
+                    .name("Programmazione di Sistema")
+                    .acronym("PDS")
+                    .enabled(true)
+                    .min(2)
+                    .max(4)
+                    .build());
+            cr.save(Course.builder()
+                    .name("Machine Learning")
+                    .acronym("ML")
+                    .enabled(true)
+                    .min(3)
+                    .max(6)
+                    .build());
+            cr.save(Course.builder()
+                    .name("Applicazioni Internet")
+                    .acronym("AI")
+                    .enabled(false)
+                    .min(5)
+                    .max(10)
+                    .build());
+
+            Course course = cr.findByNameIgnoreCase("Programmazione Di Sistema").get();
+            vmr.save(VmModel.builder()
+                    .name("VmModelDefault-" + course.getAcronym())
+                    .image("ThisIsTheDefaultVmImage")
+                    .course(course)
+                    .build());
+            course = cr.findByNameIgnoreCase("Machine Learning").get();
+            vmr.save(VmModel.builder()
+                    .name("VmModelDefault-" + course.getAcronym())
+                    .image("ThisIsTheDefaultVmImage")
+                    .course(course)
+                    .build());
+            course = cr.findByNameIgnoreCase("Applicazioni Internet").get();
+            vmr.save(VmModel.builder()
+                    .name("VmModelDefault-" + course.getAcronym())
+                    .image("ThisIsTheDefaultVmImage")
+                    .course(course)
+                    .build());
+        } catch (Exception e) {
+            System.out.println("Exception insert courses/vmmodels: " + e.getMessage());
+        }
+    }
+
+    /* generates (if not already exist) mock student, teacher, admin */
+    public void generateMockUsers(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        try {
+            userRepository.save(User.builder()
+                    .id("sStudent")
+                    .username("student@studenti.polito.it")
+                    .password(passwordEncoder.encode("pwd"))
+                    .roles(Arrays.asList("ROLE_STUDENT"))
+                    .build()
+            );
+            userRepository.save(User.builder()
+                    .id("sTeacher")
+                    .username("teacher@polito.it")
+                    .password(passwordEncoder.encode("pwd"))
+                    .roles(Arrays.asList("ROLE_PROF"))
+                    .build()
+            );
+
+            userRepository.save(User.builder()
+                    .id("sADMIN")
+                    .username("admin@polito.it")
+                    .password(passwordEncoder.encode("pwd"))
+                    .roles(Arrays.asList("ROLE_STUDENT", "ROLE_PROF", "ROLE_ADMIN"))
+                    .build()
+            );
+        } catch (Exception e) {
+            System.out.println("Exception insert user: " + e.getMessage());
+        }
+    }
 
 }

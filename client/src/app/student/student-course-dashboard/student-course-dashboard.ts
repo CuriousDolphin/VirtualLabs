@@ -9,6 +9,8 @@ import { ToastService } from "src/app/services/toast.service";
 import { UtilsService } from "src/app/services/utils.service";
 import { Team } from "src/app/models/team.model";
 import { AuthService } from "src/app/auth/auth.service";
+import { Student } from "src/app/models/student.model";
+import { TeamProposal } from "src/app/models/teamProposal.model";
 
 @Component({
   selector: "app-course-dashboard",
@@ -21,13 +23,18 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
     null
   );
   private _reloadCourse$: BehaviorSubject<void> = new BehaviorSubject(null);
+  private _reloadTeams$: BehaviorSubject<void> = new BehaviorSubject(null);
 
+  private createTeamSubscription: Subscription;
+  private confirmTeamSubscription: Subscription;
+  private rejectTeamSubscription: Subscription;
   private courseSubscription: Subscription;
   private routeSubscription: Subscription;
   currentCourse: Course;
   currentCourse$: Observable<Course>;
   studentTeams$: Observable<Team[]>;
-
+  studentsNotInTeams$: Observable<Student[]>;
+  studentId: String;
   isLoading = false;
   constructor(
     private route: ActivatedRoute,
@@ -41,6 +48,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log("student dashboard on init");
+    this.studentId = this.authService.getUserId();
 
     // take the name of the route (course name)
     this.routeSubscription = this.route.url.subscribe((evt) => {
@@ -51,10 +59,14 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       }
     });
     // get current course after name changes and reload course is triggered
-    this.currentCourse$ = this._currentCourseName$.pipe(
+    this.currentCourse$ = combineLatest([
+      this._currentCourseName$,
+      this._reloadCourse$,
+    ]).pipe(
+      map(([courseName, reload]) => courseName),
       tap(() => (this.isLoading = true)),
-      switchMap((name) => {
-        if (name) return this.courseService.getCourse(name);
+      switchMap((courseName) => {
+        if (courseName) return this.courseService.getCourse(courseName);
       }),
       tap((course) => {
         this.currentCourse = course;
@@ -62,8 +74,12 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       tap(() => (this.isLoading = false))
     );
 
-    this.studentTeams$ = this._currentCourseName$.pipe(
+    this.studentTeams$ = combineLatest([
+      this._currentCourseName$,
+      this._reloadTeams$,
+    ]).pipe(
       tap(() => (this.isLoading = true)),
+      map(([courseName, reload]) => courseName),
       switchMap((courseName) => {
         if (courseName)
           return this.studentService.getTeamsByStudentIdCourseName(
@@ -73,10 +89,89 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       }),
       tap(() => (this.isLoading = false))
     );
+
+    this.studentsNotInTeams$ = combineLatest([
+      this._currentCourseName$,
+      this._reloadTeams$,
+    ]).pipe(
+      map(([courseName, reload]) => courseName),
+      tap(
+        () => ((this.isLoading = true), console.log("get student not in team"))
+      ),
+      switchMap((courseName) => {
+        if (courseName)
+          return this.courseService.getStudentsNotInTeam(courseName);
+      }),
+      tap(() => (this.isLoading = false))
+    );
+  }
+
+  createTeam(proposal: TeamProposal) {
+    if (this.createTeamSubscription) this.createTeamSubscription.unsubscribe();
+
+    this.createTeamSubscription = this.courseService
+      .proposeTeam(this.currentCourse.name, proposal)
+      .subscribe(
+        (data) => {
+          this.toastService.success(
+            "Team propose success ! Team members will be notified."
+          );
+          this._reloadTeams();
+        },
+        (error) => {
+          this.toastService.error("Error in team propose, try again later");
+          this._reloadTeams();
+        }
+      );
+  }
+  confirmTeam(team: Team) {
+    if (this.confirmTeamSubscription)
+      this.confirmTeamSubscription.unsubscribe();
+
+    this.confirmTeamSubscription = this.courseService
+      .confirmTeam(team.confirmation_token)
+      .subscribe(
+        (data) => {
+          this.toastService.success("Team confirm success ! \n");
+          this._reloadTeams();
+        },
+        (error) => {
+          this.toastService.error(
+            "Error in team confirmation, try again later \n" + error
+          );
+          this._reloadTeams();
+        }
+      );
+  }
+  rejectTeam(team: Team) {
+    if (this.rejectTeamSubscription) this.rejectTeamSubscription.unsubscribe();
+
+    this.rejectTeamSubscription = this.courseService
+      .rejectTeam(team.confirmation_token)
+      .subscribe(
+        (data) => {
+          this.toastService.success("Team confirm success ! \n");
+          this._reloadTeams();
+        },
+        (error) => {
+          this.toastService.error(
+            "Error in team confirmation, try again later \n" + error
+          );
+          this._reloadTeams();
+        }
+      );
+  }
+  _reloadTeams() {
+    this._reloadTeams$.next();
+  }
+  reloadData() {
+    this._reloadCourse$.next();
+    this._reloadTeams$.next();
   }
 
   ngOnDestroy(): void {
     if (this.courseSubscription) this.courseSubscription.unsubscribe();
     if (this.routeSubscription) this.routeSubscription.unsubscribe();
+    if (this.createTeamSubscription) this.createTeamSubscription.unsubscribe();
   }
 }

@@ -2,15 +2,19 @@ package it.polito.ai.virtualLabs.entities;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
 @Data
-public class Token {
+public class TokenTeam {
     @Id
     String id;
-    Long teamId;
+
+    @OneToOne
+    @JoinColumn(name = "team_id")
+    Team team;
+
+    String studentId;
     Timestamp expiryDate;
 }

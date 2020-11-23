@@ -90,6 +90,7 @@ import { AssignmentComponent } from './teacher/assignment/assignment.component';
     MatSlideToggleModule,
     MatTooltipModule,
     MatCardModule,
+    MatExpansionModule,
   ],
   providers: [
     {

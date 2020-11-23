@@ -10,6 +10,8 @@ import { TeacherGuard } from "./auth/teacher.guard";
 import { StudentComponent } from "./student/student.component";
 import { StudentGuard } from "./auth/student.guard";
 import { StudentCourseDashboard } from "./student/student-course-dashboard/student-course-dashboard";
+import { StudentLandingPageComponent } from "./student/student-landing-page/student-landing-page.component";
+import { TeacherLandingPageComponent } from "./teacher/teacher-landing-page/teacher-landing-page.component";
 const routes: Routes = [
   { path: "home", component: HomeComponent },
   { path: "", redirectTo: "home", pathMatch: "full" },
@@ -18,6 +20,7 @@ const routes: Routes = [
     path: "teacher",
     component: TeacherComponent,
     children: [
+      { path: "", component: TeacherLandingPageComponent },
       {
         path: ":id_course",
         component: CourseDashboard,
@@ -30,6 +33,10 @@ const routes: Routes = [
     path: "student",
     component: StudentComponent,
     children: [
+      {
+        path: "",
+        component: StudentLandingPageComponent,
+      },
       {
         path: ":id_course",
         component: StudentCourseDashboard,

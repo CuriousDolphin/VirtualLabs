@@ -2,10 +2,9 @@ package it.polito.ai.virtualLabs;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.util.List;
+
 
 @Data
 public class TeamProposal{
@@ -15,4 +14,12 @@ public class TeamProposal{
     String name;
     @NotNull
     List<String> members; //students id
+    @NotBlank
+    @NotNull
+    @NotEmpty
+    String owner;
+    @NotNull
+    @Min(1)
+    @Max(30)
+    Integer daysTimeout;
 }

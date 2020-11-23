@@ -31,6 +31,8 @@ public class CourseController {
     @Autowired
     TeamService teamService;
 
+
+
     @Autowired
     NotificationService notificationService;
 
@@ -102,9 +104,10 @@ public class CourseController {
     TeamDTO proposeTeam(@Valid @RequestBody(required = true) TeamProposal proposal, @PathVariable("name") String courseName, BindingResult result) {
 
         try {
+            System.out.println("_______________________"+proposal.toString());
 
-            TeamDTO team = teamService.proposeTeam(courseName, proposal.getName(), proposal.getMembers());
-            notificationService.notifyTeam(team,proposal.getMembers());
+            TeamDTO team = teamService.proposeTeam(courseName, proposal.getName(), proposal.getMembers(),proposal.getOwner(),proposal.getDaysTimeout());
+            notificationService.notifyTeam(team,proposal.getMembers(),proposal.getDaysTimeout());
 
             return team;
 
@@ -119,18 +122,17 @@ public class CourseController {
         } catch (StudentDuplicate se) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Student  DUPLICATE");
         } catch (StudentAlreadyHaveTeam se) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Student  already have a team");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Student  already have a enabled team");
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.toString());
+            System.out.println("___________________________________________________"+e.toString());
+
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
     }
 
 
     @GetMapping("/{name}")
     CourseDTO getOne(@PathVariable("name") String name) {
-
-
-
         try{
             Optional<CourseDTO> course = teamService.getCourse(name);
             if (course.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, name);
@@ -158,6 +160,16 @@ public class CourseController {
         try{
             return teamService.getTeamsForStudentCourse(idStudent,name);
 
+
+        }catch (CourseNotFoundException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
+        }
+    }
+
+    @GetMapping("/{name}/pendingTeams/{idStudent}")
+    List<TeamDTO> getStudentPendingTeams(@PathVariable("name") String name,@PathVariable("idStudent") String idStudent) {
+        try{
+            return teamService.getPendingTeamsForStudent(idStudent);
 
         }catch (CourseNotFoundException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
@@ -193,18 +205,6 @@ public class CourseController {
 
     @PatchMapping("/{name}")
     CourseDTO updateCourse(@RequestBody @Valid CourseDTO course, @PathVariable("name") String courseName) {
-        /* if (!input.containsKey("enabled")) throw new ResponseStatusException(HttpStatus.CONFLICT);
-        try {
-            if(input.get("enabled")==true){
-                teamService.enableCourse(courseName);
-            }else{
-                teamService.disableCourse(courseName);
-            }
-        } catch (CourseNotFoundException ce) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
-        }
-
-         */
 
         try {
             CourseDTO c=teamService.updateCourse(course,courseName);

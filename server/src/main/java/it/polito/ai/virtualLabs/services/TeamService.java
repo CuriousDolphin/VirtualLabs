@@ -72,7 +72,7 @@ public interface TeamService {
     List<StudentDTO> getMembers(Long teamId);
 
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT')")
-    TeamDTO proposeTeam(String courseId,String name,List<String> memberIds);
+    TeamDTO proposeTeam(String courseName, String name, List<String> memberIds ,String ownerId, Integer timeoutDays);
 
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') ")
     List<TeamDTO> getTeamsForCourse(String courseName);
@@ -83,6 +83,12 @@ public interface TeamService {
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or hasRole('ROLE_STUDENT')")
     List<StudentDTO> getAvailableStudents(String courseName);
 
+
+    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT') ")
     void activateTeam(Long teamId);
+    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT') ")
     void evictTeam(Long teamId);
+
+    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT') ")
+    List<TeamDTO> getPendingTeamsForStudent(String studentId);
 }
