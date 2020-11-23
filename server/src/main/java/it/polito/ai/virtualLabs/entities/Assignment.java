@@ -1,5 +1,6 @@
 package it.polito.ai.virtualLabs.entities;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Data
+@Builder
 public class Assignment {
     @Id
     @GeneratedValue

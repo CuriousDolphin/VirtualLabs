@@ -9,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Data
+@Builder
 public class Paper {
     @Id
     @GeneratedValue

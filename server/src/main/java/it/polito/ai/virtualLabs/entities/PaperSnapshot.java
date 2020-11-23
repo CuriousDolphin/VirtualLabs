@@ -1,5 +1,6 @@
 package it.polito.ai.virtualLabs.entities;
 
+import lombok.Builder;
 import lombok.Data;
 import org.hibernate.mapping.Join;
 
@@ -8,6 +9,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Data
+@Builder
 public class PaperSnapshot {
     @Id
     @GeneratedValue
