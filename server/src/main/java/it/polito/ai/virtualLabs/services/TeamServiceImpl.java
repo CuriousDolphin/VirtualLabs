@@ -34,14 +34,14 @@ public class TeamServiceImpl implements TeamService {
     @Autowired
     TokenTeamRepository tokenRepository;
 
-
-    @Autowired
-    ModelMapper modelMapper;
-    @Autowired
-    VmModelRepository vmModelRepository;
     @Autowired
     VmConfigurationRepository vmConfigurationRepository;
 
+    @Autowired
+    ModelMapper modelMapper;
+
+    @Autowired
+    VmModelRepository vmModelRepository;
 
     @Override
     public boolean addCourse(CourseDTO course) {
@@ -50,25 +50,14 @@ public class TeamServiceImpl implements TeamService {
         } else {
             if (course.getName() != null && !course.getName().equals("")) {
                 Course newCourse = modelMapper.map(course, Course.class);
-                //default VmModel
+                //default VmModel for course
                 VmModel newVmModel = VmModel.builder()
                         .name("VmModelDefault-"+course.getAcronym())
                         .image("ThisIsTheDefaultVmImage")
                         .course(newCourse)
                         .build();
-                //default VmConfiguration
-                VmConfiguration newVmConfiguration = VmConfiguration.builder()
-                        .team(null)
-                        .vmModel(newVmModel)
-                        .maxVcpusPerVm(5)
-                        .maxRamPerVm(500)
-                        .maxDiskPerVm(500)
-                        .maxRunningVms(2)
-                        .maxVms(4)
-                        .build();
                 vmModelRepository.save(newVmModel);
                 courseRepository.save(newCourse);
-                vmConfigurationRepository.save(newVmConfiguration);
                 return true;
             }
             return false;
@@ -381,7 +370,7 @@ public class TeamServiceImpl implements TeamService {
             throw new CourseNotEnabled();
 
         // course limit min and max
-        if (memberIds.size() > course.getMax() || memberIds.size() < course.getMin())
+        if ((memberIds.size() + 1) > course.getMax() || (memberIds.size() + 1) < course.getMin())
             throw new CourseMinMax();
         List<Student> members = new ArrayList<>();
         memberIds.forEach(
@@ -415,11 +404,12 @@ public class TeamServiceImpl implements TeamService {
         // inserimento team
         TeamDTO teamDTO = new TeamDTO();
         teamDTO.setName(name);
-        Team newTeam = teamRepository.save(modelMapper.map(teamDTO, Team.class));
-
+        Team newTeam = modelMapper.map(teamDTO, Team.class);
         newTeam.setOwner(owner);
         newTeam.setCourse(course);
         newTeam.setMembers(members);
+        newTeam.setVmConfiguration(vmConfigurationRepository.findAll().stream().filter(vm -> vm.getVmModel() == null).findFirst().get());
+        teamRepository.save(newTeam);
         System.out.println("new team saved " + newTeam.toString());
 
         course.addTeam(newTeam);

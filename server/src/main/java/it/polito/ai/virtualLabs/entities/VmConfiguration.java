@@ -21,10 +21,6 @@ public class VmConfiguration {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "team_id")
-    Team team;
-
-    @ManyToOne
     @JoinColumn(name = "VmModel_id")
     VmModel vmModel;
 
