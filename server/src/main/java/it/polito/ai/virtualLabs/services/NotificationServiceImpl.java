@@ -9,7 +9,8 @@ import it.polito.ai.virtualLabs.repositories.RegistrationTokenRepository;
 import it.polito.ai.virtualLabs.repositories.StudentRepository;
 import it.polito.ai.virtualLabs.repositories.TeamRepository;
 import it.polito.ai.virtualLabs.repositories.TokenTeamRepository;
-import javafx.util.Pair;
+import lombok.Builder;
+import lombok.Data;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -56,7 +57,7 @@ public class NotificationServiceImpl implements NotificationService{
         Timestamp t = new Timestamp(System.currentTimeMillis());
         System.out.println("SCHEDULED TASK "+t);
         List<TokenTeam> expired=tokenRepository.findAllByExpiryBefore(t);
-        System.out.println("FOUNDED  "+expired.size()+" EXPIRED TOKEN");
+        System.out.println("FOUNDED  "+expired.size()+" EXPIRED TEAM TOKEN");
 
         ArrayList<Long> teamsId = new ArrayList<Long>();
 
@@ -76,6 +77,31 @@ public class NotificationServiceImpl implements NotificationService{
                 continue;
             }
         }
+
+        List<RegistrationToken> expiredRegistration =registrationRepository.findAllByExpiryBefore(t);
+        System.out.println("FOUNDED  "+expiredRegistration.size()+" EXPIRED USER TOKEN");
+
+
+
+        ArrayList<String> usersId = new ArrayList<String>();
+
+        expiredRegistration.forEach(token ->{
+            usersId.add(token.getUser().getId());
+            registrationRepository.delete(token);
+        });
+
+        for (String id:usersId){
+            try{
+                if(registrationRepository.existsById(id)){
+                    registrationRepository.deleteById(id);
+                    System.out.println("Eliminato user "+id);
+                }
+            }catch(Exception e){
+                System.out.println("Errore nel rimuovere l'utente "+e.toString());
+                continue;
+            }
+        }
+
     }
 
 
@@ -90,7 +116,7 @@ public class NotificationServiceImpl implements NotificationService{
 
 
 
-    private Pair<Student,Team> checkToken(String token){ // controlla la validita del token, se valido lo elimina,aggiunge il team allo studente e ritorna il team id
+    private StudentTeamPair checkToken(String token){ // controlla la validita del token, se valido lo elimina,aggiunge il team allo studente e ritorna il team id
         Optional<TokenTeam> t = tokenRepository.findById(token);
         if(t.isEmpty()) {
             System.out.println("TOKEN NON ESISTE");
@@ -108,16 +134,18 @@ public class NotificationServiceImpl implements NotificationService{
         Team team=t.get().getTeam();
 
         tokenRepository.delete(t.get()); // elimino il token
-        return new Pair<Student,Team>(student,team);
+        return StudentTeamPair.builder().student(student).team(team).build();
+        //return new Pair<Student,Team>(student,team);
 
     }
 
     @Override
     public boolean confirm(String token)
     {
-        Pair<Student,Team> res= checkToken(token);
-        Student s=res.getKey();
-        Team team=res.getValue();
+        //Pair<Student,Team> res= checkToken(token);
+        StudentTeamPair res=checkToken(token);
+        Student s=res.getStudent();
+        Team team=res.getTeam();
         Long teamId =team.getId();
         s.addTeam(team);
 
@@ -126,7 +154,7 @@ public class NotificationServiceImpl implements NotificationService{
         if(tokenRepository.findAllByTeamId(teamId).size() > 0) {
             System.out.println("Ci sono ancora token pendenti =(");
             return false;
-        }else{
+        }else{ // tutti hanno confermato, attivo il team
             teamService.activateTeam(teamId);
             return true;
         }
@@ -135,7 +163,7 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     public boolean reject(String token) {
-        Long teamId=checkToken(token).getValue().getId();
+        Long teamId=checkToken(token).getTeam().getId();
         if (teamId == null) return false;
 
         List<TokenTeam> list=tokenRepository.findAllByTeamId(teamId);
@@ -148,25 +176,24 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    @Async
-    public void notifyTeam(TeamDTO teamDto, List<String> memberIds) {
+    public void notifyTeam(TeamDTO teamDto, List<String> memberIds,Integer timeoutDays) {
         long now = System.currentTimeMillis();
         memberIds.forEach(id ->{
             TokenTeam t = new TokenTeam();
             t.setId(UUID.randomUUID().toString());
-            t.setExpiryDate(new Timestamp(now +3600000));
+            t.setExpiryDate(new Timestamp(now +timeoutDays*24*3600*1000));
             t.setStudentId(id);
             t.setTeam(modelMapper.map(teamDto, Team.class));
             //t.setTeamId(dto.getId());
 
             tokenRepository.save(t);
 
-            String confirmLink = linkTo(NotificationController.class).slash("confirm").slash(t.getId()).toString();
+            /* String confirmLink = linkTo(NotificationController.class).slash("confirm").slash(t.getId()).toString();
             String rejectLink = linkTo(NotificationController.class).slash("reject").slash(t.getId()).toString();
             String subject="You have invited to join group "+ teamDto.getName();
             String text ="confirm:  "+confirmLink+"\n reject: "+rejectLink;
 
-            sendMessage('s'+id+"@studenti.polito.it",subject,text);
+            sendMessage('s'+id+"@studenti.polito.it",Ssubject,text); */
 
         });
 
@@ -219,4 +246,11 @@ public class NotificationServiceImpl implements NotificationService{
         }
         return res;
     }
+}
+
+@Builder
+@Data
+class StudentTeamPair{
+    Student student;
+    Team team;
 }

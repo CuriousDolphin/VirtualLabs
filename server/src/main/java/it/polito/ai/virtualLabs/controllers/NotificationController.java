@@ -3,15 +3,14 @@ package it.polito.ai.virtualLabs.controllers;
 import it.polito.ai.virtualLabs.exceptions.TokenNotFoundException;
 import it.polito.ai.virtualLabs.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-@Controller
-@RequestMapping("/notification")
+@RestController
+@RequestMapping("/api/notification")
 public class NotificationController {
     @Autowired
     NotificationService notificationService;
@@ -19,42 +18,46 @@ public class NotificationController {
 
 
     @GetMapping("/confirm/{token}")
-    public String confirm(@PathVariable String token, Model m) {
+    void confirm(@PathVariable String token) {
+        String response;
         try {
             Boolean ris = this.notificationService.confirm(token);
             if (!ris) {
                 System.out.println("LA CONFERMA  NON E' ANDATA A BUON FINE");
-                m.addAttribute("message", "Altri partecipanti devono ancora confermare");
+                response = "Team confermato! ma altri partecipanti devono ancora confermare";
             } else {
                 System.out.println("LA CONFERMA  E' ANDATA A BUON FINE,GRUPPO ATTIVATO");
-                m.addAttribute("message", "LA CONFERMA  E' ANDATA A BUON FINE,GRUPPO ATTIVATO");
+                response= "Team confermato! tutti i membri hanno confermato, gruppo attivato!";
 
             }
         } catch (TokenNotFoundException e) {
-            m.addAttribute("message", "Token non valido o scaduto");
+           throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Token not found or expired");
         }
 
 
-        return "confirm";
+       // return response;
     }
 
     @GetMapping("/reject/{token}")
-    public String reject(@PathVariable String token, Model m) {
+    void  reject(@PathVariable String token, Model m) {
+        String response;
+
         try {
             Boolean ris = this.notificationService.reject(token);
             if (!ris) {
                 System.out.println("TOKEN NON VALIDO");
-                m.addAttribute("message", "Token non esistente o scaduto");
+               response="Token non esistente o scaduto";
+
             } else {
                 System.out.println("LA DISDETTA e' ANDATA A BUON FINE");
-                m.addAttribute("message", "La disdetta  e' andata a buon fine, il gruppo e' stato eliminato");
+                response="La disdetta  e' andata a buon fine, il gruppo e' stato eliminato";
             }
         } catch (TokenNotFoundException e) {
-            m.addAttribute("message", "Token non valido o scaduto");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Token not found or expired");
         }
 
 
-        return "reject";
+      //  return response;
     }
 
     @GetMapping("/confirm_registration/{token}")

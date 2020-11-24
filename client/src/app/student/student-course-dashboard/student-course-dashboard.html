@@ -13,6 +13,15 @@
       enabled:{{currentCourse?.enabled}}
     </div>
   </div>
+
+  <button
+    mat-button
+    color="primary"
+    class="ml-1 edit-button"
+    (click)="reloadData()"
+  >
+    <mat-icon> refresh </mat-icon>
+  </button>
 </mat-toolbar>
 
 <mat-tab-group>
@@ -24,6 +33,9 @@
         [currentCourse]="currentCourse"
         [teams]="studentTeams$ | async"
         [studentsNotInTeams]="studentsNotInTeams$ | async"
+        (createTeam)="createTeam($event)"
+        (confirmTeam)="confirmTeam($event)"
+        (rejectTeam)="rejectTeam($event)"
       ></app-teams>
     </div>
   </mat-tab>
