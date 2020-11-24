@@ -1,21 +1,27 @@
 package it.polito.ai.virtualLabs.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RegistrationToken {
-   /* private static final int EXPIRATION = 60 * 24;
+   private static final int EXPIRATION = 60 * 24;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private String id;
 
-    private String token;
-
-    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "id")
+    @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     private Date expiryDate;
@@ -27,6 +33,4 @@ public class RegistrationToken {
         return new Date(cal.getTime().getTime());
     }
 
-    // standard constructors, getters and setters
-    */
 }

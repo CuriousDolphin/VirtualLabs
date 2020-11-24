@@ -1,5 +1,6 @@
 package it.polito.ai.virtualLabs.controllers;
 
+import it.polito.ai.virtualLabs.UserProposal;
 import it.polito.ai.virtualLabs.dtos.UserDTO;
 import it.polito.ai.virtualLabs.entities.Student;
 import it.polito.ai.virtualLabs.entities.Teacher;
@@ -10,6 +11,8 @@ import it.polito.ai.virtualLabs.repositories.CourseRepository;
 import it.polito.ai.virtualLabs.repositories.UserRepository;
 import it.polito.ai.virtualLabs.security.AuthenticationRequest;
 import it.polito.ai.virtualLabs.security.JwtTokenProvider;
+import it.polito.ai.virtualLabs.services.NotificationService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,9 +48,12 @@ public class AuthController {
     StudentRepository students;
     @Autowired
     TeacherRepository teachers;
-
+    @Autowired
+    NotificationService notificationService;
     @Autowired
     StudentRepository studentRepository;
+    @Autowired
+    ModelMapper modelMapper;
 
     @PostMapping("/signin")
     public ResponseEntity signin(@RequestBody AuthenticationRequest data) {
@@ -90,7 +96,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid UserDTO data) {
+    public ResponseEntity register(@RequestBody @Valid UserProposal data) {
         try {
             String username = data.getUsername();
             String psw = data.getPassword();
@@ -99,6 +105,7 @@ public class AuthController {
             Student student;
             Optional<Teacher> optTeacher;
             Teacher teacher;
+            System.out.println(data.toString());
             if(username.endsWith("@studenti.polito.it") && username.startsWith("s"))
             {
                 user = AddGenericUser(username,psw);
@@ -124,6 +131,7 @@ public class AuthController {
                             .lastName(data.getLastName())
                             .build();
                     students.save(student);
+
                 }
             }
             else if(username.endsWith("@polito.it") && username.startsWith("d"))
@@ -153,6 +161,7 @@ public class AuthController {
                 throw new BadCredentialsException("Invalid username/password supplied");
             }
 
+            notificationService.notifyRegistration(modelMapper.map(user, UserDTO.class));
             //TODO deve ritornare uno userDTO e devo fare la conversione da user a dto
             Map<Object, Object> model = new HashMap<>();
             model.put("username", user.getUsername());
