@@ -25,8 +25,8 @@ public class Team {
     List<Student> members = new ArrayList<>();
     @OneToMany(mappedBy = "team")
     private List<VmInstance> vmInstances;
-    @OneToMany(mappedBy = "team")
-    private List<VmConfiguration> vmConfigurations;
+    @OneToOne
+    private VmConfiguration vmConfiguration;
     @Id
     @GeneratedValue
     private Long id;
@@ -65,5 +65,9 @@ public class Team {
 
     }
 
+    @Override
+    public String toString(){
+        return this.name+"_"+this.course.getName();
+    }
 
 }

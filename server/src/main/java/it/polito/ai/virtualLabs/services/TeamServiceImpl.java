@@ -5,17 +5,9 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import it.polito.ai.virtualLabs.dtos.CourseDTO;
 import it.polito.ai.virtualLabs.dtos.StudentDTO;
 import it.polito.ai.virtualLabs.dtos.TeamDTO;
-import it.polito.ai.virtualLabs.entities.Course;
-import it.polito.ai.virtualLabs.entities.Student;
-import it.polito.ai.virtualLabs.entities.Team;
-import it.polito.ai.virtualLabs.entities.TokenTeam;
-import it.polito.ai.virtualLabs.entities.VmModel;
+import it.polito.ai.virtualLabs.entities.*;
 import it.polito.ai.virtualLabs.exceptions.*;
-import it.polito.ai.virtualLabs.repositories.CourseRepository;
-import it.polito.ai.virtualLabs.repositories.StudentRepository;
-import it.polito.ai.virtualLabs.repositories.TeamRepository;
-import it.polito.ai.virtualLabs.repositories.TokenTeamRepository;
-import it.polito.ai.virtualLabs.repositories.VmModelRepository;
+import it.polito.ai.virtualLabs.repositories.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,12 +34,14 @@ public class TeamServiceImpl implements TeamService {
     @Autowired
     TokenTeamRepository tokenRepository;
 
+    @Autowired
+    VmConfigurationRepository vmConfigurationRepository;
 
     @Autowired
     ModelMapper modelMapper;
+
     @Autowired
     VmModelRepository vmModelRepository;
-
 
     @Override
     public boolean addCourse(CourseDTO course) {
@@ -56,6 +50,7 @@ public class TeamServiceImpl implements TeamService {
         } else {
             if (course.getName() != null && !course.getName().equals("")) {
                 Course newCourse = modelMapper.map(course, Course.class);
+                //default VmModel for course
                 VmModel newVmModel = VmModel.builder()
                         .name("VmModelDefault-"+course.getAcronym())
                         .image("ThisIsTheDefaultVmImage")
@@ -375,7 +370,7 @@ public class TeamServiceImpl implements TeamService {
             throw new CourseNotEnabled();
 
         // course limit min and max
-        if (memberIds.size() > course.getMax() || memberIds.size() < course.getMin())
+        if ((memberIds.size() + 1) > course.getMax() || (memberIds.size() + 1) < course.getMin())
             throw new CourseMinMax();
         List<Student> members = new ArrayList<>();
         memberIds.forEach(
@@ -409,11 +404,12 @@ public class TeamServiceImpl implements TeamService {
         // inserimento team
         TeamDTO teamDTO = new TeamDTO();
         teamDTO.setName(name);
-        Team newTeam = teamRepository.save(modelMapper.map(teamDTO, Team.class));
-
+        Team newTeam = modelMapper.map(teamDTO, Team.class);
         newTeam.setOwner(owner);
         newTeam.setCourse(course);
         newTeam.setMembers(members);
+        newTeam.setVmConfiguration(vmConfigurationRepository.findAll().stream().filter(vm -> vm.getVmModel() == null).findFirst().get());
+        teamRepository.save(newTeam);
         System.out.println("new team saved " + newTeam.toString());
 
         course.addTeam(newTeam);
