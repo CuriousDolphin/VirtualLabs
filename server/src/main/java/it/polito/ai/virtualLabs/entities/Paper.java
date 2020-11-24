@@ -24,7 +24,7 @@ public class Paper {
     @ManyToOne
     @JoinColumn(name = "student_id")
     private Student student;
-    @OneToMany(mappedBy = "paper")
+    @OneToMany(mappedBy = "paper", fetch = FetchType.LAZY)
     private List<PaperSnapshot> paperSnapshots;
 
     public void addPaperSnapshot(PaperSnapshot paperSnapshot) {

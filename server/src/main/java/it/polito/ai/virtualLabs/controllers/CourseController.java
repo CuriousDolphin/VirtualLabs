@@ -1,6 +1,7 @@
 package it.polito.ai.virtualLabs.controllers;
 
 import it.polito.ai.virtualLabs.TeamProposal;
+import it.polito.ai.virtualLabs.dtos.AssignmentDTO;
 import it.polito.ai.virtualLabs.dtos.CourseDTO;
 import it.polito.ai.virtualLabs.dtos.StudentDTO;
 import it.polito.ai.virtualLabs.dtos.TeamDTO;
@@ -199,6 +200,15 @@ public class CourseController {
         try{
             return teamService.getEnrolledStudents(name);
         }catch (CourseNotFoundException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
+        }
+    }
+
+    @GetMapping("/{name}/assignments")
+    List<AssignmentDTO> getAllAssignmentsByCourse(@PathVariable("name") String courseName) {
+        try {
+            return teamService.getAllAssignmentsByCourse(courseName);
+        } catch (CourseNotFoundException courseNotFoundException) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
         }
     }

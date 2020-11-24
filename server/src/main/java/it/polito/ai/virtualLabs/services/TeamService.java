@@ -1,8 +1,11 @@
 package it.polito.ai.virtualLabs.services;
 
+import it.polito.ai.virtualLabs.dtos.AssignmentDTO;
 import it.polito.ai.virtualLabs.dtos.CourseDTO;
 import it.polito.ai.virtualLabs.dtos.StudentDTO;
 import it.polito.ai.virtualLabs.dtos.TeamDTO;
+import it.polito.ai.virtualLabs.entities.Assignment;
+import it.polito.ai.virtualLabs.entities.Student;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.io.Reader;
@@ -83,6 +86,8 @@ public interface TeamService {
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or hasRole('ROLE_STUDENT')")
     List<StudentDTO> getAvailableStudents(String courseName);
 
+    @PreAuthorize("hasrRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
+    List<AssignmentDTO> getAllAssignmentsByCourse(String courseName);
 
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT') ")
     void activateTeam(Long teamId);

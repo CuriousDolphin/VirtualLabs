@@ -15,6 +15,7 @@ import { Course } from "../models/course.model";
 import { TeamProposal } from "../models/teamProposal.model";
 import { NetErr } from "../models/error.model";
 import { ToastService } from "./toast.service";
+import { Assignment } from '../models/assignment.model';
 const BASE_PATH = environment.apiUrl;
 
 @Injectable({
@@ -101,6 +102,12 @@ export class CourseService {
     return this.http.get(url).pipe(catchError((e) => this.handleError(e)));
   }
 
+  getAllAssignment(courseName: string): Observable<Assignment[]> {
+    const url = BASE_PATH + "courses/" + courseName + "/assignments";
+    return this.http
+    .get<Assignment[]>(url)
+    .pipe(catchError((e) => this.handleError(e)));
+  }
   private handleError(error) {
     let errorMessage = "";
     if (error.error instanceof ErrorEvent) {

@@ -2,6 +2,7 @@ package it.polito.ai.virtualLabs.services;
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
+import it.polito.ai.virtualLabs.dtos.AssignmentDTO;
 import it.polito.ai.virtualLabs.dtos.CourseDTO;
 import it.polito.ai.virtualLabs.dtos.StudentDTO;
 import it.polito.ai.virtualLabs.dtos.TeamDTO;
@@ -11,11 +12,7 @@ import it.polito.ai.virtualLabs.entities.Team;
 import it.polito.ai.virtualLabs.entities.TokenTeam;
 import it.polito.ai.virtualLabs.entities.VmModel;
 import it.polito.ai.virtualLabs.exceptions.*;
-import it.polito.ai.virtualLabs.repositories.CourseRepository;
-import it.polito.ai.virtualLabs.repositories.StudentRepository;
-import it.polito.ai.virtualLabs.repositories.TeamRepository;
-import it.polito.ai.virtualLabs.repositories.TokenTeamRepository;
-import it.polito.ai.virtualLabs.repositories.VmModelRepository;
+import it.polito.ai.virtualLabs.repositories.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +38,9 @@ public class TeamServiceImpl implements TeamService {
 
     @Autowired
     TokenTeamRepository tokenRepository;
+
+    @Autowired
+    AssignmentRepository assignmentRepository;
 
 
     @Autowired
@@ -464,6 +464,16 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    public List<AssignmentDTO> getAllAssignmentsByCourse(String courseName) {
+        if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
+
+        return assignmentRepository.findAllByCourse_Name(courseName)
+                .stream()
+                .map(assignment -> modelMapper.map(assignment, AssignmentDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<TeamDTO> getPendingTeamsForStudent(String studentId) {
         if (!studentRepository.existsById(studentId)) throw new StudentNotFoundException();
 
@@ -475,8 +485,6 @@ public class TeamServiceImpl implements TeamService {
                 tmp.add(modelMapper.map(teamToken.getTeam(), TeamDTO.class))
         );
         return tmp;
-
-
     }
 
 

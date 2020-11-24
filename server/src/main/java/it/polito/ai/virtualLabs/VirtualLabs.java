@@ -2,6 +2,7 @@ package it.polito.ai.virtualLabs;
 
 import it.polito.ai.virtualLabs.entities.*;
 import it.polito.ai.virtualLabs.repositories.*;
+import lombok.extern.java.Log;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,11 +11,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.sql.Date;
+
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Calendar;
 
+@Log(topic = "VirtualLabs")
 @SpringBootApplication
 public class VirtualLabs {
     @Bean
@@ -42,17 +44,16 @@ public class VirtualLabs {
             @Override
             public void run(String... args) throws Exception {
 
-                generateMockCourses(courseRepository, vmModelRepository, assignmentRepository);
+                //generateMockCourses(courseRepository, vmModelRepository, assignmentRepository);
 
-                generateMockUsers(userRepository, passwordEncoder);
+                //generateMockUsers(userRepository, passwordEncoder);
 
                 System.out.println("\nPrinting all courses:");
-                courseRepository.findAll().forEach(v ->  System.out.println(" Course :" + v.toString()));
+                courseRepository.findAll().forEach(v -> System.out.println(" Course :" + v.toString()));
                 System.out.println("\nPrinting all users:");
-                userRepository.findAll().forEach(v ->  System.out.println(" User :" + v.toString()));
+                userRepository.findAll().forEach(v -> System.out.println(" User :" + v.toString()));
                 System.out.println("\nPrint all assignment");
                 assignmentRepository.findAll().forEach(assignment -> System.out.println(" Assignment :" + assignment.toString()));
-
 
             }
         };
@@ -60,6 +61,8 @@ public class VirtualLabs {
 
     /* generates (if not already exist) mock courses and relatives vmmodels */
     public void generateMockCourses(CourseRepository cr, VmModelRepository vmr, AssignmentRepository ar) {
+
+        /* Insert courses */
         try {
             cr.save(Course.builder()
                     .name("Programmazione di Sistema")
@@ -82,55 +85,69 @@ public class VirtualLabs {
                     .min(5)
                     .max(10)
                     .build());
+        } catch (Exception e) {
+            System.out.println("Exception insert courses: " + e.getMessage());
+        }
 
-            /* Set time for the assignment releaseDate and expirtyDate */
-            Calendar calendar = Calendar.getInstance();
-            Timestamp releaseDate = new Timestamp(System.currentTimeMillis());
-            calendar.setTimeInMillis(releaseDate.getTime());
-            calendar.add(Calendar.DAY_OF_WEEK, 6);
-            Timestamp expiryDate = new Timestamp(calendar.getTime().getTime());
+        Course course1 = cr.findByNameIgnoreCase("Programmazione Di Sistema").get();
+        Course course2 = cr.findByNameIgnoreCase("Machine Learning").get();
+        Course course3 = cr.findByNameIgnoreCase("Applicazioni Internet").get();
 
-            Course course = cr.findByNameIgnoreCase("Programmazione Di Sistema").get();
+        /* Insert vms */
+        try {
             vmr.save(VmModel.builder()
-                    .name("VmModelDefault-" + course.getAcronym())
+                    .name("VmModelDefault-" + course1.getAcronym())
                     .image("ThisIsTheDefaultVmImage")
-                    .course(course)
+                    .course(course1)
                     .build());
+            vmr.save(VmModel.builder()
+                    .name("VmModelDefault-" + course2.getAcronym())
+                    .image("ThisIsTheDefaultVmImage")
+                    .course(course2)
+                    .build());
+            vmr.save(VmModel.builder()
+                    .name("VmModelDefault-" + course3.getAcronym())
+                    .image("ThisIsTheDefaultVmImage")
+                    .course(course3)
+                    .build());
+        } catch (Exception e) {
+            System.out.println("Exception insert vms: " + e.getMessage());
+        }
+
+        /* Set time for the assignment releaseDate and expirtyDate */
+        Calendar calendar = Calendar.getInstance();
+        Timestamp releaseDate = new Timestamp(System.currentTimeMillis());
+        calendar.setTimeInMillis(releaseDate.getTime());
+        calendar.add(Calendar.DAY_OF_WEEK, 6);
+        Timestamp expiryDate = new Timestamp(calendar.getTime().getTime());
+
+        /* Insert assignment */
+        try {
+
             ar.save(Assignment.builder()
                     .releaseDate(releaseDate)
                     .expiryDate(expiryDate)
                     .content("Laboratorio 1")
-                    .course(course)
+                    .course(course1)
                     .build());
 
-            course = cr.findByNameIgnoreCase("Machine Learning").get();
-            vmr.save(VmModel.builder()
-                    .name("VmModelDefault-" + course.getAcronym())
-                    .image("ThisIsTheDefaultVmImage")
-                    .course(course)
-                    .build());
             ar.save(Assignment.builder()
                     .releaseDate(releaseDate)
                     .expiryDate(expiryDate)
                     .content("Laboratorio 1")
-                    .course(course)
+                    .course(course2)
                     .build());
 
-            course = cr.findByNameIgnoreCase("Applicazioni Internet").get();
-            vmr.save(VmModel.builder()
-                    .name("VmModelDefault-" + course.getAcronym())
-                    .image("ThisIsTheDefaultVmImage")
-                    .course(course)
-                    .build());
+
             ar.save(Assignment.builder()
                     .releaseDate(releaseDate)
                     .expiryDate(expiryDate)
-                    .content("Laboratorio 1 - Spring")
-                    .course(course)
+                    .content("Laboratorio 1")
+                    .course(course3)
                     .build());
 
         } catch (Exception e) {
-            System.out.println("Exception insert courses/vmmodels/assignment: " + e.getMessage());
+            System.out.println("Exception insert vms: " + e.getMessage());
         }
     }
 
