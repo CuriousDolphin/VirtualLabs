@@ -1,0 +1,17 @@
+# Stage 1
+FROM node:12-alpine as build-step
+RUN mkdir -p /app
+WORKDIR /app
+COPY package.json /app
+
+COPY . /app
+RUN npm install -g @angular/cli@11.0.2
+RUN npm install
+#RUN npm run build --prod
+RUN node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng build --prod --verbose
+# Stage 2
+
+FROM nginx
+COPY default.conf /etc/nginx/conf.d/default.conf
+COPY --from=build-step /app/dist/ai20-VirtualLabs /usr/share/nginx/html
+EXPOSE 80

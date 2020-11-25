@@ -1,30 +1,37 @@
-version: "3"
+version: "3.8"
 services:
   mariadb:
     image: mariadb:latest
-    ports:
-      - "3306:3306"
+    container_name: virtualLabs-db
+    #ports:
+    # - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=pwd
       - MYSQL_DATABASE=db_test
     volumes:
-      - ./server/db_data:/var/lib/mysql
+      - ./db/db_data:/var/lib/mysql
   spring:
     build: ./server/
+    container_name: virtualLabs-backend
 
     ports:
-      - "8088"
+      - "8080:8080"
     links:
       - "mariadb"
     depends_on:
       - "mariadb"
-    restart: always
     environment:
-      - CONFIG_LOCATION=file:/server/src/resources/prod.properties
-  # angular:
-  #  build: ./client/
-  # links:  "spring"
-  #depends_on: "spring"
-  #ports: "80:80"
+      - DB_SERVER=mariadb
+      - DB_NAME=db_test
+    restart: always
+  angular:
+    container_name: virtualLabs-frontend
+    build: ./client/
+    ports:
+      - "4200:80"
+    volumes:
+      - ./client/dist:/app/dist
+    links:
+      - "spring"
 volumes:
   db_data: {}
