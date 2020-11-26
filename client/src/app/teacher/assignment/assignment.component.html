@@ -1,1 +1,6 @@
-<p>assignment works!</p>
+<div>
+  <table mat-table dataSource="dataSource" class="elevation-z6">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+    <td mat-cell *matCellDef="let assignment">{{ assignment.content }}</td>
+  </table>
+</div>

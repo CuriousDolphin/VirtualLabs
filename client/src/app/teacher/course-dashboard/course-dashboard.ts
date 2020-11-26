@@ -3,6 +3,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BehaviorSubject, combineLatest, Observable, Subscription } from "rxjs";
 import { switchMap, tap, map } from "rxjs/operators";
+import { Assignment } from 'src/app/models/assignment.model';
 import { Course } from "src/app/models/course.model";
 import { Student } from "src/app/models/student.model";
 import { CourseService } from "src/app/services/course.service";
@@ -18,11 +19,10 @@ import { CourseDialogComponent } from "../course-dialog/course-dialog.component"
 })
 export class CourseDashboard implements OnInit, OnDestroy {
   currentPath = "";
-  private _currentCourseName$: BehaviorSubject<string> = new BehaviorSubject(
-    null
-  );
+  private _currentCourseName$: BehaviorSubject<string> = new BehaviorSubject(null);
   private _reloadStudents$: BehaviorSubject<void> = new BehaviorSubject(null);
   private _reloadCourse$: BehaviorSubject<void> = new BehaviorSubject(null);
+  private _reloadAssignments$: BehaviorSubject<void> = new BehaviorSubject(null);
 
   private courseSubscription: Subscription;
   private routeSubscription: Subscription;
@@ -35,6 +35,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
   currentCourse: Course;
   currentCourse$: Observable<Course>;
   enrolledStudents$: Observable<Student[]>;
+  assignments$: Observable<Assignment[]>
   isLoading = false;
   constructor(
     private studentService: StudentService,
@@ -44,7 +45,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private toastService: ToastService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     console.log("dashboard on init");
@@ -86,6 +87,18 @@ export class CourseDashboard implements OnInit, OnDestroy {
           return this.studentService.getEnrolledStudents(course.name);
       }),
       tap(() => (this.isLoading = false))
+    );
+
+    this.assignments$ = combineLatest([
+      this.currentCourse$,
+      this._reloadAssignments$
+    ]).pipe(
+      tap(() => (this.isLoading = true)),
+      switchMap(([course, reload]) => {
+        if (course && course.name)
+          return this.courseService.getAllAssignments(course.name);
+      }
+      ), tap(() => (this.isLoading = false))
     );
   }
   uploadCsv(file: File) {

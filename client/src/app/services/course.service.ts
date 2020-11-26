@@ -102,12 +102,13 @@ export class CourseService {
     return this.http.get(url).pipe(catchError((e) => this.handleError(e)));
   }
 
-  getAllAssignment(courseName: string): Observable<Assignment[]> {
+  getAllAssignments(courseName: string): Observable<Assignment[]> {
     const url = BASE_PATH + "courses/" + courseName + "/assignments";
     return this.http
     .get<Assignment[]>(url)
     .pipe(catchError((e) => this.handleError(e)));
   }
+  
   private handleError(error) {
     let errorMessage = "";
     if (error.error instanceof ErrorEvent) {
