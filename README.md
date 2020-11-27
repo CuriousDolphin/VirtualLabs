@@ -8,11 +8,16 @@ web application project made with love with:
 
 You can run the app (frontend,backend and db) just type in root folder:
 
-- `docker-compose up build` (you can omit build if images are already builded)
+- `docker-compose up ` 
 
 to shutdown:
 
 - `docker-compose down`
+
+to rebuild and then execute:
+
+- `docker-compose up --build `
+
 
 the process might be very slower (around 5-7 mins) because the containers build both frontend and backend.
 
@@ -20,7 +25,6 @@ the frontend will be exposed at http://localhost:80/
 server api at http://localhost:8080/api/ 
 
 ## - TODO add users and pwds
-
 
 
 this docker-compose yml contains 3 microservices:
