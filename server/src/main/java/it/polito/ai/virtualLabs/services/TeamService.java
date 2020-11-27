@@ -86,7 +86,7 @@ public interface TeamService {
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or hasRole('ROLE_STUDENT')")
     List<StudentDTO> getAvailableStudents(String courseName);
 
-    @PreAuthorize("hasrRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     List<AssignmentDTO> getAllAssignmentsByCourse(String courseName);
 
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT') ")

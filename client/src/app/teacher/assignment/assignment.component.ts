@@ -15,6 +15,7 @@ export class AssignmentComponent implements OnInit {
       this.dataSource.data = assignments;
     }
   }
+  colsToDisplay=["id"]
 
   constructor() { }
 
