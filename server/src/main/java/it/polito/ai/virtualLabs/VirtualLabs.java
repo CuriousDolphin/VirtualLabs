@@ -176,6 +176,21 @@ public class VirtualLabs {
                 notificationService.notifyTeam(teamDTO, new ArrayList<String>(Arrays.asList("s123456", "s234567")), 1);
                 notificationService.confirm(ttr.findAll().stream().filter(tt -> tt.getTeam().getName().equals("Team1")).findFirst().get().getId());
                 notificationService.confirm(ttr.findAll().stream().filter(tt -> tt.getTeam().getName().equals("Team1")).findFirst().get().getId());
+                //User-Student: s345678 (Dario Verdi)
+                ur.save(User.builder()
+                        .id("s345678")
+                        .username("s345678@studenti.polito.it")
+                        .password(passwordEncoder.encode("pwd"))
+                        .roles(Arrays.asList("ROLE_STUDENT"))
+                        .build()
+                );
+                newStudent = Student.builder()
+                        .id("s345678")
+                        .email("s345678@studenti.polito.it")
+                        .lastName("Dario")
+                        .name("Verdi")
+                        .build();
+                sr.save(newStudent);
             } catch (Exception e) {
                 System.out.println("Exception insert mock data: " + e.getMessage());
             } finally {

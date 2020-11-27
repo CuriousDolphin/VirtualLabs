@@ -5,6 +5,7 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import it.polito.ai.virtualLabs.dtos.CourseDTO;
 import it.polito.ai.virtualLabs.dtos.StudentDTO;
 import it.polito.ai.virtualLabs.dtos.TeamDTO;
+import it.polito.ai.virtualLabs.dtos.VmInstanceDTO;
 import it.polito.ai.virtualLabs.entities.*;
 import it.polito.ai.virtualLabs.exceptions.*;
 import it.polito.ai.virtualLabs.repositories.*;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,6 +44,9 @@ public class TeamServiceImpl implements TeamService {
 
     @Autowired
     VmModelRepository vmModelRepository;
+
+    @Autowired
+    VmInstanceRepository vmInstanceRepository;
 
     @Override
     public boolean addCourse(CourseDTO course) {
@@ -490,4 +495,56 @@ public class TeamServiceImpl implements TeamService {
         teamRepository.delete(t);
         ///teamRepository.deleteById(teamId);
     }
+
+    /* VMs */
+
+    @Override
+    public List<VmInstanceDTO> getVmInstances(String team) {
+        return vmInstanceRepository.getVmInstancesByTeam(teamRepository.getByName(team)).stream()
+                .map(vi -> modelMapper.map(vi, VmInstanceDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public VmInstanceDTO createVmInstance(String studentId, String team, VmInstanceDTO vmInstance) {
+        if(vmInstanceRepository.getVmInstancesByTeam(teamRepository.getByName(team)).size() + 1 > teamRepository.getByName(team).getVmConfiguration().getMaxVms())
+            throw  new VmInstanceException();
+        if(vmInstance.getCountDisks() > teamRepository.getByName(team).getVmConfiguration().getMaxDiskPerVm()
+                || vmInstance.getCountRam() > teamRepository.getByName(team).getVmConfiguration().getMaxRamPerVm()
+                || vmInstance.getCountVcpus() > teamRepository.getByName(team).getVmConfiguration().getMaxVcpusPerVm())
+            throw new VmInstanceException();
+        VmInstance newVmInstance = modelMapper.map(vmInstance, VmInstance.class);
+        newVmInstance.setTeam(teamRepository.getByName(team));
+        newVmInstance.setVmModel(vmModelRepository.getByCourse(teamRepository.getByName(team).getCourse()));
+        return modelMapper.map(vmInstanceRepository.save(newVmInstance), VmInstanceDTO.class);
+    }
+
+    @Override
+    public VmInstanceDTO startVmInstance(String id, String team, Long idVmInstance) {
+        if(!vmInstanceRepository.getOne(idVmInstance).getTeam().getName().equals(team))
+            throw new VmInstanceException();
+        if(vmInstanceRepository.getOne(idVmInstance).getOwner() != null)
+            if(!vmInstanceRepository.getOne(idVmInstance).getOwner().equals(id))
+                throw new VmInstanceException();
+        if(teamRepository.getByName(team).getVmConfiguration().getMaxRunningVms() <
+                vmInstanceRepository.countDistinctByTeamAndStateEquals(teamRepository.getByName(team), 1) + 1)
+            throw new VmInstanceException();
+        if(vmInstanceRepository.getOne(idVmInstance).getState() != 1)
+            vmInstanceRepository.getOne(idVmInstance).setState(1);
+        return modelMapper.map(vmInstanceRepository.getOne(idVmInstance), VmInstanceDTO.class);
+    }
+
+    @Override
+    public VmInstanceDTO stopVmInstance(String id, String team, Long idVmInstance) {
+        if(!vmInstanceRepository.getOne(idVmInstance).getTeam().getName().equals(team))
+            throw new VmInstanceException();
+        if(vmInstanceRepository.getOne(idVmInstance).getOwner() != null) {
+            if (!vmInstanceRepository.getOne(idVmInstance).getOwner().equals(id))
+                throw new VmInstanceException();
+        }
+        if(vmInstanceRepository.getOne(idVmInstance).getState() != 0)
+            vmInstanceRepository.getOne(idVmInstance).setState(0);
+        return modelMapper.map(vmInstanceRepository.getOne(idVmInstance), VmInstanceDTO.class);
+    }
+
 }

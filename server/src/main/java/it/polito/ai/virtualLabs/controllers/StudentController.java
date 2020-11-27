@@ -2,6 +2,7 @@ package it.polito.ai.virtualLabs.controllers;
 
 import it.polito.ai.virtualLabs.dtos.CourseDTO;
 import it.polito.ai.virtualLabs.dtos.StudentDTO;
+import it.polito.ai.virtualLabs.dtos.VmInstanceDTO;
 import it.polito.ai.virtualLabs.exceptions.StudentNotFoundException;
 import it.polito.ai.virtualLabs.services.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +75,27 @@ public class StudentController {
 
     }
 
+    @GetMapping({"/{id}/{team}/vminstances"})
+    @ResponseStatus(HttpStatus.CREATED)
+    List<VmInstanceDTO> getVmInstances(@PathVariable("id") String id, @PathVariable("team") String team) {
+        return teamService.getVmInstances(team);
+    }
 
+    @PostMapping({"/{id}/{team}/createvminstance"})
+    @ResponseStatus(HttpStatus.CREATED)
+    VmInstanceDTO createVmInstance(@PathVariable("id") String studentId, @PathVariable("team") String team,@Valid @RequestBody(required = true) VmInstanceDTO vmInstance) {
+        return teamService.createVmInstance(studentId, team, vmInstance);
+    }
 
+    @GetMapping({"/{id}/{team}/startvminstance/{idvm}"})
+    @ResponseStatus(HttpStatus.CREATED)
+    VmInstanceDTO startVmInstance(@PathVariable("id") String idStudent, @PathVariable("team") String team,@PathVariable("idvm") String idvm) {
+        return teamService.startVmInstance(idStudent, team, Long.parseLong(idvm));
+    }
+
+    @GetMapping({"/{id}/{team}/stopvminstance/{idvm}"})
+    @ResponseStatus(HttpStatus.CREATED)
+    VmInstanceDTO stopVmInstance(@PathVariable("id") String idStudent, @PathVariable("team") String team,@PathVariable("idvm") String idvm) {
+        return teamService.stopVmInstance(idStudent, team, Long.parseLong(idvm));
+    }
 }

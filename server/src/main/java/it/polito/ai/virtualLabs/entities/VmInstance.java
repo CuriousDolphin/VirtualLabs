@@ -21,15 +21,10 @@ public class VmInstance {
     @JoinColumn(name = "VmModel_id")
     VmModel vmModel;
 
-    @NotEmpty
     private int state;
-    @NotEmpty
     private int countVcpus;
-    @NotEmpty
     private int countRam;
-    @NotEmpty
     private int countDisks;
-
     private String owner;
 
 }
