@@ -7,17 +7,25 @@ web application project made with love with:
 ## RUN VIRTUALLABS STANDALONE
 
 You can run the app (frontend,backend and db) just type in root folder:
-- `docker-compose build`
 
-- `docker-compose up`
+- `docker-compose up build` (you can omit build if images are already builded)
 
-the frontend will be exposed at http://localhost:80
+to shutdown:
+
+- `docker-compose down`
+
+the process might be very slower (around 5-7 mins) because the containers build both frontend and backend.
+
+the frontend will be exposed at http://localhost:80/ 
+server api at http://localhost:8080/api/ 
+
+## - TODO add users and pwds
 
 
 
 this docker-compose yml contains 3 microservices:
 
-- nginx 
+- nginx (for serving frontend static file and proxy api request to spring)
 - spring
 - mariadb
 
@@ -31,7 +39,7 @@ usefull command:
 
 ### Run DB
 make a folder in db folder called db_data, this will be the shared volume with db container.
-go in server folder and run:
+go in db folder and run:
 
 - `docker-compose up`
 
