@@ -67,7 +67,7 @@ public class Course {
         return this.name.toUpperCase();
     }*/
     public void setName(String name){
-        System.out.println("SETTINGG NAME"+name);
+        System.out.println("SETTING NAME "+name);
         this.name=name.toUpperCase();
     }
 }
