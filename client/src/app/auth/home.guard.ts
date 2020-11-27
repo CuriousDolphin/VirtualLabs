@@ -11,26 +11,22 @@ import { AuthService } from "./auth.service";
 @Injectable({
   providedIn: "root",
 })
-export class TeacherGuard implements CanActivate {
+export class HomeGuard implements CanActivate {
   constructor(public auth: AuthService, public router: Router) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): boolean {
-    // not logged
-    if (!this.auth.isLogged()) {
-      this.router.navigate(["home"], {
-        queryParams: { doLogin: true },
-        state: { nextlink: state.url },
-      });
-    }
+    if (this.auth.isLogged())
+      if (this.auth.hasRoleTeacher() == true) {
+        console.log("Redirect to teacher");
+        this.router.navigate(["teacher"], {});
+      } else {
+        console.log("Redirect to student");
+        this.router.navigate(["student"], {});
+      }
 
-    if (this.auth.hasRoleTeacher() == true) return true;
-
-    // not authorized
-    this.router.navigate(["oh-no-page"], {});
-
-    return false;
+    return true;
   }
 }

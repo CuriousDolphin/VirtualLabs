@@ -12,8 +12,9 @@ import { StudentGuard } from "./auth/student.guard";
 import { StudentCourseDashboard } from "./student/student-course-dashboard/student-course-dashboard";
 import { StudentLandingPageComponent } from "./student/student-landing-page/student-landing-page.component";
 import { TeacherLandingPageComponent } from "./teacher/teacher-landing-page/teacher-landing-page.component";
+import { HomeGuard } from "./auth/home.guard";
 const routes: Routes = [
-  { path: "home", component: HomeComponent },
+  { path: "home", component: HomeComponent, canActivate: [HomeGuard] }, //homeguard fa il redirect alla pagina dello studente se e' loggato uno studente e viceversa.
   { path: "", redirectTo: "home", pathMatch: "full" },
 
   {
@@ -50,7 +51,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: "legacy" })],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

@@ -103,3 +103,8 @@ server/src/main/java/it/polito/.DS_Store
 /server/db_data/db_test
 /server/db_data/**
 /server/db_data/*
+
+/db/db_data/db_test
+/db/db_data/**
+/db/db_data/*
+/client/dist/*
