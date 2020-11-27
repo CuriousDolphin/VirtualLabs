@@ -19,7 +19,7 @@ export class StudentGuard implements CanActivate {
     state: RouterStateSnapshot
   ): boolean {
     // not logged
-    if (!this.auth.isLogged) {
+    if (!this.auth.isLogged()) {
       this.router.navigate(["home"], {
         queryParams: { doLogin: true },
         state: { nextlink: state.url },
