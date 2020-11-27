@@ -14,7 +14,7 @@ import { StudentLandingPageComponent } from "./student/student-landing-page/stud
 import { TeacherLandingPageComponent } from "./teacher/teacher-landing-page/teacher-landing-page.component";
 const routes: Routes = [
   { path: "home", component: HomeComponent },
-  { path: "", redirectTo: "home", pathMatch: "full" },
+  { path: "", redirectTo: "home" },
 
   {
     path: "teacher",
