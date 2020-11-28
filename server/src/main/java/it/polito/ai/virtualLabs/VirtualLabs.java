@@ -174,7 +174,7 @@ public class VirtualLabs {
                 TeamDTO teamDTO = teamService.proposeTeam("Programmazione di Sistema", "Team1", new ArrayList<String>(Arrays.asList("s234567")), "s123456", 1);
                 //invia e accetta inviti team
                 notificationService.notifyTeam(teamDTO, new ArrayList<String>(Arrays.asList("s123456", "s234567")), 1);
-                notificationService.confirm(ttr.findAll().stream().filter(tt -> tt.getTeam().getName().equals("Team1")).findFirst().get().getId());
+                notificationService.confirm(ttr.findAll().stream().filter(tt -> tt.getTeam().getName().equals("Team1")).findFirst().get().getId()); // che brutto
                 notificationService.confirm(ttr.findAll().stream().filter(tt -> tt.getTeam().getName().equals("Team1")).findFirst().get().getId());
                 //User-Student: s345678 (Dario Verdi)
                 ur.save(User.builder()
