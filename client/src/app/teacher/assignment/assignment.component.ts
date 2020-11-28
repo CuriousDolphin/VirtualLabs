@@ -8,14 +8,18 @@ import { Assignment } from 'src/app/models/assignment.model';
   styleUrls: ['./assignment.component.sass']
 })
 export class AssignmentComponent implements OnInit {
+  colsToDisplay=["id", "content", "releaseDate", "expiryDate"]
   dataSource = new MatTableDataSource<Assignment>();
   @Input() set assignments(assignments: Assignment[]) {
     if(assignments != null) {
-      console.log('Assignments: ' + assignments);
       this.dataSource.data = assignments;
+      console.log("Assignments by course:" + this.dataSource.data); //li riceve
     }
   }
-  colsToDisplay=["id"]
+
+  consola(Row) {
+    console.log(Row);
+  }
 
   constructor() { }
 

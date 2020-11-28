@@ -149,6 +149,8 @@ public class VirtualLabs {
         } catch (Exception e) {
             System.out.println("Exception insert vms: " + e.getMessage());
         }
+
+        
     }
 
     /* generates (if not already exist) mock student, teacher, admin */
