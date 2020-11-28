@@ -4,6 +4,7 @@ import it.polito.ai.virtualLabs.dtos.CourseDTO;
 import it.polito.ai.virtualLabs.dtos.StudentDTO;
 import it.polito.ai.virtualLabs.dtos.VmInstanceDTO;
 import it.polito.ai.virtualLabs.exceptions.StudentNotFoundException;
+import it.polito.ai.virtualLabs.exceptions.VmInstanceException;
 import it.polito.ai.virtualLabs.services.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -75,27 +76,35 @@ public class StudentController {
 
     }
 
+    /* VMs */
+
     @GetMapping({"/{id}/{team}/vminstances"})
-    @ResponseStatus(HttpStatus.CREATED)
     List<VmInstanceDTO> getVmInstances(@PathVariable("id") String id, @PathVariable("team") String team) {
-        return teamService.getVmInstances(team);
+        return teamService.getVmInstances(id, team);
     }
 
     @PostMapping({"/{id}/{team}/createvminstance"})
-    @ResponseStatus(HttpStatus.CREATED)
-    VmInstanceDTO createVmInstance(@PathVariable("id") String studentId, @PathVariable("team") String team,@Valid @RequestBody(required = true) VmInstanceDTO vmInstance) {
-        return teamService.createVmInstance(studentId, team, vmInstance);
+    VmInstanceDTO createVmInstance(@PathVariable("id") String id, @PathVariable("team") String team, @Valid @RequestBody(required = true) VmInstanceDTO vmInstance) {
+        return teamService.createVmInstance(id, team, vmInstance);
     }
 
     @GetMapping({"/{id}/{team}/startvminstance/{idvm}"})
-    @ResponseStatus(HttpStatus.CREATED)
-    VmInstanceDTO startVmInstance(@PathVariable("id") String idStudent, @PathVariable("team") String team,@PathVariable("idvm") String idvm) {
-        return teamService.startVmInstance(idStudent, team, Long.parseLong(idvm));
+    VmInstanceDTO startVmInstance(@PathVariable("id") String id, @PathVariable("team") String team,@PathVariable("idvm") String idvm) {
+        return teamService.startVmInstance(id, team, Long.parseLong(idvm));
     }
 
     @GetMapping({"/{id}/{team}/stopvminstance/{idvm}"})
-    @ResponseStatus(HttpStatus.CREATED)
-    VmInstanceDTO stopVmInstance(@PathVariable("id") String idStudent, @PathVariable("team") String team,@PathVariable("idvm") String idvm) {
-        return teamService.stopVmInstance(idStudent, team, Long.parseLong(idvm));
+    VmInstanceDTO stopVmInstance(@PathVariable("id") String id, @PathVariable("team") String team,@PathVariable("idvm") String idvm) {
+        return teamService.stopVmInstance(id, team, Long.parseLong(idvm));
+    }
+
+    @GetMapping({"/{id}/{team}/deletevminstance/{idvm}"})
+    List<VmInstanceDTO> deleteVmInstance(@PathVariable("id") String id, @PathVariable("team") String team,@PathVariable("idvm") String idvm) {
+        return teamService.deleteVmInstance(id, team, Long.parseLong(idvm));
+    }
+
+    @PostMapping({"/{id}/{team}/editvminstance/{idvm}"})
+    VmInstanceDTO editVmInstance(@PathVariable("id") String id, @PathVariable("team") String team,@PathVariable("idvm") String idvm, @Valid @RequestBody(required = true) VmInstanceDTO vmInstance) {
+        return teamService.editVmInstance(id, team, Long.parseLong(idvm), vmInstance);
     }
 }

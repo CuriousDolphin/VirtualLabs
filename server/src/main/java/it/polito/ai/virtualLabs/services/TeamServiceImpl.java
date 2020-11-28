@@ -11,7 +11,9 @@ import it.polito.ai.virtualLabs.exceptions.*;
 import it.polito.ai.virtualLabs.repositories.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.io.Reader;
@@ -499,7 +501,12 @@ public class TeamServiceImpl implements TeamService {
     /* VMs */
 
     @Override
-    public List<VmInstanceDTO> getVmInstances(String team) {
+    public List<VmInstanceDTO> getVmInstances(String studentId, String team) {
+        if(teamRepository.getByName(team) == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, team);
+        if(!teamRepository.getByName(team).getMembers().contains(studentRepository.getOne(studentId)))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, studentId);
+
         return vmInstanceRepository.getVmInstancesByTeam(teamRepository.getByName(team)).stream()
                 .map(vi -> modelMapper.map(vi, VmInstanceDTO.class))
                 .collect(Collectors.toList());
@@ -507,12 +514,22 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public VmInstanceDTO createVmInstance(String studentId, String team, VmInstanceDTO vmInstance) {
+        if(teamRepository.getByName(team) == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, team);
+        if(!teamRepository.getByName(team).getMembers().contains(studentRepository.getOne(studentId)))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, studentId);
         if(vmInstanceRepository.getVmInstancesByTeam(teamRepository.getByName(team)).size() + 1 > teamRepository.getByName(team).getVmConfiguration().getMaxVms())
-            throw  new VmInstanceException();
-        if(vmInstance.getCountDisks() > teamRepository.getByName(team).getVmConfiguration().getMaxDiskPerVm()
-                || vmInstance.getCountRam() > teamRepository.getByName(team).getVmConfiguration().getMaxRamPerVm()
-                || vmInstance.getCountVcpus() > teamRepository.getByName(team).getVmConfiguration().getMaxVcpusPerVm())
-            throw new VmInstanceException();
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "MaxVmsInstances");
+        if(vmInstance.getCountDisks() > teamRepository.getByName(team).getVmConfiguration().getMaxDiskPerVm())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountDisks");
+        if(vmInstance.getCountRam() > teamRepository.getByName(team).getVmConfiguration().getMaxRamPerVm())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountRam");
+        if(vmInstance.getCountVcpus() > teamRepository.getByName(team).getVmConfiguration().getMaxVcpusPerVm())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountVcpus");
+        if(vmInstance.getOwner() != null &&
+                (!studentRepository.existsById(vmInstance.getOwner()) || !vmInstance.getOwner().equals(studentId)))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, vmInstance.getOwner());
+
         VmInstance newVmInstance = modelMapper.map(vmInstance, VmInstance.class);
         newVmInstance.setTeam(teamRepository.getByName(team));
         newVmInstance.setVmModel(vmModelRepository.getByCourse(teamRepository.getByName(team).getCourse()));
@@ -521,14 +538,20 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public VmInstanceDTO startVmInstance(String id, String team, Long idVmInstance) {
+        if(teamRepository.getByName(team) == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, team);
+        if(!vmInstanceRepository.existsById(idVmInstance))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, idVmInstance.toString());
+        if(!teamRepository.getByName(team).getMembers().contains(studentRepository.getOne(id)))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, id);
         if(!vmInstanceRepository.getOne(idVmInstance).getTeam().getName().equals(team))
-            throw new VmInstanceException();
-        if(vmInstanceRepository.getOne(idVmInstance).getOwner() != null)
-            if(!vmInstanceRepository.getOne(idVmInstance).getOwner().equals(id))
-                throw new VmInstanceException();
-        if(teamRepository.getByName(team).getVmConfiguration().getMaxRunningVms() <
-                vmInstanceRepository.countDistinctByTeamAndStateEquals(teamRepository.getByName(team), 1) + 1)
-            throw new VmInstanceException();
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, idVmInstance.toString());
+        if(vmInstanceRepository.getOne(idVmInstance).getOwner() != null && !vmInstanceRepository.getOne(idVmInstance).getOwner().equals(id))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, id);
+        if(vmInstanceRepository.countDistinctByTeamAndStateEquals(teamRepository.getByName(team), 1) + 1 >
+                teamRepository.getByName(team).getVmConfiguration().getMaxRunningVms())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "MaxRunningVms");
+
         if(vmInstanceRepository.getOne(idVmInstance).getState() != 1)
             vmInstanceRepository.getOne(idVmInstance).setState(1);
         return modelMapper.map(vmInstanceRepository.getOne(idVmInstance), VmInstanceDTO.class);
@@ -536,14 +559,65 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public VmInstanceDTO stopVmInstance(String id, String team, Long idVmInstance) {
+        if(teamRepository.getByName(team) == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, team);
+        if(!vmInstanceRepository.existsById(idVmInstance))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, idVmInstance.toString());
+        if(!teamRepository.getByName(team).getMembers().contains(studentRepository.getOne(id)))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, id);
         if(!vmInstanceRepository.getOne(idVmInstance).getTeam().getName().equals(team))
-            throw new VmInstanceException();
-        if(vmInstanceRepository.getOne(idVmInstance).getOwner() != null) {
-            if (!vmInstanceRepository.getOne(idVmInstance).getOwner().equals(id))
-                throw new VmInstanceException();
-        }
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, idVmInstance.toString());
+        if(vmInstanceRepository.getOne(idVmInstance).getOwner() != null && !vmInstanceRepository.getOne(idVmInstance).getOwner().equals(id))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, id);
+
         if(vmInstanceRepository.getOne(idVmInstance).getState() != 0)
             vmInstanceRepository.getOne(idVmInstance).setState(0);
+        return modelMapper.map(vmInstanceRepository.getOne(idVmInstance), VmInstanceDTO.class);
+    }
+
+    @Override
+    public List<VmInstanceDTO> deleteVmInstance(String id, String team, Long idVmInstance) {
+        if(teamRepository.getByName(team) == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, team);
+        if(!vmInstanceRepository.existsById(idVmInstance))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, idVmInstance.toString());
+        if(!teamRepository.getByName(team).getMembers().contains(studentRepository.getOne(id)))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, id);
+        if(!vmInstanceRepository.getOne(idVmInstance).getTeam().getName().equals(team))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, idVmInstance.toString());
+        if(vmInstanceRepository.getOne(idVmInstance).getOwner() != null && !vmInstanceRepository.getOne(idVmInstance).getOwner().equals(id))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, id);
+
+        vmInstanceRepository.delete(vmInstanceRepository.getOne(idVmInstance));
+        return vmInstanceRepository.getVmInstancesByTeam(teamRepository.getByName(team)).stream()
+                .map(vi -> modelMapper.map(vi, VmInstanceDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public VmInstanceDTO editVmInstance(String id, String team, Long idVmInstance, VmInstanceDTO vmInstance) {
+        if(teamRepository.getByName(team) == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, team);
+        if(!vmInstanceRepository.existsById(idVmInstance))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, idVmInstance.toString());
+        if(!teamRepository.getByName(team).getMembers().contains(studentRepository.getOne(id)))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, id);
+        if(!vmInstanceRepository.getOne(idVmInstance).getTeam().getName().equals(team))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, idVmInstance.toString());
+        if(vmInstanceRepository.getOne(idVmInstance).getOwner() != null && !vmInstanceRepository.getOne(idVmInstance).getOwner().equals(id))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, id);
+        if(vmInstanceRepository.getOne(idVmInstance).getState() != 0)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "VmRunning");
+        if(vmInstance.getCountDisks() > teamRepository.getByName(team).getVmConfiguration().getMaxDiskPerVm())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountDisks");
+        if(vmInstance.getCountRam() > teamRepository.getByName(team).getVmConfiguration().getMaxRamPerVm())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountRam");
+        if(vmInstance.getCountVcpus() > teamRepository.getByName(team).getVmConfiguration().getMaxVcpusPerVm())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountVcpus");
+
+        vmInstanceRepository.getOne(idVmInstance).setCountDisks(vmInstance.getCountDisks());
+        vmInstanceRepository.getOne(idVmInstance).setCountRam(vmInstance.getCountRam());
+        vmInstanceRepository.getOne(idVmInstance).setCountVcpus(vmInstance.getCountVcpus());
         return modelMapper.map(vmInstanceRepository.getOne(idVmInstance), VmInstanceDTO.class);
     }
 
