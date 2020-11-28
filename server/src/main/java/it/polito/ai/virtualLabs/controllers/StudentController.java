@@ -90,21 +90,33 @@ public class StudentController {
 
     @GetMapping({"/{id}/{team}/startvminstance/{idvm}"})
     VmInstanceDTO startVmInstance(@PathVariable("id") String id, @PathVariable("team") String team,@PathVariable("idvm") String idvm) {
-        return teamService.startVmInstance(id, team, Long.parseLong(idvm));
+        long idvmL;
+        try { idvmL = Long.parseLong(idvm); }
+        catch(Exception e) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, idvm); }
+        return teamService.startVmInstance(id, team, idvmL);
     }
 
     @GetMapping({"/{id}/{team}/stopvminstance/{idvm}"})
     VmInstanceDTO stopVmInstance(@PathVariable("id") String id, @PathVariable("team") String team,@PathVariable("idvm") String idvm) {
-        return teamService.stopVmInstance(id, team, Long.parseLong(idvm));
+        long idvmL;
+        try { idvmL = Long.parseLong(idvm); }
+        catch(Exception e) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, idvm); }
+        return teamService.stopVmInstance(id, team, idvmL);
     }
 
     @GetMapping({"/{id}/{team}/deletevminstance/{idvm}"})
     List<VmInstanceDTO> deleteVmInstance(@PathVariable("id") String id, @PathVariable("team") String team,@PathVariable("idvm") String idvm) {
-        return teamService.deleteVmInstance(id, team, Long.parseLong(idvm));
+        long idvmL;
+        try { idvmL = Long.parseLong(idvm); }
+        catch(Exception e) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, idvm); }
+        return teamService.deleteVmInstance(id, team, idvmL);
     }
 
     @PostMapping({"/{id}/{team}/editvminstance/{idvm}"})
     VmInstanceDTO editVmInstance(@PathVariable("id") String id, @PathVariable("team") String team,@PathVariable("idvm") String idvm, @Valid @RequestBody(required = true) VmInstanceDTO vmInstance) {
-        return teamService.editVmInstance(id, team, Long.parseLong(idvm), vmInstance);
+        long idvmL;
+        try { idvmL = Long.parseLong(idvm); }
+        catch(Exception e) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, idvm); }
+        return teamService.editVmInstance(id, team, idvmL, vmInstance);
     }
 }

@@ -4,6 +4,7 @@ import it.polito.ai.virtualLabs.dtos.CourseDTO;
 import it.polito.ai.virtualLabs.dtos.StudentDTO;
 import it.polito.ai.virtualLabs.dtos.TeamDTO;
 import it.polito.ai.virtualLabs.dtos.VmInstanceDTO;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.io.Reader;
@@ -95,23 +96,21 @@ public interface TeamService {
 
     /* VMs */
 
-    //TODO: @PreAuthorize not working (?)
+    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or (#id == authentication.principal.id and hasRole('ROLE_STUDENT'))")
+    List<VmInstanceDTO> getVmInstances(@Param("id") String studentId, String team);
 
-    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or (#studentId == authentication.principal.id and hasRole('ROLE_STUDENT'))")
-    List<VmInstanceDTO> getVmInstances(String studentId, String team);
+    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or (#id == authentication.principal.id and hasRole('ROLE_STUDENT'))")
+    VmInstanceDTO createVmInstance(@Param("id") String studentId, String team, VmInstanceDTO vmInstance);
 
-    //@PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or (#studentId == authentication.principal.id and hasRole('ROLE_STUDENT'))")
-    VmInstanceDTO createVmInstance(String studentId, String team, VmInstanceDTO vmInstance);
+    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or (#id == authentication.principal.id and hasRole('ROLE_STUDENT'))")
+    VmInstanceDTO startVmInstance(@Param("id") String studentId, String team, Long idVmInstance);
 
-    //@PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or (#studentId == authentication.principal.id and hasRole('ROLE_STUDENT'))")
-    VmInstanceDTO startVmInstance(String studentId, String team, Long idVmInstance);
+    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or (#id == authentication.principal.id and hasRole('ROLE_STUDENT'))")
+    VmInstanceDTO stopVmInstance(@Param("id") String studentId, String team, Long idVmInstance);
 
-    //@PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or (#studentId == authentication.principal.id and hasRole('ROLE_STUDENT'))")
-    VmInstanceDTO stopVmInstance(String studentId, String team, Long idVmInstance);
+    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or (#id == authentication.principal.id and hasRole('ROLE_STUDENT'))")
+    List<VmInstanceDTO> deleteVmInstance(@Param("id") String studentId, String team, Long idVmInstance);
 
-    //@PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or (#studentId == authentication.principal.id and hasRole('ROLE_STUDENT'))")
-    List<VmInstanceDTO> deleteVmInstance(String studentId, String team, Long idVmInstance);
-
-    //@PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or (#studentId == authentication.principal.id and hasRole('ROLE_STUDENT'))")
-    VmInstanceDTO editVmInstance(String studentId, String team, Long idVmInstance, VmInstanceDTO vmInstance);
+    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or (#id == authentication.principal.id and hasRole('ROLE_STUDENT'))")
+    VmInstanceDTO editVmInstance(@Param("id") String studentId, String team, Long idVmInstance, VmInstanceDTO vmInstance);
 }
