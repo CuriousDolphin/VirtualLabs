@@ -62,17 +62,11 @@
         </div>
       </div>
     </mat-card-content>
-    <mat-card-action fxLayout="row" fxLayoutAlign="start center">
-      <button
-        mat-button
-        color="accent"
-        [disabled]="!studentToAdd"
-        (click)="addStudentToTable()"
-        class="radius-20"
-      >
-        <mat-icon> person_add </mat-icon>
-        Add
-      </button>
+    <mat-card-actions
+      fxLayout="row"
+      fxLayoutAlign="end center"
+      class="button-area"
+    >
       <div
         fxLayout="row"
         fxLayoutAlign="space-between center"
@@ -83,7 +77,17 @@
           studentToAdd.email
         }})
       </div>
-    </mat-card-action>
+      <button
+        mat-button
+        color="accent"
+        [disabled]="!studentToAdd"
+        (click)="addStudentToTable()"
+        class="radius-20"
+      >
+        <mat-icon> person_add </mat-icon>
+        Add
+      </button>
+    </mat-card-actions>
   </mat-card>
 
   <mat-card>
@@ -139,7 +143,11 @@
         showFirstLastButtons
       ></mat-paginator>
     </mat-card-content>
-    <mat-card-actions class="button-area">
+    <mat-card-actions
+      class="button-area"
+      fxLayout="row"
+      fxLayoutAlign="end center"
+    >
       <button
         color="accent"
         [disabled]="selectedStudents.isEmpty()"
