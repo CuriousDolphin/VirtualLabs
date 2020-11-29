@@ -16,11 +16,13 @@ import { FormControl } from "@angular/forms";
 import * as _ from "lodash";
 import { MatSort } from "@angular/material/sort";
 import { MatPaginator } from "@angular/material/paginator";
+import { MAT_CHECKBOX_CLICK_ACTION } from "@angular/material/checkbox";
 
 @Component({
   selector: "app-students",
   templateUrl: "./students.component.html",
   styleUrls: ["./students.component.sass"],
+  providers: [{ provide: MAT_CHECKBOX_CLICK_ACTION, useValue: "check" }],
 })
 export class StudentsComponent implements OnInit {
   dataSource = new MatTableDataSource<Student>();
@@ -46,6 +48,7 @@ export class StudentsComponent implements OnInit {
   filteredOptions: Observable<Student[]>;
   colsToDisplay = ["select", "id", "name", "firstName", "teamName"];
   selectedStudents = new SelectionModel<Student>(true, []);
+  selectMode = "page"; // page or all
 
   studentToAdd: Student = null;
 
@@ -101,12 +104,75 @@ export class StudentsComponent implements OnInit {
     return numSelected === numRows;
   }
 
-  masterToggle() {
-    this.isAllSelected()
-      ? this.selectedStudents.clear()
-      : this.dataSource.data.forEach((student) =>
-          this.selectedStudents.select(student)
-        );
+  isPageSelected(): boolean {
+    let maxLen = this.dataSource.paginator.pageSize;
+
+    maxLen =
+      maxLen > this.dataSource.data.length
+        ? this.dataSource.data.length
+        : maxLen;
+    // console.log(this.selectedStudents.selected.length === maxLen);
+    return this.selectedStudents.selected.length >= maxLen;
+  }
+
+  isRelativeAllSelected(): boolean {
+    if (this.selectMode === "page") return this.isPageSelected();
+    else return this.isAllSelected();
+  }
+
+  masterToggle(event) {
+    console.log(event);
+
+    if (this.checkedFN()) {
+      console.log("STUDENT CLEAR");
+      this.selectedStudents.clear();
+    } else {
+      this.selectMode = "page";
+      const pageSize = this.dataSource.paginator.pageSize;
+      const pageIndex = this.dataSource.paginator.pageIndex;
+
+      const start = pageIndex * pageSize;
+      let end = start + pageSize;
+      end =
+        end > this.dataSource.data.length ? this.dataSource.data.length : end;
+
+      for (let i = start; i < end; i++) {
+        this.selectedStudents.select(this.dataSource.data[i]);
+      }
+    }
+  }
+
+  checkedFN(): boolean {
+    return this.selectedStudents.hasValue() && (this.indeterminateFN() || this.isRelativeAllSelected());
+
+    // all toggle
+  }
+  indeterminateFN(): boolean {
+    let maxLen;
+    if (this.selectMode === "page") maxLen = this.dataSource.paginator.pageSize;
+    else maxLen = this.dataSource.data.length;
+
+    maxLen =
+      maxLen > this.dataSource.data.length
+        ? this.dataSource.data.length
+        : maxLen;
+
+    if (
+      this.selectedStudents.hasValue() &&
+      this.selectedStudents.selected.length < maxLen
+    )
+      return true;
+    else return false;
+  }
+
+  selectAll() {
+    this.dataSource.data.forEach((student) =>
+      this.selectedStudents.select(student)
+    );
+    this.selectMode = "all";
+  }
+  deselectAll() {
+    this.selectedStudents.clear();
   }
 
   deleteSelectedStudents() {

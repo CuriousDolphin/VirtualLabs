@@ -41,7 +41,8 @@ import { StudentCourseDashboard } from "./student/student-course-dashboard/stude
 import { TeamsComponent } from "./student/teams/teams.component";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { StudentLandingPageComponent } from "./student/student-landing-page/student-landing-page.component";
-import { TeacherLandingPageComponent } from './teacher/teacher-landing-page/teacher-landing-page.component';
+import { TeacherLandingPageComponent } from "./teacher/teacher-landing-page/teacher-landing-page.component";
+import { MatMenuModule } from "@angular/material/menu";
 
 @NgModule({
   declarations: [
@@ -89,6 +90,7 @@ import { TeacherLandingPageComponent } from './teacher/teacher-landing-page/teac
     MatTooltipModule,
     MatCardModule,
     MatExpansionModule,
+    MatMenuModule,
   ],
   providers: [
     {
