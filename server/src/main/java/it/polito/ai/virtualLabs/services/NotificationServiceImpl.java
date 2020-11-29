@@ -1,6 +1,7 @@
 package it.polito.ai.virtualLabs.services;
 
 import it.polito.ai.virtualLabs.controllers.NotificationController;
+import it.polito.ai.virtualLabs.controllers.NotificationRegistrationController;
 import it.polito.ai.virtualLabs.dtos.TeamDTO;
 import it.polito.ai.virtualLabs.dtos.UserDTO;
 import it.polito.ai.virtualLabs.entities.*;
@@ -210,11 +211,13 @@ public class NotificationServiceImpl implements NotificationService{
         t.setExpiryDate(new Timestamp(now +3600000));
         t.setUser(modelMapper.map(user, User.class));
         registrationRepository.save(t);
-
-        String confirmLink = linkTo(NotificationController.class).slash("confirm_registration").slash(t.getId()).toString();
+        System.out.println("CIAO");
+        String confirmLink = linkTo(NotificationRegistrationController.class).slash("confirm_registration").slash(t.getId()).toString();
         String subject="Confirm your email to complete registration ";
         String text ="confirm:  "+confirmLink;
+        System.out.println("CIAO " + confirmLink);
         sendMessage('s'+id+"@studenti.polito.it",subject,text);
+        System.out.println("CIAO");
     }
 
     @Override
@@ -222,27 +225,33 @@ public class NotificationServiceImpl implements NotificationService{
     {
         boolean res = true;
         try {
+            System.out.println("TOKEN 1");
             Optional<RegistrationToken> foundToken = registrationRepository.findById(token);
             if (foundToken.isEmpty()) {
+                System.out.println("TOKEN 2");
                 System.out.println("TOKEN NON ESISTE");
                 throw new TokenNotFoundException();
             }
+            System.out.println("TOKEN 3");
             System.out.println("SCADENZA TOKEN " + foundToken.get().getExpiryDate().toString());
             //token scaduto, lo elimino e lancio eccezione
             if (foundToken.get().getExpiryDate().before(new Timestamp(System.currentTimeMillis()))) {
+                System.out.println("TOKEN 4");
                 System.out.println("TOKEN SCADUTO");
                 registrationRepository.delete(foundToken.get());
                 throw new TokenNotFoundException();
             }
-
+            System.out.println("TOKEN 5");
             User user = foundToken.get().getUser();
             user.setEnabled(true);
 
             registrationRepository.delete(foundToken.get()); // elimino il token
+            System.out.println("TOKEN 6");
         }
         catch(TokenNotFoundException e)
         {
             res = false;
+            System.out.println("TOKEN 7");
         }
         return res;
     }

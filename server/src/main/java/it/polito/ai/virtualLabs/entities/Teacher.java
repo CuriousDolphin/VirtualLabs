@@ -5,8 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Data
@@ -20,5 +21,11 @@ public class Teacher {
     private String name;
     private String lastName;
     private String email;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name="teacher_course",
+            joinColumns = @JoinColumn(name="teacher_id"),
+            inverseJoinColumns = @JoinColumn(name="course_id") )
+    List<Course> courses = new ArrayList<>();
 
 }

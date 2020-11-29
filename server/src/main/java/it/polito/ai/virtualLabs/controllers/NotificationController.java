@@ -60,24 +60,4 @@ public class NotificationController {
       //  return response;
     }
 
-    @GetMapping("/confirm_registration/{token}")
-    public String confirmRegistration(@PathVariable String token, Model m) {
-        try {
-            Boolean ris = this.notificationService.confirmRegistration(token);
-            if (!ris) {
-                System.out.println("LA REGISTRAZIONE  NON E' ANDATA A BUON FINE");
-                m.addAttribute("message", "la registrazione non è andata a buon fine.\nToken scaduto o non valido.");
-            } else {
-                System.out.println("LA REGISTRAZIONE E' ANDATA A BUON FINE");
-                m.addAttribute("message", "la registrazione è andata a buon fine.\nUtente attivato.");
-
-            }
-        } catch (TokenNotFoundException e) {
-            m.addAttribute("message", "Token non valido o scaduto");
-        }
-
-
-        return "confirm_registration";
-    }
-
 }

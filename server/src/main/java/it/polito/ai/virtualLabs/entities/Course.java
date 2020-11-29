@@ -34,6 +34,8 @@ public class Course {
     private List<Team> teams;
     @OneToMany(mappedBy = "course")
     private List<Assignment> assignments;
+    @ManyToMany(mappedBy = "courses")
+    private List<Teacher> teachers = new ArrayList<>();
 
     public void addStudent(Student s){
         if(!this.students.contains(s))  this.students.add(s);
