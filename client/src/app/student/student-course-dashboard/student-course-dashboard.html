@@ -24,7 +24,7 @@
   </button>
 </mat-toolbar>
 
-<mat-tab-group>
+<mat-tab-group *ngIf="currentCourse?.enabled;else courseNotEnabled">
   <mat-tab label="Teams">
     <!--only this scroll-->
     <div class="tab-container">
@@ -42,6 +42,10 @@
   <mat-tab label="VM"> Content 2 </mat-tab>
   <mat-tab label="Assignment"> Content 2 </mat-tab>
 </mat-tab-group>
+
+<ng-template #courseNotEnabled>
+  <h3 style="margin: 28px">Course not enabled.</h3>
+</ng-template>
 
 <!-- <nav mat-tab-nav-bar class="white-smoke">
   <a
