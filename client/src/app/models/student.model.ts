@@ -3,4 +3,5 @@ export class Student {
   name: string;
   lastName: string;
   email: string;
+  teamName?: string;
 }
