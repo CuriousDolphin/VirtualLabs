@@ -1,9 +1,6 @@
 package it.polito.ai.virtualLabs.services;
 
-import it.polito.ai.virtualLabs.dtos.CourseDTO;
-import it.polito.ai.virtualLabs.dtos.StudentDTO;
-import it.polito.ai.virtualLabs.dtos.TeamDTO;
-import it.polito.ai.virtualLabs.dtos.VmInstanceDTO;
+import it.polito.ai.virtualLabs.dtos.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -32,7 +29,7 @@ public interface TeamService {
     List<StudentDTO> getAllStudents();
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
-    List<StudentDTO> getEnrolledStudents(String courseName);
+    List<EnrolledStudentDTO> getEnrolledStudents(String courseName);
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     boolean addStudentToCourse(String studentId, String courseName);
