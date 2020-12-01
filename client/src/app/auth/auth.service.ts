@@ -14,14 +14,14 @@ import { environment } from "../../environments/environment";
 import * as _ from "lodash";
 import { ToastService } from "../services/toast.service";
 
-const BASE_PATH = environment.authUrl;
+const BASE_PATH = environment.apiUrl + "auth/";
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
-  private currentUserSubject$: BehaviorSubject<User> = new BehaviorSubject<
-    User
-  >(null);
+  private currentUserSubject$: BehaviorSubject<User> = new BehaviorSubject<User>(
+    null
+  );
   currentUser$ = this.currentUserSubject$.asObservable();
   constructor(private http: HttpClient, private toastService: ToastService) {
     if (this.isLogged() === true) {

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ai20-lab05": {
+    "ai20-VirtualLabs": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/ai20-lab05",
+            "outputPath": "dist/ai20-VirtualLabs",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -44,6 +44,7 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
+              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -67,19 +68,19 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ai20-lab05:build",
+            "browserTarget": "ai20-VirtualLabs:build",
             "proxyConfig": "src/proxy_local.conf.json"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ai20-lab05:build:production"
+              "browserTarget": "ai20-VirtualLabs:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ai20-lab05:build"
+            "browserTarget": "ai20-VirtualLabs:build"
           }
         },
         "test": {
@@ -117,19 +118,19 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "ai20-lab05:serve"
+            "devServerTarget": "ai20-VirtualLabs:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "ai20-lab05:serve:production"
+              "devServerTarget": "ai20-VirtualLabs:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "ai20-lab05",
+  "defaultProject": "ai20-VirtualLabs",
   "cli": {
-    "analytics": false
+    "analytics": "ca197fe4-3af4-4d20-b747-9d50d5353b8d"
   }
 }

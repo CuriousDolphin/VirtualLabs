@@ -29,15 +29,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .httpBasic().disable()
                 .csrf().disable()
+
+                .cors().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers("/api/auth/register").permitAll()
+                .antMatchers("/api/auth/signin").permitAll()
                 .antMatchers("/api/**").authenticated()
-                .antMatchers("/auth/signin").permitAll()
-                .antMatchers("/auth/register").permitAll()
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider))
                 .and();
+
         //@formatter:on
     }
 }
