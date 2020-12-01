@@ -11,6 +11,12 @@
             <input type="password" matInput formControlName="password" required />
             <mat-error *ngIf="registerForm.controls['password'].invalid">Not a valid password</mat-error>
         </mat-form-field>
+        <mat-error *ngIf="registerForm.errors?.invalid">Password must match</mat-error>
+        <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Confirm password</mat-label>
+            <input type="password" matInput formControlName="confirmPassword" required />
+            <mat-error *ngIf="registerForm.controls['confirmPassword'].invalid">insert a value</mat-error>
+        </mat-form-field>   
 
         <mat-form-field class="full-width" appearance="outline">
             <mat-label>Enter your first name</mat-label>

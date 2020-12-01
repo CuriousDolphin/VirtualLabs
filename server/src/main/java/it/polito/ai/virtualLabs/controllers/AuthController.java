@@ -107,7 +107,10 @@ public class AuthController {
             Student student;
             Optional<Teacher> optTeacher;
             Teacher teacher;
-            System.out.println(data.toString());
+            if(!(data.getPassword().equals(data.getConfirmPassword())))
+            {
+                throw new BadCredentialsException("Passwords not match");
+            }
             if(username.endsWith("@studenti.polito.it") && username.startsWith("s"))
             {
                 user = AddGenericUser(username,psw);
@@ -164,7 +167,6 @@ public class AuthController {
             }
 
             notificationService.notifyRegistration(modelMapper.map(user, UserDTO.class));
-            //TODO deve ritornare uno userDTO e devo fare la conversione da user a dto
             Map<Object, Object> model = new HashMap<>();
             model.put("username", user.getUsername());
             return ok(model);

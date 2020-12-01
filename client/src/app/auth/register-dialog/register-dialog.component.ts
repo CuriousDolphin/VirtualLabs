@@ -33,12 +33,19 @@ export class RegisterDialogComponent implements OnInit {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email,isStudentOrTeacher()]],
       password: ['', [Validators.required, Validators.minLength(3)]],
+      confirmPassword: ['',[Validators.required ]],
       firstName: ['', [Validators.required, Validators.minLength(1)]],
       lastName: ['', [Validators.required, Validators.minLength(1)]],
-    });
+    },{validator: this.passwordConfirming});
   }
 
   ngOnInit() { }
+
+  passwordConfirming(c: AbstractControl): { invalid: boolean } {
+    if (c.get('password').value !== c.get('confirmPassword').value) {
+        return {invalid: true};
+    }
+  }
 
   attemptRegister() {
     if (this.authSubscription) this.authSubscription.unsubscribe();
@@ -49,6 +56,7 @@ export class RegisterDialogComponent implements OnInit {
         .register(
           this.registerForm.get('email').value,
           this.registerForm.get('password').value,
+          this.registerForm.get('confirmPassword').value,
           this.registerForm.get('firstName').value,
           this.registerForm.get('lastName').value
         )
@@ -83,3 +91,19 @@ export function isStudentOrTeacher(): ValidatorFn {
       )
           ? null : {wrongDomain: control.value};
 }
+
+export function isEqualPsw(): ValidatorFn {  
+  return (control: AbstractControl): { [key: string]: any } | null =>  
+      //((studente and start with s) or (docente and start with d)) and (check solo numeri dopo lettera)
+      ( (control.value?.toLowerCase().endsWith('@studenti.polito.it') && control.value?.toLowerCase().startsWith("s") ) 
+      || (control.value?.toLowerCase().endsWith('@polito.it') && control.value?.toLowerCase().startsWith("d")) 
+      //&& Number(control.value?.toLowerCase().split("@")[0].substr(1)) != NaN && !isNaN(Number('as'))
+      )
+          ? null : {wrongDomain: control.value};
+}
+
+
+
+
+
+

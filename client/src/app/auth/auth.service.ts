@@ -118,10 +118,11 @@ export class AuthService {
     // this.toastService.success('user logged out')
   }
 
-  register(username: string, password: string, name: string, lastName: string): Observable<any> {
+  register(username: string, password: string, confirmPassword: string, name: string, lastName: string): Observable<any> {
     const body = {
       username,
       password,
+      confirmPassword,
       name,
       lastName
     };

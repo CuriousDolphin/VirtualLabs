@@ -18,6 +18,9 @@ public class UserProposal {
     private String password;
     @NotBlank
     @NotNull
+    private String confirmPassword;
+    @NotBlank
+    @NotNull
     private String name;
     @NotBlank
     @NotNull

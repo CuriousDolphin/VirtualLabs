@@ -212,10 +212,11 @@ public class NotificationServiceImpl implements NotificationService{
         t.setUser(modelMapper.map(user, User.class));
         registrationRepository.save(t);
         String confirmLink = linkTo(NotificationRegistrationController.class).slash("confirm_registration").slash(t.getId()).toString();
-        String subject="Confirm your email to complete registration ";
-        String text ="confirm:  "+confirmLink;
+        String subject="VirtualLabs registration";
+        String text =   "We have recived a registration attempt of a user with id number:" + id + "\n" +
+                        "If it's your id, please confirm your registration by clicking this link: "+confirmLink + "\n" +
+                        "If this is not your id number, please ignore this email.";
         sendMessage('s'+id+"@studenti.polito.it",subject,text);
-        System.out.println("CIAO");
     }
 
     @Override
