@@ -14,6 +14,8 @@ import { environment } from "src/environments/environment";
 import { ToastService } from "./toast.service";
 import { Course } from "../models/course.model";
 import { Team } from "../models/team.model";
+import { VmInstance } from "../models/vm-instance.model";
+
 const BASE_PATH = environment.apiUrl;
 
 @Injectable({
@@ -48,6 +50,13 @@ export class StudentService {
     const url = BASE_PATH + "courses/" + courseName + "/teams/" + studentId;
     return this.http
       .get<Team[]>(url)
+      .pipe(catchError((e) => this.handleError(e)));
+  }
+
+  getVmInstancesPerTeam(studentId: String, teamName: String): Observable<VmInstance[]> {
+    const url = BASE_PATH + "students/" + studentId + "/" + teamName + "/vminstances";
+    return this.http
+      .get<VmInstance[]>(url)
       .pipe(catchError((e) => this.handleError(e)));
   }
 

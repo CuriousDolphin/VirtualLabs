@@ -39,7 +39,14 @@
       ></app-teams>
     </div>
   </mat-tab>
-  <mat-tab label="VM"> Content 2 </mat-tab>
+  <mat-tab label="VM">
+    <div class="tab-container">
+      <app-vms-student
+        [studentId]="studentId"
+        [vmInstances]="studentVmInstances$ | async"
+      ></app-vms-student>
+    </div>
+  </mat-tab>
   <mat-tab label="Assignment"> Content 2 </mat-tab>
 </mat-tab-group>
 

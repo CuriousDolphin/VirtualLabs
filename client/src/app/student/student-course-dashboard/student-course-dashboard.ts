@@ -11,6 +11,7 @@ import { Team } from "src/app/models/team.model";
 import { AuthService } from "src/app/auth/auth.service";
 import { Student } from "src/app/models/student.model";
 import { TeamProposal } from "src/app/models/teamProposal.model";
+import { VmInstance } from 'src/app/models/vm-instance.model';
 
 @Component({
   selector: "app-course-dashboard",
@@ -33,6 +34,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   currentCourse: Course;
   currentCourse$: Observable<Course>;
   studentTeams$: Observable<Team[]>;
+  studentVmInstances$: Observable<VmInstance[]>;
   studentsNotInTeams$: Observable<Student[]>;
   studentId: String;
   isLoading = false;
@@ -104,6 +106,23 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       }),
       tap(() => (this.isLoading = false))
     );
+
+    this.studentVmInstances$ = this.studentService.getVmInstancesPerTeam(this.studentId, "Team1");
+    /*combineLatest([
+      this._currentCourseName$,
+      this._reloadTeams$,
+    ]).pipe(
+      map(([courseName, reload]) => courseName),
+      tap(
+        () => ((this.isLoading = true), console.log("get vm instances"))
+      ),
+      switchMap((courseName) => {
+        if (courseName)
+          return this.studentService.getVmInstancesPerTeam(this.studentId, "Team1");
+      }),
+      tap(() => (this.isLoading = false))
+    );*/
+    
   }
 
   createTeam(proposal: TeamProposal) {
