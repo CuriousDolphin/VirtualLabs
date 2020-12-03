@@ -3,6 +3,7 @@ package it.polito.ai.virtualLabs.controllers;
 import it.polito.ai.virtualLabs.TeamProposal;
 import it.polito.ai.virtualLabs.dtos.AssignmentDTO;
 import it.polito.ai.virtualLabs.dtos.CourseDTO;
+import it.polito.ai.virtualLabs.dtos.EnrolledStudentDTO;
 import it.polito.ai.virtualLabs.dtos.StudentDTO;
 import it.polito.ai.virtualLabs.dtos.TeamDTO;
 import it.polito.ai.virtualLabs.exceptions.*;
@@ -196,7 +197,7 @@ public class CourseController {
 
 
     @GetMapping("/{name}/enrolled")
-    List<StudentDTO> enrolledStudents(@PathVariable("name") String name) {
+    List<EnrolledStudentDTO> enrolledStudents(@PathVariable("name") String name) {
         try{
             return teamService.getEnrolledStudents(name);
         }catch (CourseNotFoundException e){

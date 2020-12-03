@@ -64,4 +64,10 @@ export class StudentComponent implements OnInit {
       )
     );
   }
+  ngOnDestroy(): void {
+    console.log("Student component destroyed");
+    if (this.reloadCourseFromServiceSubscription)
+      this.reloadCourseFromServiceSubscription.unsubscribe();
+    if (this.menuSubscription) this.menuSubscription.unsubscribe();
+  }
 }

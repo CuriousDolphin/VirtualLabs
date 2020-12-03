@@ -32,7 +32,7 @@ export class CourseDialogComponent implements OnInit {
         name: ['', [Validators.required, Validators.minLength(3)]],
         acronym: ['', [Validators.required, Validators.minLength(2)]],
         enabled: true,
-        min: 0,
+        min: 1,
         max: 5,
       });
 

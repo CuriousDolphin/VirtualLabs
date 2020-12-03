@@ -41,6 +41,7 @@ import { StudentCourseDashboard } from "./student/student-course-dashboard/stude
 import { TeamsComponent } from "./student/teams/teams.component";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { StudentLandingPageComponent } from "./student/student-landing-page/student-landing-page.component";
+import { MatMenuModule } from "@angular/material/menu";
 import { TeacherLandingPageComponent } from './teacher/teacher-landing-page/teacher-landing-page.component';
 import { AssignmentComponent } from './teacher/assignment/assignment.component';
 
@@ -91,6 +92,7 @@ import { AssignmentComponent } from './teacher/assignment/assignment.component';
     MatTooltipModule,
     MatCardModule,
     MatExpansionModule,
+    MatMenuModule,
   ],
   providers: [
     {
