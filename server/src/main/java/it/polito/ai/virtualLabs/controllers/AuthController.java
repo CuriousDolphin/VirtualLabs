@@ -56,16 +56,24 @@ public class AuthController {
     @Autowired
     ModelMapper modelMapper;
 
-    @PostMapping("/signin")
-    public ResponseEntity signin(@RequestBody AuthenticationRequest data) {
+    @PostMapping("/login")
+    public ResponseEntity login(@RequestBody AuthenticationRequest data) {
         try {
             String email = data.getUsername();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, data.getPassword()));
-
             String id ="";
-            Optional<Student> s=studentRepository.findByEmailIgnoreCase(email);
-            if(s.isPresent())
-                id=s.get().getId();
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, data.getPassword()));
+            if(email.split("@")[1].compareTo("studenti.polito.it") == 0)
+            {
+                Optional<Student> s=studentRepository.findByEmailIgnoreCase(email);
+                if(s.isPresent())
+                    id=s.get().getId();
+            }
+            else
+            {
+                Optional<Teacher> d = teachers.findByEmailIgnoreCase(email);
+                if(d.isPresent())
+                    id=d.get().getId();
+            }
 
             String token = jwtTokenProvider.createToken(
                     email,
@@ -74,6 +82,7 @@ public class AuthController {
             Map<Object, Object> model = new HashMap<>();
             model.put("username", email);
             model.put("token", token);
+            //model.put("userId", id);
             return ok(model);
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username/password supplied");
@@ -97,8 +106,8 @@ public class AuthController {
         return u;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid UserProposal data) {
+    @PostMapping("/signin")
+    public ResponseEntity signin(@RequestBody @Valid UserProposal data) {
         try {
             String username = data.getUsername();
             String psw = data.getPassword();

@@ -28,4 +28,8 @@ public class Teacher {
             inverseJoinColumns = @JoinColumn(name="course_id") )
     List<Course> courses = new ArrayList<>();
 
+    public void addCourse(Course course){
+        if(!this.courses.contains(course)) this.courses.add(course);
+        if(!course.getTeachers().contains(this)) course.addTeacher(this);
+    }
 }

@@ -58,6 +58,11 @@ public class Course {
 
     }
 
+    public void addTeacher(Teacher t){
+        if(!this.teachers.contains(t))  this.teachers.add(t);
+        if(!t.getCourses().contains(this))  t.addCourse(this);
+    }
+
     @Override
     public String toString(){
         return this.name+"_"+this.min+"_"+this.max;

@@ -10,10 +10,10 @@ import java.util.Optional;
 
 public interface TeamService {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
-    boolean addCourse(CourseDTO course);
+    boolean addCourse(CourseDTO course, String userId);
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
-    CourseDTO updateCourse(CourseDTO course,String courseName);
+    CourseDTO updateCourse(CourseDTO course,String courseName, String userId);
 
     Optional<CourseDTO> getCourse(String name);
 
@@ -22,7 +22,8 @@ public interface TeamService {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     boolean addStudent(StudentDTO student);
 
-
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
+    List<CourseDTO> getAllTeacherCourses(String userId);
 
     Optional<StudentDTO> getStudent(String studentId);
 

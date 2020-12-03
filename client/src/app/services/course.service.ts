@@ -30,6 +30,14 @@ export class CourseService {
       .get<Course[]>(url)
       .pipe(catchError((e) => this.handleError(e)));
   }
+
+getCoursesByTeacher(userId: String): Observable<Course[]> {
+  const url = BASE_PATH + "courses/teacher/" + userId;
+  return this.http
+    .get<Course[]>(url)
+    .pipe(catchError((e) => this.handleError(e)));
+}
+
   getCourse(name: string): Observable<Course> {
     const url = BASE_PATH + "courses/" + name;
     return this.http
@@ -37,18 +45,30 @@ export class CourseService {
       .pipe(catchError((e) => this.handleError(e)));
   }
 
-  updateCourse(course: Course, name: string): Observable<Course> {
+  updateCourse(course: Course, name: string, userId: String): Observable<Course> {
     const url = BASE_PATH + "courses/" + name;
-    return this.http
-      .patch<Course>(url, course)
-      .pipe(catchError((e) => this.handleError(e)));
+    //return this.http
+    //  .patch<Course>(url, course)
+    //  .pipe(catchError((e) => this.handleError(e)));
+    const body = {
+      course,
+      userId
+    };
+    return this.http.patch(url, body)
+    .pipe(catchError((e) => this.handleError(e)));
   }
 
-  addCourse(course: Course) {
+  addCourse(course: Course, userId: String) {
     const url = BASE_PATH + "courses/";
-    return this.http
-      .post<Course>(url, course)
-      .pipe(catchError((e) => this.handleError(e)));
+    const body = {
+      course,
+      userId
+    };
+    return this.http.post(url, body)
+    .pipe(catchError((e) => this.handleError(e)));
+    //return this.http
+    //  .post<Course>(url, course)
+    //  .pipe(catchError((e) => this.handleError(e)));
   }
   enrollOne(course: Course, student: Student): Observable<any> {
     const url = BASE_PATH + "courses/" + course.name + "/enrollOne";

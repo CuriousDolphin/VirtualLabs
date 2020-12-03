@@ -47,13 +47,21 @@ public class TeamServiceImpl implements TeamService {
     @Autowired
     VmInstanceRepository vmInstanceRepository;
 
+    @Autowired
+    TeacherRepository teacherRepository;
+
     @Override
-    public boolean addCourse(CourseDTO course) {
+    public boolean addCourse(CourseDTO course, String userId) {
         if (courseRepository.findByNameIgnoreCase(course.getName()).isPresent()) {
             return false;
         } else {
             if (course.getName() != null && !course.getName().equals("")) {
                 Course newCourse = modelMapper.map(course, Course.class);
+                Optional<Teacher> optTeacher = teacherRepository.findById(userId);
+                if(optTeacher.isPresent())
+                    newCourse.addTeacher(optTeacher.get());
+                else
+                    return false;
                 //default VmModel for course
                 VmModel newVmModel = VmModel.builder()
                         .name("VmModelDefault-" + course.getAcronym())
@@ -69,11 +77,16 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public CourseDTO updateCourse(CourseDTO course, String courseName) {
+    public CourseDTO updateCourse(CourseDTO course, String courseName, String userId) {
         //if (!courseRepository.existsById(courseName)) throw new CourseNotFoundException();
         if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
 
         Course c = courseRepository.findByNameIgnoreCase(courseName).get();
+        Optional<Teacher> optTeacher = teacherRepository.findById(userId);
+        if(!optTeacher.isPresent())
+            throw new CourseNotFoundException();
+        if(!c.getTeachers().contains(optTeacher.get()))
+            throw new CourseNotFoundException();
         c.setAcronym(course.getAcronym());
         c.setEnabled(course.isEnabled());
         c.setMax(course.getMax());
@@ -641,6 +654,15 @@ public class TeamServiceImpl implements TeamService {
         vmInstanceRepository.getOne(idVmInstance).setCountRam(vmInstance.getCountRam());
         vmInstanceRepository.getOne(idVmInstance).setCountVcpus(vmInstance.getCountVcpus());
         return modelMapper.map(vmInstanceRepository.getOne(idVmInstance), VmInstanceDTO.class);
+    }
+
+    @Override
+    public List<CourseDTO> getAllTeacherCourses(String userId)
+    {
+        return courseRepository.findAllByTeacher(userId)
+                .stream()
+                .map(course -> modelMapper.map(course, CourseDTO.class))
+                .collect(Collectors.toList());
     }
 
 }
