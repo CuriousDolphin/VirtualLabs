@@ -60,6 +60,27 @@ export class StudentService {
       .pipe(catchError((e) => this.handleError(e)));
   }
 
+  deleteVm(studentId: String, teamName: String, vm: VmInstance): Observable<VmInstance[]> {
+    const url = BASE_PATH + "students/" + studentId + "/" + teamName + "/deletevminstance/" + vm.id;
+    return this.http
+      .get<VmInstance[]>(url)      
+      .pipe(catchError((e) => this.handleError(e)));
+  }
+
+  startVm(studentId: String, teamName: String, vm: VmInstance): Observable<VmInstance[]> {
+    const url = BASE_PATH + "students/" + studentId + "/" + teamName + "/startvminstance/" + vm.id;
+    return this.http
+      .get<VmInstance[]>(url)      
+      .pipe(catchError((e) => this.handleError(e)));
+  }
+
+  stopVm(studentId: String, teamName: String, vm: VmInstance): Observable<VmInstance[]> {
+    const url = BASE_PATH + "students/" + studentId + "/" + teamName + "/stopvminstance/" + vm.id;
+    return this.http
+      .get<VmInstance[]>(url)      
+      .pipe(catchError((e) => this.handleError(e)));
+  }
+
   private handleError(error) {
     let errorMessage = "";
     if (error.error instanceof ErrorEvent) {
