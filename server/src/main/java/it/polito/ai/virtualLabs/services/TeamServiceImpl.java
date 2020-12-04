@@ -643,4 +643,14 @@ public class TeamServiceImpl implements TeamService {
         return modelMapper.map(vmInstanceRepository.getOne(idVmInstance), VmInstanceDTO.class);
     }
 
+    @Override
+    public VmConfigurationDTO getVmConfiguration(String id, String team) {
+        if (teamRepository.getByName(team) == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, team);
+        if (!teamRepository.getByName(team).getMembers().contains(studentRepository.getOne(id)))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, id);
+
+        return modelMapper.map(teamRepository.getByName(team).getVmConfiguration(), VmConfigurationDTO.class);
+    }
+
 }
