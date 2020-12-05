@@ -45,6 +45,8 @@ import { TeacherLandingPageComponent } from "./teacher/teacher-landing-page/teac
 import { MatMenuModule } from "@angular/material/menu";
 import { VmsStudentComponent } from './student/vms-student/vms-student.component';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { DialogCreateVmComponent } from './student/vms-student/dialog-create-vm/dialog-create-vm.component';
+import {MatRadioModule} from '@angular/material/radio';
 
 @NgModule({
   declarations: [
@@ -64,6 +66,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
     StudentLandingPageComponent,
     TeacherLandingPageComponent,
     VmsStudentComponent,
+    DialogCreateVmComponent,
   ],
   imports: [
     BrowserModule,
@@ -95,6 +98,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
     MatExpansionModule,
     MatMenuModule,
     MatGridListModule,
+    MatRadioModule,
   ],
   providers: [
     {

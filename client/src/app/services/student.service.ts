@@ -15,6 +15,7 @@ import { ToastService } from "./toast.service";
 import { Course } from "../models/course.model";
 import { Team } from "../models/team.model";
 import { VmInstance } from "../models/vm-instance.model";
+import { VmConfiguration } from '../models/vm-configuration.model';
 
 const BASE_PATH = environment.apiUrl;
 
@@ -60,6 +61,13 @@ export class StudentService {
       .pipe(catchError((e) => this.handleError(e)));
   }
 
+  getVmConfigurationPerTeam(studentId: String, teamName: String): Observable<VmConfiguration> {
+    const url = BASE_PATH + "students/" + studentId + "/" + teamName + "/vmconfiguration";
+    return this.http
+      .get<VmConfiguration>(url)
+      .pipe(catchError((e) => this.handleError(e)));
+  }
+
   deleteVm(studentId: String, teamName: String, vm: VmInstance): Observable<VmInstance[]> {
     const url = BASE_PATH + "students/" + studentId + "/" + teamName + "/deletevminstance/" + vm.id;
     return this.http
@@ -78,6 +86,17 @@ export class StudentService {
     const url = BASE_PATH + "students/" + studentId + "/" + teamName + "/stopvminstance/" + vm.id;
     return this.http
       .get<VmInstance[]>(url)      
+      .pipe(catchError((e) => this.handleError(e)));
+  }
+
+  createVm(studentId: String, teamName: String, newVm: JSON): Observable<VmInstance[]> {
+    const url = BASE_PATH + "students/" + studentId + "/" + teamName + "/createvminstance";
+    var jsonToString: String = JSON.stringify(newVm);
+    jsonToString = jsonToString.replace(',"owner":"true"', '');
+    jsonToString = jsonToString.replace('false', <string>studentId);
+    newVm = JSON.parse(<string>jsonToString)
+    return this.http
+      .post<VmInstance[]>(url, newVm)      
       .pipe(catchError((e) => this.handleError(e)));
   }
 

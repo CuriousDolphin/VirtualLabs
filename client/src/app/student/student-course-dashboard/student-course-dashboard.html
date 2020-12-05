@@ -45,9 +45,11 @@
         [studentId]="studentId"
         [vmInstances]="studentVmInstances$ | async"
         [teams]="studentTeams$ | async"
+        [vmConfiguration]="currentVmConfiguration$ | async"
         (deleteVm)="deleteVm($event)"
         (startVm)="startVm($event)"
         (stopVm)="stopVm($event)"
+        (createVm)="createVm($event)"
       ></app-vms-student>
     </div>
   </mat-tab>

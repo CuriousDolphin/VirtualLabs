@@ -1,0 +1,31 @@
+<h1 mat-dialog-title>Setup New VM</h1>
+<div>
+    <div>
+        <mat-form-field>
+            <mat-label>VCPUs number</mat-label>
+            <input matInput type="number" min="1" [max]="data.maxVcpus" [(ngModel)]="data.countVcpus">
+            <span matSuffix>/{{data.maxVcpus}}</span>
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field>
+            <mat-label>RAM dimension</mat-label>
+            <input matInput type="number" min="1" [max]="data.maxRam" [(ngModel)]="data.countRam">
+            <span matSuffix>GB /{{data.maxRam}}</span>
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field>
+            <mat-label>Disk dimension</mat-label>
+            <input matInput type="number" min="1" [max]="data.maxDisk" [(ngModel)]="data.countDisk">
+            <span matSuffix>GB /{{data.maxDisk}}</span>
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-checkbox [(ngModel)]="data.owner">Accessible to Every Teammate</mat-checkbox>
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Discard</button>
+    <button mat-button cdkFocusInitial (click)=confirmCreateVm(data)>Confirm</button>
+</div>

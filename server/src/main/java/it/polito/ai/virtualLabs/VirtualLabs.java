@@ -49,7 +49,7 @@ public class VirtualLabs {
                     vmConfigurationRepository.save(VmConfiguration.builder()
                             .vmModel(null)
                             .maxVcpusPerVm(5)
-                            .maxRamPerVm(500)
+                            .maxRamPerVm(16)
                             .maxDiskPerVm(500)
                             .maxRunningVms(2)
                             .maxVms(4)

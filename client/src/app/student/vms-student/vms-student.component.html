@@ -5,14 +5,14 @@
     <ng-container *ngIf="hasTeam">
         <mat-card>
             <div style="text-align:center">
-                <button mat-raised-button color="primary">New VM</button>
+                <button mat-raised-button color="primary" (click)="createVmDialog()">New Virtual Machine</button>
             </div>
         </mat-card>
         <mat-divider></mat-divider>
         <mat-card>
             <mat-card-title>
                 <mat-grid-list cols="18" rowHeight="2rem">
-                    <mat-grid-tile colspan="18" rowspan="1">{{team.name}}'s VMs</mat-grid-tile>
+                    <mat-grid-tile colspan="18" rowspan="1">{{team.name}}'s Virtual Machines</mat-grid-tile>
                     <mat-grid-tile colspan="3" rowspan="2">Owner</mat-grid-tile>
                     <mat-grid-tile colspan="3" rowspan="2">Actions</mat-grid-tile>
                     <mat-grid-tile colspan="3" rowspan="2">State</mat-grid-tile>
@@ -69,8 +69,8 @@
                     <mat-grid-tile *ngIf="vmInstance.state == 0" colspan="3">Stopped</mat-grid-tile>
                     <mat-grid-tile *ngIf="vmInstance.state == 1" colspan="3">Running</mat-grid-tile>
                     <mat-grid-tile colspan="3">{{ vmInstance.countVcpus }}</mat-grid-tile>
-                    <mat-grid-tile colspan="3">{{ vmInstance.countDisks }} MB</mat-grid-tile>
-                    <mat-grid-tile colspan="3">{{ vmInstance.countRam }} MB</mat-grid-tile>
+                    <mat-grid-tile colspan="3">{{ vmInstance.countRam }} GB</mat-grid-tile>
+                    <mat-grid-tile colspan="3">{{ vmInstance.countDisks }} GB</mat-grid-tile>
                 </mat-grid-list>
             </div>
         </mat-card>

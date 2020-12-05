@@ -1,7 +1,10 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, Inject } from '@angular/core';
 import { Team } from 'src/app/models/team.model';
 import { VmInstance } from 'src/app/models/vm-instance.model';
 import * as _ from "lodash";
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DialogCreateVmComponent } from './dialog-create-vm/dialog-create-vm.component';
+import { VmConfiguration } from 'src/app/models/vm-configuration.model';
 
 @Component({
   selector: 'app-vms-student',
@@ -13,9 +16,12 @@ export class VmsStudentComponent implements OnInit {
   @Output() deleteVm = new EventEmitter<VmInstance>();
   @Output() startVm = new EventEmitter<VmInstance>();
   @Output() stopVm = new EventEmitter<VmInstance>();
+  @Output() createVm = new EventEmitter<JSON>();
 
   @Input() vmInstances: VmInstance[];
   @Input() studentId: String;
+  @Input() vmConfiguration: VmConfiguration;
+  dialogRef: MatDialogRef<DialogCreateVmComponent, any>
   hasTeam = false;
   _teams: Team[];
   team: Team;
@@ -31,12 +37,28 @@ export class VmsStudentComponent implements OnInit {
     }
   }
 
-  constructor() {}
+  constructor(public dialog: MatDialog) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   public emitDeleteVm(vm: VmInstance) {
     this.deleteVm.emit(vm);
+  }
+
+  createVmDialog(): void {
+    this.dialogRef = this.dialog.open(DialogCreateVmComponent, {
+      data: {
+        countVcpus: (this.vmConfiguration.maxVcpusPerVm / 4),
+        countRam: (this.vmConfiguration.maxRamPerVm / 4),
+        countDisk: (this.vmConfiguration.maxDiskPerVm / 4),
+        owner: true,
+        maxVcpus: this.vmConfiguration.maxVcpusPerVm,
+        maxRam: this.vmConfiguration.maxRamPerVm,
+        maxDisk: this.vmConfiguration.maxDiskPerVm
+      }
+    });
+    this.dialogRef.afterClosed().subscribe((newVm) => { this.emitCreateVm(newVm) });
+
   }
 
   public emitStartVm(vm: VmInstance) {
@@ -45,6 +67,12 @@ export class VmsStudentComponent implements OnInit {
 
   public emitStopVm(vm: VmInstance) {
     this.stopVm.emit(vm);
+  }
+
+  public emitCreateVm(newVm: JSON) {
+    if (newVm !== undefined) {
+      this.createVm.emit(newVm);
+    }
   }
 
 }

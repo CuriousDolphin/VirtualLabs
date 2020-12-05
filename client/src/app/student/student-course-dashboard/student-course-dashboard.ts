@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BehaviorSubject, combineLatest, Observable, Subscription, of } from "rxjs";
-import { switchMap, tap, map, shareReplay } from "rxjs/operators";
+import { switchMap, tap, map, takeLast, last } from "rxjs/operators";
 import { Course } from "src/app/models/course.model";
 import { CourseService } from "src/app/services/course.service";
 import { StudentService } from "../../services/student.service";
@@ -12,6 +12,8 @@ import { AuthService } from "src/app/auth/auth.service";
 import { Student } from "src/app/models/student.model";
 import { TeamProposal } from "src/app/models/teamProposal.model";
 import { VmInstance } from 'src/app/models/vm-instance.model';
+import { VmConfiguration } from 'src/app/models/vm-configuration.model';
+import * as _ from 'lodash';
 
 @Component({
   selector: "app-course-dashboard",
@@ -34,8 +36,10 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   private deleteVmSubscription: Subscription;
   private startVmSubscription: Subscription;
   private stopVmSubscription: Subscription;
+  private createVmSubscription: Subscription;
   currentCourse: Course;
-  currentActiveTeam: String;
+  currentActiveTeam$: Observable<String>;
+  currentVmConfiguration$: Observable<VmConfiguration>;
   currentCourse$: Observable<Course>;
   studentTeams$: Observable<Team[]>;
   studentVmInstances$: Observable<VmInstance[]>;
@@ -55,7 +59,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   ngOnInit(): void {
     console.log("student dashboard on init");
     this.studentId = this.authService.getUserId();
-    this.currentActiveTeam = "";
+    //this.currentActiveTeam = "";
 
     // take the name of the route (course name)
     this.routeSubscription = this.route.url.subscribe((evt) => {
@@ -71,9 +75,9 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       this._reloadCourse$,
     ]).pipe(
       map(([courseName, reload]) => courseName),
-      tap(() => (this.isLoading = true)),
+      tap(() => (this.isLoading = true/*, this.currentActiveTeam = ""*/)),
       switchMap((courseName) => {
-        if (courseName) return this.courseService.getCourse(courseName);
+        return this.courseService.getCourse(courseName);
       }),
       tap((course) => {
         this.currentCourse = course;
@@ -85,21 +89,21 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       this._currentCourseName$,
       this._reloadTeams$,
     ]).pipe(
-      tap(() => (this.isLoading = true)),
+      tap(() => (/*this.currentActiveTeam = "", */this.isLoading = true)),
       map(([courseName, reload]) => courseName),
       switchMap((courseName) => {
-        if (courseName)
-          return this.studentService.getTeamsByStudentIdCourseName(
-            this.authService.getUserId(),
-            courseName
-          );
+        return this.studentService.getTeamsByStudentIdCourseName(
+          this.authService.getUserId(),
+          courseName
+        );
       }),
-      tap(() => (this.isLoading = false)),
-      tap(val => {
-        this.currentActiveTeam = "";
-        if (val.filter(t => t.status === 1).length === 1) {
-          this.currentActiveTeam = val.find(t => t.status === 1).name
-        }
+      tap((teams) => {
+        if (_.filter(teams, (t) => t.status === 1).length === 1)
+          //this.currentActiveTeam = _.filter(teams, (t) => t.status === 1)[0].name;
+          this.currentActiveTeam$ = of(_.filter(teams, (t) => t.status === 1)[0].name);
+        else 
+          this.currentActiveTeam$ = of("");
+        this.isLoading = false;
       })
     );
 
@@ -112,29 +116,48 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
         () => ((this.isLoading = true), console.log("get student not in team"))
       ),
       switchMap((courseName) => {
-        if (courseName)
-          return this.courseService.getStudentsNotInTeam(courseName);
+        return this.courseService.getStudentsNotInTeam(courseName);
       }),
       tap(() => (this.isLoading = false))
     );
 
-    this.studentVmInstances$ = combineLatest([
-      this._currentCourseName$,
-      this._reloadTeams$,
-      this.studentTeams$
+    this.currentVmConfiguration$ = combineLatest([
+      //this._currentCourseName$,
+      this.currentActiveTeam$
     ]).pipe(
       tap(() => (this.isLoading = true)),
-      map(([courseName, reload]) => courseName),
-      switchMap((courseName) => {
-        if (courseName) {
-          if (this.currentActiveTeam != "") {
-            return this.studentService.getVmInstancesPerTeam(
-              this.authService.getUserId(),
-              this.currentActiveTeam
-            );
-          }
-          else
-            return of<VmInstance[]>([]);
+      map(([team]) => team),
+      switchMap((team) => {
+        if (team !== "") {
+          return this.studentService.getVmConfigurationPerTeam(
+            this.authService.getUserId(),
+            team
+          );
+        }
+        else {
+          return of<VmConfiguration>();
+        }
+      }),
+      tap(() => this.isLoading = false)
+    );
+
+    this.studentVmInstances$ = combineLatest([
+      /*this._currentCourseName$,
+      this._reloadTeams$,
+      this.studentTeams$*/
+      this.currentVmConfiguration$
+    ]).pipe(
+      tap(() => (this.isLoading = true)),
+      switchMap((team) => {
+        //var team: Team = _.find(teams, (t) => (t.status === 1))
+        if (/*team !== null && team !== undefined*/ /*team !== ""*/ true) {
+          return this.studentService.getVmInstancesPerTeam(
+            this.authService.getUserId(),
+            "Team1"//team
+          );
+        }
+        else {
+          return of<VmInstance[]>([]);
         }
       }),
       tap(() => (this.isLoading = false))
@@ -215,9 +238,9 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
 
   deleteVm(vm: VmInstance) {
     if (this.deleteVmSubscription) this.deleteVmSubscription.unsubscribe();
-    
+
     this.deleteVmSubscription = this.studentService
-      .deleteVm(this.authService.getUserId(), this.currentActiveTeam, vm)
+      .deleteVm(this.authService.getUserId(), "Team1"/*this.currentActiveTeam$.pipe(takeLast(1))*/, vm) //TODO: take last teamName emitted
       .subscribe(
         (data) => {
           this.toastService.success("VM deleted success ! \n");
@@ -236,38 +259,57 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
     if (this.startVmSubscription) this.startVmSubscription.unsubscribe();
 
     this.startVmSubscription = this.studentService
-    .startVm(this.authService.getUserId(), this.currentActiveTeam, vm)
-    .subscribe(
-      (data) => {
-        this.toastService.success("VM started success ! \n"); //TODO: open VM image
-        this._reloadTeams();
-      },
-      (error) => {
-        this.toastService.error(
-          "Error VM start, try again later \n" + error
-        );
-        this._reloadTeams();
-      }
-    );
+      .startVm(this.authService.getUserId(), "Team1"/*this.currentActiveTeam*/, vm)
+      .subscribe(
+        (data) => {
+          this.toastService.success("VM started success ! \n"); //TODO: open VM image
+          this._reloadTeams();
+        },
+        (error) => {
+          this.toastService.error(
+            "Error VM start, try again later \n" + error
+          );
+          this._reloadTeams();
+        }
+      );
   }
 
   stopVm(vm: VmInstance) {
     if (this.stopVmSubscription) this.stopVmSubscription.unsubscribe();
 
     this.stopVmSubscription = this.studentService
-    .stopVm(this.authService.getUserId(), this.currentActiveTeam, vm)
-    .subscribe(
-      (data) => {
-        this.toastService.success("VM stopped success ! \n"); //TODO: open VM image
-        this._reloadTeams();
-      },
-      (error) => {
-        this.toastService.error(
-          "Error VM stop, try again later \n" + error
-        );
-        this._reloadTeams();
-      }
-    );
+      .stopVm(this.authService.getUserId(), "Team1"/*this.currentActiveTeam*/, vm)
+      .subscribe(
+        (data) => {
+          this.toastService.success("VM stopped success ! \n");
+          this._reloadTeams();
+        },
+        (error) => {
+          this.toastService.error(
+            "Error VM stop, try again later \n" + error
+          );
+          this._reloadTeams();
+        }
+      );
+  }
+
+  createVm(newVm: JSON) {
+    if (this.createVmSubscription) this.createVmSubscription.unsubscribe();
+
+    this.createVmSubscription = this.studentService
+      .createVm(this.authService.getUserId(), "Team1"/*this.currentActiveTeam*/, newVm)
+      .subscribe(
+        (data) => {
+          this.toastService.success("VM created success ! \n");
+          this._reloadTeams();
+        },
+        (error) => {
+          this.toastService.error(
+            "Error create VM, try again later \n" + error
+          );
+          this._reloadTeams();
+        }
+      );
   }
 
   _reloadTeams() {
@@ -285,5 +327,6 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
     if (this.deleteVmSubscription) this.deleteVmSubscription.unsubscribe();
     if (this.startVmSubscription) this.startVmSubscription.unsubscribe();
     if (this.stopVmSubscription) this.stopVmSubscription.unsubscribe();
+    if (this.createVmSubscription) this.createVmSubscription.unsubscribe();
   }
 }
