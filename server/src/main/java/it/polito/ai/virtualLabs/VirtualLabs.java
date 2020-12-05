@@ -47,13 +47,19 @@ public class VirtualLabs {
                              CourseRepository courseRepository,
                              PasswordEncoder passwordEncoder,
                              VmModelRepository vmModelRepository,
-                             AssignmentRepository assignmentRepository) {
+                             AssignmentRepository assignmentRepository,
+                             TeamRepository teamRepository,
+                             StudentRepository studentRepository,
+                             TeamService teamService,
+                             NotificationService notificationService,
+                             TokenTeamRepository tokenTeamRepository,
+                             VmConfigurationRepository vmConfigurationRepository) {
         return new CommandLineRunner() {
 
             @Override
             public void run(String... args) throws Exception {
                 //create default VmConfiguration if not exists
-                if(vmConfigurationRepository.findAll().stream().noneMatch(vc -> vc.getVmModel() == null)) {
+                if (vmConfigurationRepository.findAll().stream().noneMatch(vc -> vc.getVmModel() == null)) {
                     vmConfigurationRepository.save(VmConfiguration.builder()
                             .vmModel(null)
                             .maxVcpusPerVm(5)
@@ -64,23 +70,41 @@ public class VirtualLabs {
                             .build());
                 }
 
-                generateMockData(courseRepository, vmModelRepository, teamRepository, userRepository, passwordEncoder, studentRepository, teamService, notificationService, tokenTeamRepository);
+                generateMockData(courseRepository, vmModelRepository, teamRepository, userRepository, assignmentRepository, passwordEncoder, studentRepository, teamService, notificationService, tokenTeamRepository);
 
                 System.out.println("Printing all courses:");
-                courseRepository.findAll().forEach(v ->  System.out.println(" - Course :" + v.toString()));
+                courseRepository.findAll().forEach(v -> System.out.println(" - Course :" + v.toString()));
                 System.out.println("Printing all users:");
-                userRepository.findAll().forEach(v ->  System.out.println(" - User :" + v.toString()));
+                userRepository.findAll().forEach(v -> System.out.println(" - User :" + v.toString()));
                 System.out.println("Printing all teams:");
-                teamRepository.findAll().forEach(v ->  System.out.println(" - Team :" + v.toString()));
+                teamRepository.findAll().forEach(v -> System.out.println(" - Team :" + v.toString()));
 
             }
         };
     }
 
     /* generates mock data (3 courses, admin, 2 students, team, teacher) */
-    public void generateMockData(CourseRepository cr, VmModelRepository vmr, TeamRepository tr, UserRepository ur, PasswordEncoder passwordEncoder, StudentRepository sr, TeamService teamService, NotificationService notificationService, TokenTeamRepository ttr) {
-        if(!ur.findAll().stream().anyMatch(u -> u.getUsername().equals("admin@polito.it"))) {
+    public void generateMockData(
+            CourseRepository cr,
+            VmModelRepository vmr,
+            TeamRepository tr,
+            UserRepository ur,
+            AssignmentRepository ar,
+            PasswordEncoder passwordEncoder,
+            StudentRepository sr,
+            TeamService teamService,
+            NotificationService notificationService,
+            TokenTeamRepository ttr) {
+        if (!ur.findAll().stream().anyMatch(u -> u.getUsername().equals("admin@polito.it"))) {
             try {
+
+                /* Set time for the assignment releaseDate and expirtyDate */
+                Calendar calendar = Calendar.getInstance();
+                Timestamp releaseDate = new Timestamp(System.currentTimeMillis());
+                calendar.setTimeInMillis(releaseDate.getTime());
+                calendar.add(Calendar.DAY_OF_WEEK, 6);
+                Timestamp expiryDate = new Timestamp(calendar.getTime().getTime());
+
                 //Course: PDS
                 Course newCourse = Course.builder()
                         .name("Programmazione di Sistema")
@@ -96,6 +120,13 @@ public class VirtualLabs {
                         .course(newCourse)
                         .build();
                 vmr.save(newVmModel);
+                ar.save(Assignment.builder()
+                        .releaseDate(releaseDate)
+                        .expiryDate(expiryDate)
+                        .content("Laboratorio 1")
+                        .course(newCourse)
+                        .build());
+
                 //Course: ML
                 newCourse = Course.builder()
                         .name("Machine Learning")
@@ -111,6 +142,13 @@ public class VirtualLabs {
                         .course(newCourse)
                         .build();
                 vmr.save(newVmModel);
+                ar.save(Assignment.builder()
+                        .releaseDate(releaseDate)
+                        .expiryDate(expiryDate)
+                        .content("Laboratorio 1")
+                        .course(newCourse)
+                        .build());
+
                 //Course: AI
                 newCourse = Course.builder()
                         .name("Applicazioni Internet")
@@ -126,6 +164,12 @@ public class VirtualLabs {
                         .course(newCourse)
                         .build();
                 vmr.save(newVmModel);
+                ar.save(Assignment.builder()
+                        .releaseDate(releaseDate)
+                        .expiryDate(expiryDate)
+                        .content("Laboratorio 1")
+                        .course(newCourse)
+                        .build());
 
                 //User-Admin
                 ur.save(User.builder()
@@ -205,44 +249,6 @@ public class VirtualLabs {
                 SecurityContextHolder.clearContext();
             }
         }
-
-        /* Set time for the assignment releaseDate and expirtyDate */
-        Calendar calendar = Calendar.getInstance();
-        Timestamp releaseDate = new Timestamp(System.currentTimeMillis());
-        calendar.setTimeInMillis(releaseDate.getTime());
-        calendar.add(Calendar.DAY_OF_WEEK, 6);
-        Timestamp expiryDate = new Timestamp(calendar.getTime().getTime());
-
-        /* Insert assignment */
-        try {
-
-            ar.save(Assignment.builder()
-                    .releaseDate(releaseDate)
-                    .expiryDate(expiryDate)
-                    .content("Laboratorio 1")
-                    .course(course1)
-                    .build());
-
-            ar.save(Assignment.builder()
-                    .releaseDate(releaseDate)
-                    .expiryDate(expiryDate)
-                    .content("Laboratorio 1")
-                    .course(course2)
-                    .build());
-
-
-            ar.save(Assignment.builder()
-                    .releaseDate(releaseDate)
-                    .expiryDate(expiryDate)
-                    .content("Laboratorio 1")
-                    .course(course3)
-                    .build());
-
-        } catch (Exception e) {
-            System.out.println("Exception insert vms: " + e.getMessage());
-        }
-
-        
     }
 
 }

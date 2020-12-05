@@ -36,6 +36,9 @@ public class TeamServiceImpl implements TeamService {
     TokenTeamRepository tokenRepository;
 
     @Autowired
+    PaperRepository paperRepository;
+
+    @Autowired
     AssignmentRepository assignmentRepository;
     @Autowired
     VmConfigurationRepository vmConfigurationRepository;
@@ -481,7 +484,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public List<StudentDTO> getAvailableStudents(String courseName) {
-        if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
+        if (courseRepository.findByNameIgnoreCase(courseName).isEmpty()) throw new CourseNotFoundException();
 
 
         return courseRepository.getStudentsNotInTeams(courseName)
@@ -492,12 +495,28 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public List<AssignmentDTO> getAllAssignmentsByCourse(String courseName) {
-        if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
+    public AssignmentDTO getAssignment(Long assignmentId) {
+        if(assignmentRepository.findById(assignmentId).isEmpty()) throw new AssignmentNotFoundException();
+        return modelMapper
+                .map(assignmentRepository.findById(assignmentId).get(), AssignmentDTO.class);
+    }
 
+    @Override
+    public List<AssignmentDTO> getAllAssignmentsForCourse(String courseName) {
+        if (courseRepository.findByNameIgnoreCase(courseName).isEmpty()) throw new CourseNotFoundException();
         return assignmentRepository.findAllByCourse_Name(courseName)
                 .stream()
                 .map(assignment -> modelMapper.map(assignment, AssignmentDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PaperDTO> getAllPapersForAssignment(Long assignmentId) {
+        if(!assignmentRepository.findById(assignmentId).isPresent()) throw new AssignmentNotFoundException();
+
+        return paperRepository.findAllByAssignment_Id(assignmentId)
+                .stream()
+                .map(paper -> modelMapper.map(paper, PaperDTO.class))
                 .collect(Collectors.toList());
     }
 

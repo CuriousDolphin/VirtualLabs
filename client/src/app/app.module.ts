@@ -44,6 +44,8 @@ import { StudentLandingPageComponent } from "./student/student-landing-page/stud
 import { MatMenuModule } from "@angular/material/menu";
 import { TeacherLandingPageComponent } from './teacher/teacher-landing-page/teacher-landing-page.component';
 import { AssignmentComponent } from './teacher/assignment/assignment.component';
+import { AssignmentAssignmentComponent } from './teacher/assignment/assignment-assignment/assignment-assignment.component';
+import { AssignmentPaperComponent } from './teacher/assignment/assignment-paper/assignment-paper.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +65,8 @@ import { AssignmentComponent } from './teacher/assignment/assignment.component';
     StudentLandingPageComponent,
     TeacherLandingPageComponent,
     AssignmentComponent,
+    AssignmentAssignmentComponent,
+    AssignmentPaperComponent,
   ],
   imports: [
     BrowserModule,

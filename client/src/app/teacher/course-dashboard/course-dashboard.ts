@@ -6,6 +6,7 @@ import { switchMap, tap, map } from "rxjs/operators";
 import { Assignment } from 'src/app/models/assignment.model';
 import { Course } from "src/app/models/course.model";
 import { Student } from "src/app/models/student.model";
+import { Paper } from "src/app/models/paper.model";
 import { CourseService } from "src/app/services/course.service";
 import { StudentService } from "src/app/services/student.service";
 import { ToastService } from "src/app/services/toast.service";
@@ -23,19 +24,24 @@ export class CourseDashboard implements OnInit, OnDestroy {
   private _reloadStudents$: BehaviorSubject<void> = new BehaviorSubject(null);
   private _reloadCourse$: BehaviorSubject<void> = new BehaviorSubject(null);
   private _reloadAssignments$: BehaviorSubject<void> = new BehaviorSubject(null);
+  private _reloadPapers$: BehaviorSubject<void> = new BehaviorSubject(null);
 
   private courseSubscription: Subscription;
   private routeSubscription: Subscription;
   private enrollSubscription: Subscription;
   private unenrollSubscription: Subscription;
   private dialogSubscription: Subscription;
+
+  private papersSubscription: Subscription;
   private uploadSubscription: Subscription;
 
   studentsDB$: Observable<Student[]>;
   currentCourse: Course;
   currentCourse$: Observable<Course>;
+  currentAssignment$: Observable<Assignment>;
   enrolledStudents$: Observable<Student[]>;
   assignments$: Observable<Assignment[]>
+  papers$: Observable<Paper[]>
   isLoading = false;
   constructor(
     private studentService: StudentService,
@@ -98,8 +104,20 @@ export class CourseDashboard implements OnInit, OnDestroy {
         if (course && course.name)
           return this.courseService.getAllAssignments(course.name);
       }
-      ), tap(() => (this.isLoading = false))
+      ),
+      tap(() => (this.isLoading = false))
     );
+
+    this.papers$ = combineLatest([
+      this.currentAssignment$,
+      this._reloadPapers$
+    ]).pipe(
+      tap(() => (this.isLoading = true)),
+      switchMap(([assignment, reload]) => {
+        if(assignment && assignment.id)
+          return this.courseService.getAllPapersForAssignment(assignment.id);
+      }),
+      tap(() => this.isLoading = false))
   }
   uploadCsv(file: File) {
     console.log(file);
@@ -209,10 +227,15 @@ export class CourseDashboard implements OnInit, OnDestroy {
       });
   }
 
+  setCurrentAssignment(assignmentId: number) {
+    this.currentAssignment$ = this.courseService.getAssignment(assignmentId)
+  }
+
   ngOnDestroy(): void {
     if (this.dialogSubscription) this.dialogSubscription.unsubscribe();
     if (this.courseSubscription) this.courseSubscription.unsubscribe();
     if (this.routeSubscription) this.routeSubscription.unsubscribe();
+    if (this.papersSubscription) this.papersSubscription.unsubscribe();
     if (this.enrollSubscription) this.enrollSubscription.unsubscribe();
     if (this.unenrollSubscription) this.unenrollSubscription.unsubscribe();
   }

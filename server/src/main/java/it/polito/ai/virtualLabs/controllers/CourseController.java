@@ -1,11 +1,7 @@
 package it.polito.ai.virtualLabs.controllers;
 
 import it.polito.ai.virtualLabs.TeamProposal;
-import it.polito.ai.virtualLabs.dtos.AssignmentDTO;
-import it.polito.ai.virtualLabs.dtos.CourseDTO;
-import it.polito.ai.virtualLabs.dtos.EnrolledStudentDTO;
-import it.polito.ai.virtualLabs.dtos.StudentDTO;
-import it.polito.ai.virtualLabs.dtos.TeamDTO;
+import it.polito.ai.virtualLabs.dtos.*;
 import it.polito.ai.virtualLabs.exceptions.*;
 import it.polito.ai.virtualLabs.services.NotificationService;
 import it.polito.ai.virtualLabs.services.TeamService;
@@ -32,8 +28,6 @@ import java.util.stream.Collectors;
 public class CourseController {
     @Autowired
     TeamService teamService;
-
-
 
     @Autowired
     NotificationService notificationService;
@@ -161,8 +155,6 @@ public class CourseController {
     List<TeamDTO> getStudentCourseTeam(@PathVariable("name") String name,@PathVariable("idStudent") String idStudent) {
         try{
             return teamService.getTeamsForStudentCourse(idStudent,name);
-
-
         }catch (CourseNotFoundException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
         }
@@ -205,10 +197,18 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/{name}/assignments")
-    List<AssignmentDTO> getAllAssignmentsByCourse(@PathVariable("name") String courseName) {
+    @GetMapping("/assignments/{id}")
+    AssignmentDTO getAssignment(@PathVariable("id") Long assignmentId) {
         try {
-            return teamService.getAllAssignmentsByCourse(courseName);
+            return teamService.getAssignment(assignmentId);
+        } catch (AssignmentNotFoundException assignmentNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Assignment not found");
+        }
+    }
+    @GetMapping("/{name}/assignments")
+    List<AssignmentDTO> getAllAssignmentsForCourse(@PathVariable("name") String courseName) {
+        try {
+            return teamService.getAllAssignmentsForCourse(courseName);
         } catch (CourseNotFoundException courseNotFoundException) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
         }
@@ -224,6 +224,16 @@ public class CourseController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
         }
     }
+
+    @GetMapping("/assignments/{id}/papers")
+    List<PaperDTO> getAllPapersForAssignment(@PathVariable("id") Long assignmentId) {
+        try {
+            return teamService.getAllPapersForAssignment(assignmentId);
+        } catch (AssignmentNotFoundException assignmentNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Assignment not found");
+        }
+    }
+
 
 
 }

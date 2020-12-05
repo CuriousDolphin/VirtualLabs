@@ -1,5 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Assignment } from 'src/app/models/assignment.model';
 
 @Component({
@@ -9,21 +8,21 @@ import { Assignment } from 'src/app/models/assignment.model';
 })
 export class AssignmentComponent implements OnInit {
   colsToDisplay=["id", "content", "releaseDate", "expiryDate"]
-  dataSource = new MatTableDataSource<Assignment>();
+  assignmentsData = [];
   @Input() set assignments(assignments: Assignment[]) {
     if(assignments != null) {
-      this.dataSource.data = assignments;
-      console.log("Assignments by course:" + this.dataSource.data); //li riceve
+      this.assignmentsData = assignments
     }
   }
 
-  consola(Row) {
-    console.log(Row);
-  }
+  @Output() assignmentClickedEvent = new EventEmitter<number>()
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
+  assignmentClicked(assignmentId: number) {
+    this.assignmentClickedEvent.emit(assignmentId)
+  }
 }

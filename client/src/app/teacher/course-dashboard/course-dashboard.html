@@ -36,8 +36,9 @@
   <mat-tab label="vm"> Content 2 </mat-tab>
   <mat-tab label="assignment">
     <div class="tab-container">
-      <app-assignment [assignments]="assignments$ | async">
-        
+      <app-assignment 
+      [assignments]="assignments$ | async"
+      (assignmentClickedEvent)="setCurrentAssignment($event)">
       </app-assignment>
     </div>>
   </mat-tab>

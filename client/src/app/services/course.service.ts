@@ -16,6 +16,8 @@ import { TeamProposal } from "../models/teamProposal.model";
 import { NetErr } from "../models/error.model";
 import { ToastService } from "./toast.service";
 import { Assignment } from '../models/assignment.model';
+import { Paper } from '../models/paper.model';
+
 const BASE_PATH = environment.apiUrl;
 
 @Injectable({
@@ -108,7 +110,21 @@ export class CourseService {
     .get<Assignment[]>(url)
     .pipe(catchError((e) => this.handleError(e)));
   }
+
+  getAssignment(assignmentId: number): Observable<Assignment> {
+    const url = BASE_PATH + "courses/" + "assignments/" + assignmentId;
+    return this.http
+    .get<Assignment>(url)
+    .pipe(catchError((e) => this.handleError(e)))
+  }
   
+  getAllPapersForAssignment(assignmentId: number): Observable<Paper[]> {
+    const url = BASE_PATH + "courses/" + "assignments/" + assignmentId + "/papers";
+    return this.http
+    .get<Paper[]>(url)
+    .pipe(catchError((e) => this.handleError(e)))
+  }
+
   private handleError(error) {
     let errorMessage = "";
     if (error.error instanceof ErrorEvent) {

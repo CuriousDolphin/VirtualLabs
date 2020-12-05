@@ -83,7 +83,13 @@ public interface TeamService {
     List<StudentDTO> getAvailableStudents(String courseName);
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
-    List<AssignmentDTO> getAllAssignmentsByCourse(String courseName);
+    AssignmentDTO getAssignment(Long assignmentId);
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
+    List<AssignmentDTO> getAllAssignmentsForCourse(String courseName);
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
+    List<PaperDTO> getAllPapersForAssignment(Long assignmentId);
 
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT') ")
     void activateTeam(Long teamId);
