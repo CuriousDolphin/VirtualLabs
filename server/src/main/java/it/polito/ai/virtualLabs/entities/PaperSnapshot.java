@@ -20,4 +20,16 @@ public class PaperSnapshot {
     @JoinColumn(name = "paper_id")
     private Paper paper;
 
+    public void setPaper(Paper paper) {
+        if (paper == null) {
+            if (this.paper != null) {
+                this.paper.removePaperSnapshot(this);
+            }
+            this.paper = null;
+        } else {
+            this.paper = paper;
+            this.paper.addPaperSnapshot(this);
+        }
+    }
+
 }

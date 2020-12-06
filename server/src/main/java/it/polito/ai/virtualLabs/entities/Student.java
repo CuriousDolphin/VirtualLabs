@@ -61,7 +61,7 @@ public class Student {
     }
 
     public void addPaper(Paper paper) {
-        if(!paper.getStudent().equals(this)) paper.setStudent(this);
+        if(!paper.getStudent().equals(this))paper.setStudent(this);
         if(!papers.contains(paper)) papers.add(paper);
     }
     

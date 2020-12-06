@@ -62,7 +62,7 @@ public class Course {
     }
 
     public void removeAssignment(Assignment assignment) {
-        if(assignment.getCourse().equals(this)) assignment.setCourse(this);
+        if(assignment.getCourse().equals(this)) assignment.setCourse(null);
         if(assignments.contains(assignment)) assignments.remove(assignment);
     }
 

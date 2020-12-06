@@ -25,17 +25,29 @@ public class Assignment {
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
-    @OneToMany(mappedBy = "assignment", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "assignment")
     private List<Paper> papers = new ArrayList<>();
 
     public void addPaper(Paper paper) {
-        if(!paper.getAssignment().equals(this)) paper.setAssignment(this);
         if(!papers.contains(paper)) papers.add(paper);
+        if(!paper.getAssignment().equals(this)) paper.setAssignment(this);
     }
 
     public void removePaper(Paper paper) {
-        if(paper.getAssignment().equals(this)) paper.setAssignment(null);
         if(papers.contains(paper)) papers.remove(paper);
+        if(paper.getAssignment().equals(this)) paper.setAssignment(null);
+    }
+
+    public void setCourse(Course course) {
+        if(course == null) {
+            if(this.course != null) {
+                this.course.removeAssignment(this);
+            }
+            this.course = null;
+        } else { /* significa anche che course e' null */
+            this.course = course;
+            this.course.addAssignment(this);
+        }
     }
 
     @Override
