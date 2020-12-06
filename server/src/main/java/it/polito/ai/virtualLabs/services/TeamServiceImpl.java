@@ -542,11 +542,11 @@ public class TeamServiceImpl implements TeamService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, studentId);
         if (vmInstanceRepository.getVmInstancesByTeam(teamRepository.getByName(team)).size() + 1 > teamRepository.getByName(team).getVmConfiguration().getMaxVms())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "MaxVmsInstances");
-        if (vmInstance.getCountDisks() > teamRepository.getByName(team).getVmConfiguration().getMaxDiskPerVm())
+        if (vmInstance.getCountDisks() > teamRepository.getByName(team).getVmConfiguration().getMaxDiskPerVm() || vmInstance.getCountDisks() < 1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountDisks");
-        if (vmInstance.getCountRam() > teamRepository.getByName(team).getVmConfiguration().getMaxRamPerVm())
+        if (vmInstance.getCountRam() > teamRepository.getByName(team).getVmConfiguration().getMaxRamPerVm() || vmInstance.getCountRam() < 1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountRam");
-        if (vmInstance.getCountVcpus() > teamRepository.getByName(team).getVmConfiguration().getMaxVcpusPerVm())
+        if (vmInstance.getCountVcpus() > teamRepository.getByName(team).getVmConfiguration().getMaxVcpusPerVm() || vmInstance.getCountVcpus() < 1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountVcpus");
         if (vmInstance.getOwner() != null &&
                 (!studentRepository.existsById(vmInstance.getOwner()) || !vmInstance.getOwner().equals(studentId)))
@@ -630,11 +630,11 @@ public class TeamServiceImpl implements TeamService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, id);
         if (vmInstanceRepository.getOne(idVmInstance).getState() != 0)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "VmRunning");
-        if (vmInstance.getCountDisks() > teamRepository.getByName(team).getVmConfiguration().getMaxDiskPerVm())
+        if (vmInstance.getCountDisks() > teamRepository.getByName(team).getVmConfiguration().getMaxDiskPerVm() || vmInstance.getCountDisks() < 1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountDisks");
-        if (vmInstance.getCountRam() > teamRepository.getByName(team).getVmConfiguration().getMaxRamPerVm())
+        if (vmInstance.getCountRam() > teamRepository.getByName(team).getVmConfiguration().getMaxRamPerVm() || vmInstance.getCountRam() < 1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountRam");
-        if (vmInstance.getCountVcpus() > teamRepository.getByName(team).getVmConfiguration().getMaxVcpusPerVm())
+        if (vmInstance.getCountVcpus() > teamRepository.getByName(team).getVmConfiguration().getMaxVcpusPerVm() || vmInstance.getCountVcpus() < 1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountVcpus");
 
         vmInstanceRepository.getOne(idVmInstance).setCountDisks(vmInstance.getCountDisks());
