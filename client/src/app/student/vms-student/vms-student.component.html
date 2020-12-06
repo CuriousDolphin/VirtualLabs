@@ -2,7 +2,7 @@
     <ng-container *ngIf="!hasTeam">
         <mat-card>
             <mat-card-title style="text-align: center; padding: 16px;">
-                Join a team to use VMs!
+                Join a Team to use Virtual Machines!
             </mat-card-title>
         </mat-card>
     </ng-container>
@@ -51,7 +51,8 @@
                         </mat-grid-tile>
                         <mat-grid-tile *ngIf="vmInstance.state == 0" colspan="1">
                             <button mat-stroked-button
-                                *ngIf="vmInstance.owner == null || vmInstance.owner == this.studentId">
+                                *ngIf="vmInstance.owner == null || vmInstance.owner == this.studentId"
+                                (click)="editVmDialog(vmInstance)">
                                 <mat-icon matListIcon>
                                     create</mat-icon>
                             </button>

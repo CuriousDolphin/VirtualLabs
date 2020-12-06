@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>Setup New VM</h1>
+<h1 mat-dialog-title>Edit VM</h1>
 <div>
     <div>
         <mat-form-field>
@@ -21,11 +21,8 @@
             <span matSuffix>GB /{{data.maxDisk}}</span>
         </mat-form-field>
     </div>
-    <div>
-        <mat-checkbox [(ngModel)]="data.owner">Accessible to Every Teammates</mat-checkbox>
-    </div>
 </div>
 <div mat-dialog-actions>
     <button mat-button (click)="onNoClick()">Discard</button>
-    <button mat-button cdkFocusInitial (click)=confirmCreateVm(data)>Confirm</button>
+    <button mat-button cdkFocusInitial (click)="confirmEditVm(data)">Confirm</button>
 </div>

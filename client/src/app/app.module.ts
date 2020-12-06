@@ -47,6 +47,7 @@ import { VmsStudentComponent } from './student/vms-student/vms-student.component
 import { MatGridListModule } from '@angular/material/grid-list';
 import { DialogCreateVmComponent } from './student/vms-student/dialog-create-vm/dialog-create-vm.component';
 import {MatRadioModule} from '@angular/material/radio';
+import { DialogEditVmComponent } from './student/vms-student/dialog-edit-vm/dialog-edit-vm.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import {MatRadioModule} from '@angular/material/radio';
     TeacherLandingPageComponent,
     VmsStudentComponent,
     DialogCreateVmComponent,
+    DialogEditVmComponent,
   ],
   imports: [
     BrowserModule,

@@ -5,6 +5,7 @@ import * as _ from "lodash";
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DialogCreateVmComponent } from './dialog-create-vm/dialog-create-vm.component';
 import { VmConfiguration } from 'src/app/models/vm-configuration.model';
+import { DialogEditVmComponent } from './dialog-edit-vm/dialog-edit-vm.component';
 
 @Component({
   selector: 'app-vms-student',
@@ -17,11 +18,13 @@ export class VmsStudentComponent implements OnInit {
   @Output() startVm = new EventEmitter<VmInstance>();
   @Output() stopVm = new EventEmitter<VmInstance>();
   @Output() createVm = new EventEmitter<JSON>();
+  @Output() editVm = new EventEmitter<JSON>();
 
   @Input() vmInstances: VmInstance[];
   @Input() studentId: String;
   @Input() vmConfiguration: VmConfiguration;
-  dialogRef: MatDialogRef<DialogCreateVmComponent, any>
+  dialogCreateRef: MatDialogRef<DialogCreateVmComponent, any>
+  dialogEditRef: MatDialogRef<DialogEditVmComponent, any>
   hasTeam = false;
   _teams: Team[];
   team: Team;
@@ -41,12 +44,8 @@ export class VmsStudentComponent implements OnInit {
 
   ngOnInit(): void { }
 
-  public emitDeleteVm(vm: VmInstance) {
-    this.deleteVm.emit(vm);
-  }
-
   createVmDialog(): void {
-    this.dialogRef = this.dialog.open(DialogCreateVmComponent, {
+    this.dialogCreateRef = this.dialog.open(DialogCreateVmComponent, {
       data: {
         countVcpus: (this.vmConfiguration.maxVcpusPerVm / 4),
         countRam: (this.vmConfiguration.maxRamPerVm / 4),
@@ -57,8 +56,33 @@ export class VmsStudentComponent implements OnInit {
         maxDisk: this.vmConfiguration.maxDiskPerVm
       }
     });
-    this.dialogRef.afterClosed().subscribe((newVm) => { this.emitCreateVm(newVm) });
+    this.dialogCreateRef.afterClosed().subscribe((newVm) => { this.emitCreateVm(newVm) });
+  }
 
+  editVmDialog(vm: VmInstance): void {
+    this.dialogEditRef = this.dialog.open(DialogEditVmComponent, {
+      data: {
+        countVcpus: vm.countVcpus,
+        countRam: vm.countRam,
+        countDisk: vm.countDisks,
+        owner: vm.owner === null ? true : false,
+        maxVcpus: this.vmConfiguration.maxVcpusPerVm,
+        maxRam: this.vmConfiguration.maxRamPerVm,
+        maxDisk: this.vmConfiguration.maxDiskPerVm,
+        id: vm.id
+      }
+    });
+    this.dialogEditRef.afterClosed().subscribe((newVm) => {
+      if (newVm !== undefined)
+        if (newVm["countVcpus"] !== vm.countVcpus ||
+          newVm["countRam"] !== vm.countRam ||
+          newVm["countDisks"] !== vm.countDisks)
+          this.emitEditVm(newVm)
+    });
+  }
+
+  public emitDeleteVm(vm: VmInstance) {
+    this.deleteVm.emit(vm);
   }
 
   public emitStartVm(vm: VmInstance) {
@@ -72,6 +96,12 @@ export class VmsStudentComponent implements OnInit {
   public emitCreateVm(newVm: JSON) {
     if (newVm !== undefined) {
       this.createVm.emit(newVm);
+    }
+  }
+
+  public emitEditVm(newVm: JSON) {
+    if (newVm !== undefined) {
+      this.editVm.emit(newVm);
     }
   }
 

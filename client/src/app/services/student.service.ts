@@ -100,6 +100,18 @@ export class StudentService {
       .pipe(catchError((e) => this.handleError(e)));
   }
 
+  editVm(studentId: String, teamName: String, vmId: number, newVm: JSON): Observable<VmInstance[]> {
+    const url = BASE_PATH + "students/" + studentId + "/" + teamName + "/editvminstance/" + vmId;
+    var jsonToString: String = JSON.stringify(newVm);
+    jsonToString = jsonToString.replace(',"owner":"true"', '');
+    jsonToString = jsonToString.replace('false', <string>studentId);
+    console.log(jsonToString)
+    newVm = JSON.parse(<string>jsonToString)
+    return this.http
+      .post<VmInstance[]>(url, newVm)      
+      .pipe(catchError((e) => this.handleError(e)));
+  }
+
   private handleError(error) {
     let errorMessage = "";
     if (error.error instanceof ErrorEvent) {

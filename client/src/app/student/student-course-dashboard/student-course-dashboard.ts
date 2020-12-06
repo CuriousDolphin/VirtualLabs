@@ -38,6 +38,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   private startVmSubscription: Subscription;
   private stopVmSubscription: Subscription;
   private createVmSubscription: Subscription;
+  private editVmSubscription: Subscription;
   currentCourse: Course;
   currentVmConfiguration$: Observable<VmConfiguration>;
   currentCourse$: Observable<Course>;
@@ -213,6 +214,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   deleteVm(vm: VmInstance) {
     if (this.deleteVmSubscription) this.deleteVmSubscription.unsubscribe();
 
+    console.log("delete VM requested")
     this.deleteVmSubscription = this.studentService
       .deleteVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), vm)
       .subscribe(
@@ -231,7 +233,8 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
 
   startVm(vm: VmInstance) {
     if (this.startVmSubscription) this.startVmSubscription.unsubscribe();
-
+    
+    console.log("start VM requested")
     this.startVmSubscription = this.studentService
       .startVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), vm)
       .subscribe(
@@ -251,6 +254,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   stopVm(vm: VmInstance) {
     if (this.stopVmSubscription) this.stopVmSubscription.unsubscribe();
 
+    console.log("stop VM requested")
     this.stopVmSubscription = this.studentService
       .stopVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), vm)
       .subscribe(
@@ -270,6 +274,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   createVm(newVm: JSON) {
     if (this.createVmSubscription) this.createVmSubscription.unsubscribe();
 
+    console.log("create VM requested")
     this.createVmSubscription = this.studentService
       .createVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), newVm)
       .subscribe(
@@ -280,6 +285,26 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
         (error) => {
           this.toastService.error(
             "Error create VM, try again later \n" + error
+          );
+          this._reloadTeams();
+        }
+      );
+  }
+
+  editVm(newVm: JSON) {
+    if (this.editVmSubscription) this.editVmSubscription.unsubscribe();
+
+    console.log("edit VM requested")
+    this.editVmSubscription = this.studentService
+      .editVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), newVm["id"], newVm)
+      .subscribe(
+        (data) => {
+          this.toastService.success("VM edit success ! \n");
+          this._reloadTeams();
+        },
+        (error) => {
+          this.toastService.error(
+            "Error edit VM, try again later \n" + error
           );
           this._reloadTeams();
         }
@@ -302,5 +327,6 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
     if (this.startVmSubscription) this.startVmSubscription.unsubscribe();
     if (this.stopVmSubscription) this.stopVmSubscription.unsubscribe();
     if (this.createVmSubscription) this.createVmSubscription.unsubscribe();
+    if (this.editVmSubscription) this.editVmSubscription.unsubscribe();
   }
 }

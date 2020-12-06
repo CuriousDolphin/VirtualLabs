@@ -6,31 +6,30 @@ export interface DialogData {
   countVcpus: number;
   countRam: number;
   countDisk: number;
-  owner: boolean;
   maxVcpus: number;
   maxRam: number;
   maxDisk: number;
+  id: number;
 }
 
 @Component({
-  selector: 'app-dialog-create-vm',
-  templateUrl: './dialog-create-vm.component.html',
-  styleUrls: ['./dialog-create-vm.component.sass']
+  selector: 'app-dialog-edit-vm',
+  templateUrl: './dialog-edit-vm.component.html',
+  styleUrls: ['./dialog-edit-vm.component.sass']
 })
-export class DialogCreateVmComponent implements OnInit {
+export class DialogEditVmComponent implements OnInit {
 
   ngOnInit(): void { }
 
-  constructor(
-    fb: FormBuilder,
-    public dialogRef: MatDialogRef<DialogCreateVmComponent>,
+  constructor(fb: FormBuilder,
+    public dialogRef: MatDialogRef<DialogEditVmComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
-  confirmCreateVm(data: DialogData) {
+  confirmEditVm(data: DialogData) {
     if (data.countVcpus <= data.maxVcpus &&
       data.countRam <= data.maxRam &&
       data.countDisk <= data.maxDisk &&
@@ -41,7 +40,7 @@ export class DialogCreateVmComponent implements OnInit {
         "countVcpus": data.countVcpus,
         "countRam": data.countRam,
         "countDisks": data.countDisk,
-        "owner": String(data.owner)
+        "id": data.id
       });
     }
     //TODO: else mostrare errore
