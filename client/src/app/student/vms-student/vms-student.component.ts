@@ -47,9 +47,9 @@ export class VmsStudentComponent implements OnInit {
   createVmDialog(): void {
     this.dialogCreateRef = this.dialog.open(DialogCreateVmComponent, {
       data: {
-        countVcpus: (this.vmConfiguration.maxVcpusPerVm / 4),
-        countRam: (this.vmConfiguration.maxRamPerVm / 4),
-        countDisk: (this.vmConfiguration.maxDiskPerVm / 4),
+        countVcpus: (this.vmConfiguration.maxVcpusPerVm / 4).toFixed(),
+        countRam: (this.vmConfiguration.maxRamPerVm / 4).toFixed(),
+        countDisk: (this.vmConfiguration.maxDiskPerVm / 4).toFixed(),
         owner: true,
         maxVcpus: this.vmConfiguration.maxVcpusPerVm,
         maxRam: this.vmConfiguration.maxRamPerVm,
