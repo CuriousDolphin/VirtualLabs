@@ -26,6 +26,6 @@
     </div>
 </div>
 <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">Discard</button>
-    <button mat-button cdkFocusInitial (click)=confirmCreateVm(data)>Confirm</button>
+    <button mat-raised-button (click)="onNoClick()">Discard</button>
+    <button mat-raised-button (click)=confirmCreateVm(data) color="primary">Confirm</button>
 </div>

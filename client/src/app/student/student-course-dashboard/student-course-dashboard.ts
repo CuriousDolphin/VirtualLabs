@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BehaviorSubject, combineLatest, Observable, Subscription, of } from "rxjs";
-import { switchMap, tap, map, takeLast, last } from "rxjs/operators";
+import { switchMap, tap, map } from "rxjs/operators";
 import { Course } from "src/app/models/course.model";
 import { CourseService } from "src/app/services/course.service";
 import { StudentService } from "../../services/student.service";
@@ -181,7 +181,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       .confirmTeam(team.confirmation_token)
       .subscribe(
         (data) => {
-          this.toastService.success("Team confirm success ! \n");
+          this.toastService.success("Team confirm success! \n");
           this._reloadTeams();
         },
         (error) => {
@@ -199,7 +199,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       .rejectTeam(team.confirmation_token)
       .subscribe(
         (data) => {
-          this.toastService.success("Team confirm success ! \n");
+          this.toastService.success("Team confirm success! \n");
           this._reloadTeams();
         },
         (error) => {
@@ -219,7 +219,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       .deleteVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), vm)
       .subscribe(
         (data) => {
-          this.toastService.success("VM deleted success ! \n");
+          this.toastService.success("VM deleted success! \n");
           this._reloadTeams();
         },
         (error) => {
@@ -239,7 +239,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       .startVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), vm)
       .subscribe(
         (data) => {
-          this.toastService.success("VM started success ! \n"); //TODO: open VM image
+          this.toastService.success("VM started success! \n"); //TODO: open VM image
           this._reloadTeams();
         },
         (error) => {
@@ -259,7 +259,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       .stopVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), vm)
       .subscribe(
         (data) => {
-          this.toastService.success("VM stopped success ! \n");
+          this.toastService.success("VM stopped success! \n");
           this._reloadTeams();
         },
         (error) => {
@@ -279,7 +279,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       .createVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), newVm)
       .subscribe(
         (data) => {
-          this.toastService.success("VM created success ! \n");
+          this.toastService.success("VM created success! \n");
           this._reloadTeams();
         },
         (error) => {
@@ -299,7 +299,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       .editVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), newVm["id"], newVm)
       .subscribe(
         (data) => {
-          this.toastService.success("VM edit success ! \n");
+          this.toastService.success("VM edit success! \n");
           this._reloadTeams();
         },
         (error) => {
