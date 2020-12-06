@@ -32,7 +32,7 @@ public class Course {
     private List<Student> students = new ArrayList<>();
     @OneToMany(mappedBy = "course")
     private List<Team> teams = new ArrayList<>();
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "course")
     private List<Assignment> assignments = new ArrayList<>();
 
     public void addStudent(Student s){

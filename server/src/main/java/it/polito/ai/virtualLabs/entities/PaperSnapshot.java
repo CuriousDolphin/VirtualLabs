@@ -1,8 +1,9 @@
 package it.polito.ai.virtualLabs.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.hibernate.mapping.Join;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -10,6 +11,8 @@ import java.sql.Timestamp;
 @Entity
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PaperSnapshot {
     @Id
     @GeneratedValue

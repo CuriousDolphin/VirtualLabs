@@ -119,6 +119,7 @@ public class VirtualLabs {
                         .name("Programmazione di Sistema")
                         .acronym("PDS")
                         .enabled(true)
+                        .assignments(new ArrayList<>())
                         .min(2)
                         .max(4)
                         .build();
@@ -137,18 +138,19 @@ public class VirtualLabs {
                 Assignment assignment1 = Assignment.builder()
                         .releaseDate(releaseDate)
                         .expiryDate(expiryDate)
+                        .papers(new ArrayList<>())
                         .content("Laboratorio 1")
                         .build();
-                assignment1.addPaper(paper1);
+                paper1.setAssignment(assignment1);
                 assignment1.setCourse(newCourse);
                 ar.save(assignment1);
-                pr.save(paper1);
 
                 //Course: ML
                 newCourse = Course.builder()
                         .name("Machine Learning")
                         .acronym("ML")
                         .enabled(true)
+                        .assignments(new ArrayList<>())
                         .min(3)
                         .max(6)
                         .build();
@@ -167,18 +169,19 @@ public class VirtualLabs {
                 Assignment assignment2 = Assignment.builder()
                         .releaseDate(releaseDate)
                         .expiryDate(expiryDate)
+                        .papers(new ArrayList<>())
                         .content("Laboratorio 1")
                         .build();
-                assignment2.addPaper(paper2);
+                paper2.setAssignment(assignment2);
                 assignment2.setCourse(newCourse);
                 ar.save(assignment2);
-                pr.save(paper2);
 
                 //Course: AI
                 newCourse = Course.builder()
                         .name("Applicazioni Internet")
                         .acronym("AI")
                         .enabled(false)
+                        .assignments(new ArrayList<>())
                         .min(5)
                         .max(10)
                         .build();
@@ -197,12 +200,12 @@ public class VirtualLabs {
                 Assignment assignment3 = Assignment.builder()
                         .releaseDate(releaseDate)
                         .expiryDate(expiryDate)
+                        .papers(new ArrayList<>())
                         .content("Laboratorio 1")
                         .build();
-                assignment3.addPaper(paper3);
+                paper3.setAssignment(assignment3);
                 assignment3.setCourse(newCourse);
                 ar.save(assignment3);
-                pr.save(paper3);
 
                 //User-Admin
                 ur.save(User.builder()
@@ -237,8 +240,9 @@ public class VirtualLabs {
                         .email("s123456@studenti.polito.it")
                         .lastName("Rossi")
                         .name("Mario")
+                        .papers(new ArrayList<>())
                         .build();
-                newStudent.addPaper(paper1);
+                paper1.setStudent(newStudent);
                 sr.save(newStudent);
                 //User-Student: s234567 (Giacomo Bianchi)
                 ur.save(User.builder()
@@ -275,10 +279,14 @@ public class VirtualLabs {
                         .email("s345678@studenti.polito.it")
                         .lastName("Dario")
                         .name("Verdi")
+                        .papers(new ArrayList<>())
                         .build();
-                newStudent.addPaper(paper2);
-                newStudent.addPaper(paper3);
+                paper2.setStudent(newStudent);
+                paper3.setStudent(newStudent);
                 sr.save(newStudent);
+                pr.save(paper1);
+                pr.save(paper2);
+                pr.save(paper3);
             } catch (Exception e) {
                 System.out.println("Exception insert mock data: " + e.getMessage());
             } finally {

@@ -29,6 +29,9 @@ public class Assignment {
     private List<Paper> papers = new ArrayList<>();
 
     public void addPaper(Paper paper) {
+        if(papers == null) {
+            papers = new ArrayList<>();
+        }
         if(!papers.contains(paper)) papers.add(paper);
         if(!paper.getAssignment().equals(this)) paper.setAssignment(this);
     }

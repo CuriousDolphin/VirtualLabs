@@ -61,13 +61,13 @@ public class Student {
     }
 
     public void addPaper(Paper paper) {
-        if(!paper.getStudent().equals(this))paper.setStudent(this);
         if(!papers.contains(paper)) papers.add(paper);
+        if(!paper.getStudent().equals(this))paper.setStudent(this);
     }
     
     public void removePaper(Paper paper) {
-        if(paper.getStudent().equals(this)) paper.setStudent(null);
         if(papers.contains(paper)) papers.remove(paper);
+        if(paper.getStudent().equals(this)) paper.setStudent(null);
     }
 
     public void setId(String id){

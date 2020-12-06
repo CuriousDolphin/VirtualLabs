@@ -1,7 +1,9 @@
 package it.polito.ai.virtualLabs.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -11,6 +13,8 @@ import java.util.List;
 @Entity
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Paper {
     @Id
     @GeneratedValue
@@ -24,7 +28,7 @@ public class Paper {
     @ManyToOne
     @JoinColumn(name = "student_id")
     private Student student;
-    @OneToMany(mappedBy = "paper", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "paper")
     private List<PaperSnapshot> paperSnapshots = new ArrayList<>();
 
     public void addPaperSnapshot(PaperSnapshot paperSnapshot) {
@@ -72,6 +76,6 @@ public class Paper {
                 "_" +
                 this.getAssignment().getId() +
                 "_" +
-                student.getName();
+                this.student.getName();
     }
 }
