@@ -27,6 +27,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   );
   private _reloadCourse$: BehaviorSubject<void> = new BehaviorSubject(null);
   private _reloadTeams$: BehaviorSubject<void> = new BehaviorSubject(null);
+  private currentActiveTeam$: BehaviorSubject<String> = new BehaviorSubject("");
 
   private createTeamSubscription: Subscription;
   private confirmTeamSubscription: Subscription;
@@ -38,7 +39,6 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   private stopVmSubscription: Subscription;
   private createVmSubscription: Subscription;
   currentCourse: Course;
-  currentActiveTeam$: Observable<String>;
   currentVmConfiguration$: Observable<VmConfiguration>;
   currentCourse$: Observable<Course>;
   studentTeams$: Observable<Team[]>;
@@ -75,7 +75,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       this._reloadCourse$,
     ]).pipe(
       map(([courseName, reload]) => courseName),
-      tap(() => (this.isLoading = true/*, this.currentActiveTeam = ""*/)),
+      tap(() => (this.isLoading = true)),
       switchMap((courseName) => {
         return this.courseService.getCourse(courseName);
       }),
@@ -99,10 +99,9 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       }),
       tap((teams) => {
         if (_.filter(teams, (t) => t.status === 1).length === 1)
-          //this.currentActiveTeam = _.filter(teams, (t) => t.status === 1)[0].name;
-          this.currentActiveTeam$ = of(_.filter(teams, (t) => t.status === 1)[0].name);
+          this.currentActiveTeam$.next(_.filter(teams, (t) => t.status === 1)[0].name);
         else 
-          this.currentActiveTeam$ = of("");
+          this.currentActiveTeam$.next("");
         this.isLoading = false;
       })
     );
@@ -121,12 +120,8 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       tap(() => (this.isLoading = false))
     );
 
-    this.currentVmConfiguration$ = combineLatest([
-      //this._currentCourseName$,
-      this.currentActiveTeam$
-    ]).pipe(
+    this.currentVmConfiguration$ = this.currentActiveTeam$.pipe(
       tap(() => (this.isLoading = true)),
-      map(([team]) => team),
       switchMap((team) => {
         if (team !== "") {
           return this.studentService.getVmConfigurationPerTeam(
@@ -138,45 +133,24 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
           return of<VmConfiguration>();
         }
       }),
-      tap(() => this.isLoading = false)
-    );
+      tap(() => (this.isLoading = false, console.log("Retrieved team's VmConfiguration")))
+    )
 
-    this.studentVmInstances$ = combineLatest([
-      /*this._currentCourseName$,
-      this._reloadTeams$,
-      this.studentTeams$*/
-      this.currentVmConfiguration$
-    ]).pipe(
+    this.studentVmInstances$ = this.currentActiveTeam$.pipe(
       tap(() => (this.isLoading = true)),
       switchMap((team) => {
-        //var team: Team = _.find(teams, (t) => (t.status === 1))
-        if (/*team !== null && team !== undefined*/ /*team !== ""*/ true) {
+        if (team !== "") {
           return this.studentService.getVmInstancesPerTeam(
             this.authService.getUserId(),
-            "Team1"//team
+            this.currentActiveTeam$.getValue()
           );
         }
         else {
           return of<VmInstance[]>([]);
         }
       }),
-      tap(() => (this.isLoading = false))
-    );
-
-    /*combineLatest([
-      this._currentCourseName$,
-      this._reloadTeams$,
-    ]).pipe(
-      map(([courseName, reload]) => courseName),
-      tap(
-        () => ((this.isLoading = true), console.log("get vm instances"))
-      ),
-      switchMap((courseName) => {
-        if (courseName)
-          return this.studentService.getVmInstancesPerTeam(this.studentId, "Team1");
-      }),
-      tap(() => (this.isLoading = false))
-    );*/
+      tap(() => (this.isLoading = false, console.log("Retrieved team's VmInstances")))
+    )
 
   }
 
@@ -240,7 +214,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
     if (this.deleteVmSubscription) this.deleteVmSubscription.unsubscribe();
 
     this.deleteVmSubscription = this.studentService
-      .deleteVm(this.authService.getUserId(), "Team1"/*this.currentActiveTeam$.pipe(takeLast(1))*/, vm) //TODO: take last teamName emitted
+      .deleteVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), vm)
       .subscribe(
         (data) => {
           this.toastService.success("VM deleted success ! \n");
@@ -259,7 +233,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
     if (this.startVmSubscription) this.startVmSubscription.unsubscribe();
 
     this.startVmSubscription = this.studentService
-      .startVm(this.authService.getUserId(), "Team1"/*this.currentActiveTeam*/, vm)
+      .startVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), vm)
       .subscribe(
         (data) => {
           this.toastService.success("VM started success ! \n"); //TODO: open VM image
@@ -278,7 +252,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
     if (this.stopVmSubscription) this.stopVmSubscription.unsubscribe();
 
     this.stopVmSubscription = this.studentService
-      .stopVm(this.authService.getUserId(), "Team1"/*this.currentActiveTeam*/, vm)
+      .stopVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), vm)
       .subscribe(
         (data) => {
           this.toastService.success("VM stopped success ! \n");
@@ -297,7 +271,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
     if (this.createVmSubscription) this.createVmSubscription.unsubscribe();
 
     this.createVmSubscription = this.studentService
-      .createVm(this.authService.getUserId(), "Team1"/*this.currentActiveTeam*/, newVm)
+      .createVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), newVm)
       .subscribe(
         (data) => {
           this.toastService.success("VM created success ! \n");

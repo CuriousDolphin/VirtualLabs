@@ -1,10 +1,14 @@
 <div class="container">
     <ng-container *ngIf="!hasTeam">
-        Join a team in order to use VMs!
+        <mat-card>
+            <mat-card-title style="text-align: center; padding: 16px;">
+                Join a team to use VMs!
+            </mat-card-title>
+        </mat-card>
     </ng-container>
     <ng-container *ngIf="hasTeam">
         <mat-card>
-            <div style="text-align:center">
+            <div style="text-align:center; padding: 16px;">
                 <button mat-raised-button color="primary" (click)="createVmDialog()">New Virtual Machine</button>
             </div>
         </mat-card>
@@ -22,57 +26,62 @@
                     <mat-grid-tile colspan="3" rowspan="1">Disk</mat-grid-tile>
                 </mat-grid-list>
             </mat-card-title>
-            <div *ngFor="let vmInstance of vmInstances">
-                <mat-divider></mat-divider>
-                <mat-grid-list cols="18" rowHeight="4rem">
-                    <mat-grid-tile *ngIf="vmInstance.owner == null" colspan="2">Every Teammate</mat-grid-tile>
-                    <mat-grid-tile *ngIf="vmInstance.owner != null" colspan="2">{{ vmInstance.owner }}</mat-grid-tile>
-                    <mat-grid-tile *ngIf="vmInstance.owner == null || vmInstance.owner == this.studentId" colspan="1">
-                        <mat-icon matListIcon>lock_open</mat-icon>
-                    </mat-grid-tile>
-                    <mat-grid-tile *ngIf="vmInstance.owner != null && vmInstance.owner != this.studentId" colspan="1">
-                        <mat-icon matListIcon>lock</mat-icon>
-                    </mat-grid-tile>
-                    <mat-grid-tile *ngIf="vmInstance.state == 0" colspan="1">
-                        <button mat-stroked-button
-                            *ngIf="vmInstance.owner == null || vmInstance.owner == this.studentId"
-                            (click)="emitStartVm(vmInstance)">
-                            <mat-icon matListIcon>
-                                play_arrow</mat-icon>
-                        </button>
-                    </mat-grid-tile>
-                    <mat-grid-tile *ngIf="vmInstance.state == 0" colspan="1">
-                        <button mat-stroked-button
-                            *ngIf="vmInstance.owner == null || vmInstance.owner == this.studentId">
-                            <mat-icon matListIcon>
-                                create</mat-icon>
-                        </button>
-                    </mat-grid-tile>
-                    <mat-grid-tile *ngIf="vmInstance.state == 0" colspan="1">
-                        <button mat-stroked-button
-                            *ngIf="vmInstance.owner == null || vmInstance.owner == this.studentId"
-                            (click)="emitDeleteVm(vmInstance)">
-                            <mat-icon matListIcon>
-                                delete</mat-icon>
-                        </button>
-                    </mat-grid-tile>
-                    <mat-grid-tile *ngIf="vmInstance.state == 1" colspan="1">
-                        <button mat-stroked-button
-                            *ngIf="vmInstance.owner == null || vmInstance.owner == this.studentId"
-                            (click)="emitStopVm(vmInstance)">
-                            <mat-icon matListIcon>
-                                stop</mat-icon>
-                        </button>
-                    </mat-grid-tile>
-                    <mat-grid-tile *ngIf="vmInstance.state == 1" colspan="1"></mat-grid-tile>
-                    <mat-grid-tile *ngIf="vmInstance.state == 1" colspan="1"></mat-grid-tile>
-                    <mat-grid-tile *ngIf="vmInstance.state == 0" colspan="3">Stopped</mat-grid-tile>
-                    <mat-grid-tile *ngIf="vmInstance.state == 1" colspan="3">Running</mat-grid-tile>
-                    <mat-grid-tile colspan="3">{{ vmInstance.countVcpus }}</mat-grid-tile>
-                    <mat-grid-tile colspan="3">{{ vmInstance.countRam }} GB</mat-grid-tile>
-                    <mat-grid-tile colspan="3">{{ vmInstance.countDisks }} GB</mat-grid-tile>
-                </mat-grid-list>
-            </div>
+            <mat-card-content style="padding: 16px;">
+                <div *ngFor="let vmInstance of vmInstances">
+                    <mat-divider></mat-divider>
+                    <mat-grid-list cols="18" rowHeight="4rem">
+                        <mat-grid-tile *ngIf="vmInstance.owner == null" colspan="2">Every Teammate</mat-grid-tile>
+                        <mat-grid-tile *ngIf="vmInstance.owner != null" colspan="2">{{ vmInstance.owner }}
+                        </mat-grid-tile>
+                        <mat-grid-tile *ngIf="vmInstance.owner == null || vmInstance.owner == this.studentId"
+                            colspan="1">
+                            <mat-icon matListIcon>lock_open</mat-icon>
+                        </mat-grid-tile>
+                        <mat-grid-tile *ngIf="vmInstance.owner != null && vmInstance.owner != this.studentId"
+                            colspan="1">
+                            <mat-icon matListIcon>lock</mat-icon>
+                        </mat-grid-tile>
+                        <mat-grid-tile *ngIf="vmInstance.state == 0" colspan="1">
+                            <button mat-stroked-button
+                                *ngIf="vmInstance.owner == null || vmInstance.owner == this.studentId"
+                                (click)="emitStartVm(vmInstance)">
+                                <mat-icon matListIcon>
+                                    play_arrow</mat-icon>
+                            </button>
+                        </mat-grid-tile>
+                        <mat-grid-tile *ngIf="vmInstance.state == 0" colspan="1">
+                            <button mat-stroked-button
+                                *ngIf="vmInstance.owner == null || vmInstance.owner == this.studentId">
+                                <mat-icon matListIcon>
+                                    create</mat-icon>
+                            </button>
+                        </mat-grid-tile>
+                        <mat-grid-tile *ngIf="vmInstance.state == 0" colspan="1">
+                            <button mat-stroked-button
+                                *ngIf="vmInstance.owner == null || vmInstance.owner == this.studentId"
+                                (click)="emitDeleteVm(vmInstance)">
+                                <mat-icon matListIcon>
+                                    delete</mat-icon>
+                            </button>
+                        </mat-grid-tile>
+                        <mat-grid-tile *ngIf="vmInstance.state == 1" colspan="1">
+                            <button mat-stroked-button
+                                *ngIf="vmInstance.owner == null || vmInstance.owner == this.studentId"
+                                (click)="emitStopVm(vmInstance)">
+                                <mat-icon matListIcon>
+                                    stop</mat-icon>
+                            </button>
+                        </mat-grid-tile>
+                        <mat-grid-tile *ngIf="vmInstance.state == 1" colspan="1"></mat-grid-tile>
+                        <mat-grid-tile *ngIf="vmInstance.state == 1" colspan="1"></mat-grid-tile>
+                        <mat-grid-tile *ngIf="vmInstance.state == 0" colspan="3">Stopped</mat-grid-tile>
+                        <mat-grid-tile *ngIf="vmInstance.state == 1" colspan="3">Running</mat-grid-tile>
+                        <mat-grid-tile colspan="3">{{ vmInstance.countVcpus }}</mat-grid-tile>
+                        <mat-grid-tile colspan="3">{{ vmInstance.countRam }} GB</mat-grid-tile>
+                        <mat-grid-tile colspan="3">{{ vmInstance.countDisks }} GB</mat-grid-tile>
+                    </mat-grid-list>
+                </div>
+            </mat-card-content>
         </mat-card>
     </ng-container>
 </div>
