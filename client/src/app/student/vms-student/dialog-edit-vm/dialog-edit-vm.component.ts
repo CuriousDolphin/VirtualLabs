@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface DialogData {
@@ -10,6 +10,7 @@ export interface DialogData {
   maxRam: number;
   maxDisk: number;
   id: number;
+  fakeId: number;
 }
 
 @Component({
@@ -19,31 +20,38 @@ export interface DialogData {
 })
 export class DialogEditVmComponent implements OnInit {
 
+  editForm: FormGroup;
+
   ngOnInit(): void { }
 
-  constructor(fb: FormBuilder,
+  constructor(
+    public fb: FormBuilder,
     public dialogRef: MatDialogRef<DialogEditVmComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    this.editForm = this.fb.group({
+      vcpus: [data.countVcpus, [Validators.min(1), Validators.max(this.data.maxVcpus)]],
+      ram: [data.countRam, [Validators.min(1), Validators.max(this.data.maxRam)]],
+      disk: [data.countDisk, [Validators.min(1), Validators.max(this.data.maxDisk)]],
+    });
+  }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
   confirmEditVm(data: DialogData) {
-    if (data.countVcpus <= data.maxVcpus &&
-      data.countRam <= data.maxRam &&
-      data.countDisk <= data.maxDisk &&
-      data.countVcpus >= 1 &&
-      data.countRam >= 1 &&
-      data.countDisk >= 1) {
+    if (this.editForm.get("vcpus").value <= data.maxVcpus &&
+      this.editForm.get("ram").value <= data.maxRam &&
+      this.editForm.get("disk").value <= data.maxDisk &&
+      this.editForm.get("vcpus").value >= 1 &&
+      this.editForm.get("ram").value >= 1 &&
+      this.editForm.get("disk").value >= 1)
       this.dialogRef.close(<JSON><unknown>{
-        "countVcpus": data.countVcpus,
-        "countRam": data.countRam,
-        "countDisks": data.countDisk,
+        "countVcpus": this.editForm.get("vcpus").value,
+        "countRam": this.editForm.get("ram").value,
+        "countDisks": this.editForm.get("disk").value,
         "id": data.id
       });
-    }
-    //TODO: else mostrare errore
   }
 
 }

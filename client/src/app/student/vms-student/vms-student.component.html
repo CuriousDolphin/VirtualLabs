@@ -7,23 +7,11 @@
         </mat-card>
     </ng-container>
     <ng-container *ngIf="hasTeam">
-        <mat-card *ngIf="canCreate$ | async; else cantCreate">
-            <div style="text-align:center; padding: 16px;">
-                <button mat-raised-button flex="30" color="primary" (click)="createVmDialog()">New Virtual Machine</button>
-            </div>
-        </mat-card>
-        <ng-template #cantCreate>
-            <mat-card>
-                <div style="text-align:center; padding: 16px;">
-                    <button mat-raised-button disabled>New Virtual Machine</button>
-                </div>
-            </mat-card>
-        </ng-template>
-        <mat-divider></mat-divider>
         <mat-card>
             <mat-card-title>
-                <mat-grid-list cols="18" rowHeight="2rem">
-                    <mat-grid-tile colspan="18" rowspan="1">{{team.name}}'s Virtual Machines</mat-grid-tile>
+                <mat-grid-list cols="19" rowHeight="2rem">
+                    <mat-grid-tile colspan="19" rowspan="1">{{team.name}}'s Virtual Machines</mat-grid-tile>
+                    <mat-grid-tile colspan="1" rowspan="2">VM</mat-grid-tile>
                     <mat-grid-tile colspan="3" rowspan="2">Owner</mat-grid-tile>
                     <mat-grid-tile colspan="3" rowspan="2">Actions</mat-grid-tile>
                     <mat-grid-tile colspan="3" rowspan="2">State</mat-grid-tile>
@@ -33,10 +21,11 @@
                     <mat-grid-tile colspan="3" rowspan="1">Disk</mat-grid-tile>
                 </mat-grid-list>
             </mat-card-title>
-            <mat-card-content style="padding: 16px;">
-                <div *ngFor="let vmInstance of _vmInstances">
+            <mat-card-content>
+                <div *ngFor="let vmInstance of _vmInstances; let id = index">
                     <mat-divider></mat-divider>
-                    <mat-grid-list cols="18" rowHeight="4rem">
+                    <mat-grid-list cols="19" rowHeight="4rem">
+                        <mat-grid-tile colspan="1">{{id + 1}}</mat-grid-tile>
                         <mat-grid-tile *ngIf="vmInstance.owner == null" colspan="2">Every Teammate</mat-grid-tile>
                         <mat-grid-tile *ngIf="vmInstance.owner != null" colspan="2">{{ vmInstance.owner }}
                         </mat-grid-tile>
@@ -108,9 +97,32 @@
                         </mat-grid-tile>
                         <mat-grid-tile *ngIf="vmInstance.state == 0" colspan="3">Stopped</mat-grid-tile>
                         <mat-grid-tile *ngIf="vmInstance.state == 1" colspan="3">Running</mat-grid-tile>
-                        <mat-grid-tile colspan="3">{{ vmInstance.countVcpus }}</mat-grid-tile>
-                        <mat-grid-tile colspan="3">{{ vmInstance.countRam }} GB</mat-grid-tile>
-                        <mat-grid-tile colspan="3">{{ vmInstance.countDisks }} GB</mat-grid-tile>
+                        <mat-grid-tile colspan="3">
+                            {{ vmInstance.countVcpus }}
+                        </mat-grid-tile>
+                        <mat-grid-tile colspan="3">
+                            {{ vmInstance.countRam }} GB
+                        </mat-grid-tile>
+                        <mat-grid-tile colspan="3">
+                            {{ vmInstance.countDisks }} GB
+                        </mat-grid-tile>
+                    </mat-grid-list>
+                </div>
+                <div *ngIf="(canCreate$ | async) > 0">
+                    <mat-grid-list cols="19" rowHeight="4rem">
+                        <mat-divider></mat-divider>
+                        <mat-grid-tile colspan="1">{{_vmInstances.length + 1}}</mat-grid-tile>
+                        <mat-grid-tile colspan="18">
+                            <button mat-raised-button color="primary" (click)="createVmDialog()">New Virtual
+                                Machine</button>
+                        </mat-grid-tile>
+                    </mat-grid-list>
+                </div>
+                <div *ngFor="let n of canCreateNumber; let i = index">
+                    <mat-divider></mat-divider>
+                    <mat-grid-list cols="19" rowHeight="4rem">
+                        <mat-grid-tile colspan="1">{{_vmInstances.length + 2 + i}}</mat-grid-tile>
+                        <mat-grid-tile colspan="18"></mat-grid-tile>
                     </mat-grid-list>
                 </div>
             </mat-card-content>

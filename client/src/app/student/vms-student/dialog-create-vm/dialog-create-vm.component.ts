@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface DialogData {
@@ -19,32 +19,40 @@ export interface DialogData {
 })
 export class DialogCreateVmComponent implements OnInit {
 
+  createForm: FormGroup;
+
   ngOnInit(): void { }
 
   constructor(
-    fb: FormBuilder,
+    public fb: FormBuilder,
     public dialogRef: MatDialogRef<DialogCreateVmComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    this.createForm = this.fb.group({
+      vcpus: [data.countVcpus, [Validators.min(1), Validators.max(this.data.maxVcpus)]],
+      ram: [data.countRam, [Validators.min(1), Validators.max(this.data.maxRam)]],
+      disk: [data.countDisk, [Validators.min(1), Validators.max(this.data.maxDisk)]],
+      owner: [data.owner]
+    });
+  }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
+
   confirmCreateVm(data: DialogData) {
-    if (data.countVcpus <= data.maxVcpus &&
-      data.countRam <= data.maxRam &&
-      data.countDisk <= data.maxDisk &&
-      data.countVcpus >= 1 &&
-      data.countRam >= 1 &&
-      data.countDisk >= 1) {
+    if (this.createForm.get("vcpus").value <= data.maxVcpus &&
+      this.createForm.get("ram").value <= data.maxRam &&
+      this.createForm.get("disk").value <= data.maxDisk &&
+      this.createForm.get("vcpus").value >= 1 &&
+      this.createForm.get("ram").value >= 1 &&
+      this.createForm.get("disk").value >= 1)
       this.dialogRef.close(<JSON><unknown>{
-        "countVcpus": data.countVcpus,
-        "countRam": data.countRam,
-        "countDisks": data.countDisk,
-        "owner": String(data.owner)
+        "countVcpus": this.createForm.get("vcpus").value,
+        "countRam": this.createForm.get("ram").value,
+        "countDisks": this.createForm.get("disk").value,
+        "owner": String(this.createForm.get("owner").value)
       });
-    }
-    //TODO: else mostrare errore
   }
 
 }
