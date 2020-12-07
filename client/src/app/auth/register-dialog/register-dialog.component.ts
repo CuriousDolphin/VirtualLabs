@@ -92,16 +92,6 @@ export function isStudentOrTeacher(): ValidatorFn {
           ? null : {wrongDomain: control.value};
 }
 
-export function isEqualPsw(): ValidatorFn {  
-  return (control: AbstractControl): { [key: string]: any } | null =>  
-      //((studente and start with s) or (docente and start with d)) and (check solo numeri dopo lettera)
-      ( (control.value?.toLowerCase().endsWith('@studenti.polito.it') && control.value?.toLowerCase().startsWith("s") ) 
-      || (control.value?.toLowerCase().endsWith('@polito.it') && control.value?.toLowerCase().startsWith("d")) 
-      //&& Number(control.value?.toLowerCase().split("@")[0].substr(1)) != NaN && !isNaN(Number('as'))
-      )
-          ? null : {wrongDomain: control.value};
-}
-
 
 
 

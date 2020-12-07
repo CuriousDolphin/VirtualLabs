@@ -116,6 +116,7 @@ public class AuthController {
             Student student;
             Optional<Teacher> optTeacher;
             Teacher teacher;
+
             if(!(data.getPassword().equals(data.getConfirmPassword())))
             {
                 throw new BadCredentialsException("Passwords not match");
@@ -128,7 +129,6 @@ public class AuthController {
                 if(optStudent.isPresent())
                 {
                     //student already exist, update the exist data with the parameters received trough the form.
-                    //TODO: devo settare anche nome e cognome o solamente la mail?
                     student = optStudent.get();
                     student.setEmail(username);
                     student.setName(data.getName());
@@ -153,12 +153,7 @@ public class AuthController {
                 user = AddGenericUser(username,psw);
                 String id = username.split("@")[0];
                 optTeacher = teachers.findByIdIgnoreCase(id);
-                if(optTeacher.isPresent())
-                {
-                    //TODO: può essere che u nteacher sia già esistente senza essere registrato come user? penso di no
-
-                }
-                else
+                if(!optTeacher.isPresent())
                 {
                     //insert new teacher
                     teacher = Teacher.builder()

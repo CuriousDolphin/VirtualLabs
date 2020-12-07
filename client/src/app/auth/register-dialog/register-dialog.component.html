@@ -11,7 +11,7 @@
             <input type="password" matInput formControlName="password" required />
             <mat-error *ngIf="registerForm.controls['password'].invalid">Not a valid password</mat-error>
         </mat-form-field>
-        <mat-error *ngIf="registerForm.errors?.invalid">Password must match</mat-error>
+        <div><mat-error *ngIf="registerForm.errors?.invalid && !registerForm.controls['confirmPassword'].invalid">Password must match</mat-error></div>
         <mat-form-field class="full-width" appearance="outline">
             <mat-label>Confirm password</mat-label>
             <input type="password" matInput formControlName="confirmPassword" required />
