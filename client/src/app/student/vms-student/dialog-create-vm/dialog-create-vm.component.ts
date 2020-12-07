@@ -46,13 +46,14 @@ export class DialogCreateVmComponent implements OnInit {
       this.createForm.get("disk").value <= data.maxDisk &&
       this.createForm.get("vcpus").value >= 1 &&
       this.createForm.get("ram").value >= 1 &&
-      this.createForm.get("disk").value >= 1)
+      this.createForm.get("disk").value >= 1) {
       this.dialogRef.close(<JSON><unknown>{
         "countVcpus": this.createForm.get("vcpus").value,
         "countRam": this.createForm.get("ram").value,
         "countDisks": this.createForm.get("disk").value,
         "owner": String(this.createForm.get("owner").value)
       });
+    }
   }
 
 }

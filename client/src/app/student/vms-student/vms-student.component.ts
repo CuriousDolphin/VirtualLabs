@@ -84,7 +84,7 @@ export class VmsStudentComponent implements OnInit {
         countVcpus: (this._vmConfiguration.maxVcpusPerVm / 3).toFixed(),
         countRam: (this._vmConfiguration.maxRamPerVm / 3).toFixed(),
         countDisk: (this._vmConfiguration.maxDiskPerVm / 3).toFixed(),
-        owner: true,
+        owner: false,
         maxVcpus: this._vmConfiguration.maxVcpusPerVm,
         maxRam: this._vmConfiguration.maxRamPerVm,
         maxDisk: this._vmConfiguration.maxDiskPerVm
