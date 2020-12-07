@@ -38,6 +38,7 @@
     <div class="tab-container">
       <app-assignment 
       [assignments]="assignments$ | async"
+      [papers]="papers$ | async"
       (assignmentClickedEvent)="setCurrentAssignment($event)">
       </app-assignment>
     </div>>

@@ -1,1 +1,40 @@
-<p>assignment-paper works!</p>
+<table mat-table [dataSource]="dataSource" class="elevation-z6">
+
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>Id</th>
+    <td mat-cell *matCellDef="let paper">{{paper.id}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef>Status</th>
+    <td mat-cell *matCellDef="let paper">{{paper.status}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="vote">
+    <th mat-header-cell *matHeaderCellDef>Vote</th>
+    <td mat-cell *matCellDef="let paper">{{paper.vote}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="lastUpdateTime">
+    <th mat-header-cell *matHeaderCellDef>Last update time</th>
+    <td mat-cell *matCellDef="let paper">{{paper.lastUpdateTime}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="studentId">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let paper">{{paper.student.id}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="studentName">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let paper">{{paper.student.name}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="studentLastName">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let paper">{{paper.student.lastName}}</td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="colsToDisplay"> </tr>
+  <tr mat-row *matRowDef="let row; columns: colsToDisplay"></tr>
+</table>

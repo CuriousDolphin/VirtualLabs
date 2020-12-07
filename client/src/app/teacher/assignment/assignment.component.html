@@ -9,19 +9,21 @@
     </mat-card-header>
     <mat-card-content>
       <div>
-        <button mat-flat-button
-        (click)="back()"
-        class="radius-20"
-        style="background-color: transparent">
+        <button mat-flat-button (click)="back()" class="radius-20" style="background-color: transparent">
           <mat-icon color="primary">
             arrow_back
           </mat-icon>
         </button>
       </div>
-     <app-assignment-assignment 
-     [assignmentsData]="assignmentsData"
-     (clickAssignmentEvent)="assignmentClicked($event)">
-     </app-assignment-assignment>
+      <ng-container>
+        <app-assignment-assignment [assignmentsData]="assignmentsData"
+          (clickAssignmentEvent)="assignmentClicked($event)">
+        </app-assignment-assignment>
+      </ng-container>
+      <ng-container>
+        <app-assignment-paper [papersData]="papersData">
+        </app-assignment-paper>
+      </ng-container>
     </mat-card-content>
   </mat-card>
 </div>

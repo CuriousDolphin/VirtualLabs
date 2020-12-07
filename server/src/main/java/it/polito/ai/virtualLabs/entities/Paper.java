@@ -1,9 +1,6 @@
 package it.polito.ai.virtualLabs.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -27,6 +24,7 @@ public class Paper {
     private Assignment assignment;
     @ManyToOne
     @JoinColumn(name = "student_id")
+    @NonNull
     private Student student;
     @OneToMany(mappedBy = "paper")
     private List<PaperSnapshot> paperSnapshots = new ArrayList<>();

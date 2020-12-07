@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { Paper } from 'src/app/models/paper.model';
 
 @Component({
   selector: 'app-assignment-paper',
@@ -8,6 +10,14 @@ import { Component, OnInit } from '@angular/core';
 export class AssignmentPaperComponent implements OnInit {
 
   constructor() { }
+
+  colsToDisplay = ["id", "status", "vote", "studentId", "studentName", "studentLastName"]
+  dataSource = new MatTableDataSource<Paper>()
+  @Input() set papersData(papers: Paper[]) {
+    if( papers != null) {
+      this.dataSource.data = papers
+    }
+  }
 
   ngOnInit(): void {
   }
