@@ -61,6 +61,9 @@ export class VmsStudentComponent implements OnInit {
   _vmInstances: VmInstance[];
   _vmConfiguration: VmConfiguration;
   canCreateNumber: number[];
+  vcpusAvailable: String;
+  ramAvailable: String;
+  diskAvailable: String;
 
   constructor(public dialog: MatDialog) { }
 
@@ -75,6 +78,9 @@ export class VmsStudentComponent implements OnInit {
         this.canCreateNumber = Array(this.canCreate$.getValue() - 1);
       else
         this.canCreateNumber = Array();
+      this.vcpusAvailable = (this._vmConfiguration.maxVcpusPerVm - _.sumBy(this._vmInstances, (vm) => { return vm.countVcpus })).toFixed();
+      this.ramAvailable = (this._vmConfiguration.maxRamPerVm - _.sumBy(this._vmInstances, (vm) => { return vm.countRam })).toFixed();
+      this.diskAvailable = (this._vmConfiguration.maxDiskPerVm - _.sumBy(this._vmInstances, (vm) => { return vm.countDisks })).toFixed();
     }
   }
 
@@ -83,13 +89,13 @@ export class VmsStudentComponent implements OnInit {
   createVmDialog(): void {
     this.dialogCreateRef = this.dialog.open(DialogCreateVmComponent, {
       data: {
-        countVcpus: (this._vmConfiguration.maxVcpusPerVm / 3).toFixed(),
-        countRam: (this._vmConfiguration.maxRamPerVm / 3).toFixed(),
-        countDisk: (this._vmConfiguration.maxDiskPerVm / 3).toFixed(),
+        countVcpus: ((this._vmConfiguration.maxVcpusPerVm - _.sumBy(this._vmInstances, (vm) => { return vm.countVcpus })) / (this.canCreateNumber.length + 1)).toFixed(),
+        countRam: ((this._vmConfiguration.maxRamPerVm - _.sumBy(this._vmInstances, (vm) => { return vm.countRam })) / (this.canCreateNumber.length + 1)).toFixed(),
+        countDisk: ((this._vmConfiguration.maxDiskPerVm - _.sumBy(this._vmInstances, (vm) => { return vm.countDisks })) / (this.canCreateNumber.length + 1)).toFixed(),
         owner: false,
-        maxVcpus: this._vmConfiguration.maxVcpusPerVm,
-        maxRam: this._vmConfiguration.maxRamPerVm,
-        maxDisk: this._vmConfiguration.maxDiskPerVm
+        maxVcpus: (this._vmConfiguration.maxVcpusPerVm - _.sumBy(this._vmInstances, (vm) => { return vm.countVcpus })),
+        maxRam: (this._vmConfiguration.maxRamPerVm - _.sumBy(this._vmInstances, (vm) => { return vm.countRam })),
+        maxDisk: (this._vmConfiguration.maxDiskPerVm - _.sumBy(this._vmInstances, (vm) => { return vm.countDisks }))
       },
       width: "22%",
     });
@@ -102,9 +108,9 @@ export class VmsStudentComponent implements OnInit {
         countVcpus: vm.countVcpus,
         countRam: vm.countRam,
         countDisk: vm.countDisks,
-        maxVcpus: this._vmConfiguration.maxVcpusPerVm,
-        maxRam: this._vmConfiguration.maxRamPerVm,
-        maxDisk: this._vmConfiguration.maxDiskPerVm,
+        maxVcpus: (vm.countVcpus + this._vmConfiguration.maxVcpusPerVm - _.sumBy(this._vmInstances, (vm) => { return vm.countVcpus })),
+        maxRam: (vm.countRam + this._vmConfiguration.maxRamPerVm - _.sumBy(this._vmInstances, (vm) => { return vm.countRam })),
+        maxDisk: (vm.countDisks + this._vmConfiguration.maxDiskPerVm - _.sumBy(this._vmInstances, (vm) => { return vm.countDisks })),
         id: vm.id,
         mockId: this._vmInstances.indexOf(vm)
       },

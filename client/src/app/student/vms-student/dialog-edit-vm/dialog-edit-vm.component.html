@@ -4,19 +4,19 @@
         <mat-label>VCPUs number</mat-label>
         <input matInput type="number" min="1" [max]="data.maxVcpus" formControlName="vcpus">
         <mat-error *ngIf="editForm.controls['vcpus'].invalid"></mat-error>
-        <span matSuffix>/{{data.maxVcpus}}</span>
+        <span matSuffix>/ {{data.maxVcpus}} available</span>
     </mat-form-field>
     <mat-form-field class="full-width">
         <mat-label>RAM dimension</mat-label>
         <input matInput type="number" min="1" [max]="data.maxRam" formControlName="ram">
         <mat-error *ngIf="editForm.controls['ram'].invalid"></mat-error>
-        <span matSuffix>GB /{{data.maxRam}}</span>
+        <span matSuffix>GB / {{data.maxRam}} GB available</span>
     </mat-form-field>
     <mat-form-field class="full-width">
         <mat-label>Disk dimension</mat-label>
         <input matInput type="number" min="1" [max]="data.maxDisk" formControlName="disk">
         <mat-error *ngIf="editForm.controls['disk'].invalid"></mat-error>
-        <span matSuffix>GB /{{data.maxDisk}}</span>
+        <span matSuffix>GB / {{data.maxDisk}} GB available</span>
     </mat-form-field>
 </div>
 <div mat-dialog-actions>

@@ -138,21 +138,32 @@
                     </mat-grid-list>
                 </div>
                 <div *ngIf="(canCreate$ | async) > 0">
-                    <mat-grid-list cols="100" rowHeight="6rem">
+                    <mat-grid-list cols="100" rowHeight="6rem" style="font-size: medium; font-weight: 500;">
                         <mat-divider></mat-divider>
                         <mat-grid-tile colspan="5">{{_vmInstances.length + 1}}</mat-grid-tile>
-                        <mat-grid-tile colspan="95">
+                        <mat-grid-tile colspan="15"></mat-grid-tile>
+                        <mat-grid-tile colspan="40">
 
                             <button mat-raised-button color="primary" (click)="createVmDialog()" class="myButton">
                                 <mat-icon matListIcon>
                                     add</mat-icon>
                                     NEW VIRTUAL MACHINE</button>
                         </mat-grid-tile>
+                        <mat-grid-tile colspan="10"></mat-grid-tile>
+                        <mat-grid-tile colspan="10">
+                            {{vcpusAvailable}} available
+                        </mat-grid-tile>
+                        <mat-grid-tile colspan="10">
+                            {{ramAvailable}} GB available
+                        </mat-grid-tile>
+                        <mat-grid-tile colspan="10">
+                            {{diskAvailable}} GB available
+                        </mat-grid-tile>
                     </mat-grid-list>
                 </div>
                 <div *ngFor="let n of canCreateNumber; let i = index">
                     <mat-divider></mat-divider>
-                    <mat-grid-list cols="100" rowHeight="6rem">
+                    <mat-grid-list cols="100" rowHeight="6rem" style="font-size: medium; font-weight: 500;">
                         <mat-grid-tile colspan="5">{{_vmInstances.length + 2 + i}}</mat-grid-tile>
                         <mat-grid-tile colspan="95"></mat-grid-tile>
                     </mat-grid-list>
