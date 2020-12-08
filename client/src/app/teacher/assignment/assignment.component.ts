@@ -9,7 +9,7 @@ import { Paper } from 'src/app/models/paper.model';
 export class AssignmentComponent implements OnInit {
   assignmentsData = []
   papersData = []
-  toShow: String
+  toShowLevel: number
 
   @Input() set assignments(assignments: Assignment[]) {
     if(assignments != null) {
@@ -27,11 +27,15 @@ export class AssignmentComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    this.toShow = "assignment"
+    this.toShowLevel = 0
   }
 
+  back() {
+    this.toShowLevel = this.toShowLevel - 1
+  }
+  
   assignmentClicked(assignmentId: number) {
     this.assignmentClickedEvent.emit(assignmentId)
-    this.toShow = "paper" 
+    this.toShowLevel = this.toShowLevel + 1 
   }
 }

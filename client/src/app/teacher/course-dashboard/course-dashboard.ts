@@ -31,14 +31,12 @@ export class CourseDashboard implements OnInit, OnDestroy {
   private enrollSubscription: Subscription;
   private unenrollSubscription: Subscription;
   private dialogSubscription: Subscription;
-  private currentAssignmentSubscription: Subscription;
   private papersSubscription: Subscription;
   private uploadSubscription: Subscription;
 
   studentsDB$: Observable<Student[]>;
   currentCourse: Course;
   currentCourse$: Observable<Course>;
-  currentAssignment$: Observable<Assignment>;
   enrolledStudents$: Observable<Student[]>;
   assignments$: Observable<Assignment[]>
   papers$: Observable<Paper[]>
@@ -107,18 +105,6 @@ export class CourseDashboard implements OnInit, OnDestroy {
       ),
       tap(() => (this.isLoading = false))
     );
-
-    this.papers$ = combineLatest([
-      this.currentCourse$,
-      this.currentAssignment$,
-      this._reloadPapers$
-    ]).pipe(
-      tap(() => (this.isLoading = true)),
-      switchMap(([course, assignment, reload]) => {
-        if(assignment && assignment.id)
-          return this.courseService.getAllPapersForAssignment(assignment.id);
-      }),
-      tap(() => this.isLoading = false))
   }
   uploadCsv(file: File) {
     console.log(file);
@@ -229,9 +215,12 @@ export class CourseDashboard implements OnInit, OnDestroy {
   }
 
   setCurrentAssignment(assignmentId: number) {
-    this.currentAssignment$ = this.courseService.getAssignment(assignmentId)
-    this.currentAssignment$.subscribe()
-
+    this.isLoading = true
+    this.papers$ = this.courseService
+      .getAllPapersForAssignment(assignmentId)
+      .pipe(
+        tap(() => this.isLoading = false)
+      )
   }
 
   ngOnDestroy(): void {

@@ -24,7 +24,6 @@ public class Paper {
     private Assignment assignment;
     @ManyToOne
     @JoinColumn(name = "student_id")
-    @NonNull
     private Student student;
     @OneToMany(mappedBy = "paper")
     private List<PaperSnapshot> paperSnapshots = new ArrayList<>();

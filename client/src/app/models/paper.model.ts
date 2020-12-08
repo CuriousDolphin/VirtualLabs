@@ -4,6 +4,6 @@ export interface Paper {
   id: number,
   status: number,
   vote: number,
-  lastUpdateTime: string
+  lastUpdateTime: Date
   student: Student
 }

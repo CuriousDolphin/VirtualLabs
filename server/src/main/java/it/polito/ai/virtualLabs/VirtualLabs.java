@@ -135,15 +135,43 @@ public class VirtualLabs {
                         .vote(0)
                         .lastUpdateTime(releaseDate)
                         .build();
+                Paper paper4 = Paper.builder()
+                        .status(null)
+                        .vote(0)
+                        .lastUpdateTime(releaseDate)
+                        .build();
+                Paper paper5 = Paper.builder()
+                        .status(null)
+                        .vote(0)
+                        .lastUpdateTime(releaseDate)
+                        .build();
                 Assignment assignment1 = Assignment.builder()
                         .releaseDate(releaseDate)
                         .expiryDate(expiryDate)
                         .papers(new ArrayList<>())
                         .content("Laboratorio 1")
                         .build();
+                Assignment assignment4 = Assignment.builder()
+                        .releaseDate(releaseDate)
+                        .expiryDate(expiryDate)
+                        .papers(new ArrayList<>())
+                        .content("Laboratorio 2")
+                        .build();
+                Assignment assignment5 = Assignment.builder()
+                        .releaseDate(releaseDate)
+                        .expiryDate(expiryDate)
+                        .papers(new ArrayList<>())
+                        .content("Laboratorio 3")
+                        .build();
                 paper1.setAssignment(assignment1);
+                paper4.setAssignment(assignment1);
+                paper5.setAssignment(assignment1);
                 assignment1.setCourse(newCourse);
+                assignment4.setCourse(newCourse);
+                assignment5.setCourse(newCourse);
                 ar.save(assignment1);
+                ar.save(assignment4);
+                ar.save(assignment5);
 
                 //Course: ML
                 newCourse = Course.builder()
@@ -243,6 +271,7 @@ public class VirtualLabs {
                         .papers(new ArrayList<>())
                         .build();
                 paper1.setStudent(newStudent);
+                paper5.setStudent(newStudent);
                 sr.save(newStudent);
                 //User-Student: s234567 (Giacomo Bianchi)
                 ur.save(User.builder()
@@ -283,10 +312,13 @@ public class VirtualLabs {
                         .build();
                 paper2.setStudent(newStudent);
                 paper3.setStudent(newStudent);
+                paper4.setStudent(newStudent);
                 sr.save(newStudent);
                 pr.save(paper1);
                 pr.save(paper2);
                 pr.save(paper3);
+                pr.save(paper4);
+                pr.save(paper5);
             } catch (Exception e) {
                 System.out.println("Exception insert mock data: " + e.getMessage());
             } finally {
