@@ -48,9 +48,9 @@ public class VirtualLabs {
                 if(vmConfigurationRepository.findAll().stream().noneMatch(vc -> vc.getVmModel() == null)) {
                     vmConfigurationRepository.save(VmConfiguration.builder()
                             .vmModel(null)
-                            .maxVcpusPerVm(9*6)
-                            .maxRamPerVm(32*6)
-                            .maxDiskPerVm(1000*6)
+                            .maxVcpusPerVm(5*6)
+                            .maxRamPerVm(8*6)
+                            .maxDiskPerVm(500*6)
                             .maxRunningVms(3)
                             .maxVms(6)
                             .build());
