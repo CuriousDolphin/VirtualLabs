@@ -21,8 +21,6 @@ public class VmModel {
 
     @NotEmpty
     @Column(unique = true)
-    private String name;
-    @NotEmpty
     private String image;
 
     @OneToOne()

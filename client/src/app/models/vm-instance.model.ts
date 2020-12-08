@@ -5,4 +5,5 @@ export class VmInstance {
     countRam: number;
     countDisks: number;
     owner: String;
+    image: String;
 }

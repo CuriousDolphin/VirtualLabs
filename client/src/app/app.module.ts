@@ -48,6 +48,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { DialogCreateVmComponent } from './student/vms-student/dialog-create-vm/dialog-create-vm.component';
 import {MatRadioModule} from '@angular/material/radio';
 import { DialogEditVmComponent } from './student/vms-student/dialog-edit-vm/dialog-edit-vm.component';
+import { OpenVmComponent } from './student/vms-student/open-vm/open-vm.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import { DialogEditVmComponent } from './student/vms-student/dialog-edit-vm/dial
     VmsStudentComponent,
     DialogCreateVmComponent,
     DialogEditVmComponent,
+    OpenVmComponent,
   ],
   imports: [
     BrowserModule,

@@ -2,12 +2,12 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { Team } from 'src/app/models/team.model';
 import { VmInstance } from 'src/app/models/vm-instance.model';
 import * as _ from "lodash";
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DialogCreateVmComponent } from './dialog-create-vm/dialog-create-vm.component';
 import { VmConfiguration } from 'src/app/models/vm-configuration.model';
 import { DialogEditVmComponent } from './dialog-edit-vm/dialog-edit-vm.component';
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { OpenVmComponent } from './open-vm/open-vm.component';
 
 @Component({
   selector: 'app-vms-student',
@@ -28,6 +28,8 @@ export class VmsStudentComponent implements OnInit {
   @Output() editVm = new EventEmitter<JSON>();
 
   @Input() studentId: String;
+  @Input() course: String;
+  @Input() courseAc: String;
   @Input() set vmInstances(vmInstances: VmInstance[]) {
     this._vmInstances = vmInstances.sort((vm1: VmInstance, vm2: VmInstance) => {
       if (vm1.id > vm2.id) return 1;
@@ -53,6 +55,7 @@ export class VmsStudentComponent implements OnInit {
   }
   dialogCreateRef: MatDialogRef<DialogCreateVmComponent, any>
   dialogEditRef: MatDialogRef<DialogEditVmComponent, any>
+  openVmDialog: MatDialogRef<OpenVmComponent, any>
   hasTeam = false;
   team: Team;
   _vmInstances: VmInstance[];
@@ -62,7 +65,6 @@ export class VmsStudentComponent implements OnInit {
   constructor(public dialog: MatDialog) { }
 
   ngOnInit(): void {
-
   }
 
   ngOnChanges(): void {
@@ -114,6 +116,19 @@ export class VmsStudentComponent implements OnInit {
           newVm["countRam"] !== vm.countRam ||
           newVm["countDisks"] !== vm.countDisks)
           this.emitEditVm(newVm)
+    });
+  }
+
+  OpenVm(vm: VmInstance): void {
+    this.openVmDialog = this.dialog.open(OpenVmComponent, {
+      data: {
+        countVcpus: vm.countVcpus,
+        countRam: vm.countRam,
+        countDisk: vm.countDisks,
+        fakeId: this._vmInstances.indexOf(vm) + 1,
+        course: this.course,
+        image: "http://localhost:8080/VM_images/" + this.courseAc + "/" + vm.image, //TODO: link
+      },
     });
   }
 
