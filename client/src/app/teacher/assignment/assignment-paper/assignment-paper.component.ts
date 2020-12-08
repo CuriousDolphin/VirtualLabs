@@ -11,7 +11,7 @@ export class AssignmentPaperComponent implements OnInit {
 
   constructor() { }
 
-  colsToDisplay = ["id", "status", "vote", "studentId", "studentName", "studentLastName"]
+  colsToDisplay = ["id", "status", "vote", "lastUpdateTime", "studentId", "studentName", "studentLastName"]
   dataSource = new MatTableDataSource<Paper>()
   @Input() set papersData(papers: Paper[]) {
     if( papers != null) {

@@ -21,20 +21,20 @@
   </ng-container>
 
   <ng-container matColumnDef="studentId">
-    <th mat-header-cell *matHeaderCellDef></th>
+    <th mat-header-cell *matHeaderCellDef>Student Id</th>
     <td mat-cell *matCellDef="let paper">{{paper.student.id}}</td>
   </ng-container>
 
   <ng-container matColumnDef="studentName">
-    <th mat-header-cell *matHeaderCellDef></th>
+    <th mat-header-cell *matHeaderCellDef>Student Name</th>
     <td mat-cell *matCellDef="let paper">{{paper.student.name}</td>
   </ng-container>
 
   <ng-container matColumnDef="studentLastName">
-    <th mat-header-cell *matHeaderCellDef></th>
+    <th mat-header-cell *matHeaderCellDef>Student Lastname</th>
     <td mat-cell *matCellDef="let paper">{{paper.student.lastName}}</td>
   </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="colsToDisplay"> </tr>
+  <tr mat-header-row *matHeaderRowDef="colsToDisplay"></tr>
   <tr mat-row *matRowDef="let row; columns: colsToDisplay"></tr>
 </table>

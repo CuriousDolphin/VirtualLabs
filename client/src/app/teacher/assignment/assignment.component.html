@@ -15,12 +15,12 @@
           </mat-icon>
         </button>
       </div>
-      <ng-container>
+      <ng-container *ngIf="toShow === 'assignment'">
         <app-assignment-assignment [assignmentsData]="assignmentsData"
           (clickAssignmentEvent)="assignmentClicked($event)">
         </app-assignment-assignment>
       </ng-container>
-      <ng-container>
+      <ng-container *ngIf="toShow === 'paper'">
         <app-assignment-paper [papersData]="papersData">
         </app-assignment-paper>
       </ng-container>

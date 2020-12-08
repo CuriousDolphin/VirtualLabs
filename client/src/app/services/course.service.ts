@@ -120,6 +120,7 @@ export class CourseService {
   
   getAllPapersForAssignment(assignmentId: number): Observable<Paper[]> {
     const url = BASE_PATH + "courses/" + "assignments/" + assignmentId + "/papers";
+    //non entra
     return this.http
     .get<Paper[]>(url)
     .pipe(catchError((e) => this.handleError(e)))

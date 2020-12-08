@@ -9,9 +9,7 @@ import { Paper } from 'src/app/models/paper.model';
 export class AssignmentComponent implements OnInit {
   assignmentsData = []
   papersData = []
-  assignment: Boolean
-  paper: Boolean
-  paperSnapshot: Boolean
+  toShow: String
 
   @Input() set assignments(assignments: Assignment[]) {
     if(assignments != null) {
@@ -29,12 +27,11 @@ export class AssignmentComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.toShow = "assignment"
   }
 
   assignmentClicked(assignmentId: number) {
     this.assignmentClickedEvent.emit(assignmentId)
-    this.paper=true
-    this.assignment=false
-    this.paperSnapshot=false
+    this.toShow = "paper" 
   }
 }
