@@ -10,4 +10,5 @@ public class VmInstanceDTO {
     private int countRam;
     private int countDisks;
     private String owner;
+    private String image;
 }

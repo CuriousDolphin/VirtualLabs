@@ -13,12 +13,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
-import java.io.Reader;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +48,7 @@ public class TeamServiceImpl implements TeamService {
     @Autowired
     VmInstanceRepository vmInstanceRepository;
 
+
     @Override
     public boolean addCourse(CourseDTO course) {
         if (courseRepository.findByNameIgnoreCase(course.getName()).isPresent()) {
@@ -55,9 +57,14 @@ public class TeamServiceImpl implements TeamService {
             if (course.getName() != null && !course.getName().equals("")) {
                 Course newCourse = modelMapper.map(course, Course.class);
                 //default VmModel for course
+                try {
+                    Files.createDirectory(Path.of("src/main/webapp/WEB-INF/VM_images/" + course.getAcronym()));
+                    Files.copy(Path.of("src/main/webapp/WEB-INF/defaultVmImage.png"), new FileOutputStream("src/main/webapp/WEB-INF/VM_images/" + course.getAcronym() + "/"+ course.getAcronym() + "_default.png"));
+                } catch(Exception e) {
+                    System.out.println("error copying VM image");
+                }
                 VmModel newVmModel = VmModel.builder()
-                        .name("VmModelDefault-" + course.getAcronym())
-                        .image("ThisIsTheDefaultVmImage")
+                        .image(course.getAcronym() + "_default.png")
                         .course(newCourse)
                         .build();
                 vmModelRepository.save(newVmModel);
@@ -554,6 +561,7 @@ public class TeamServiceImpl implements TeamService {
 
         VmInstance newVmInstance = modelMapper.map(vmInstance, VmInstance.class);
         newVmInstance.setTeam(teamRepository.getByName(team));
+        newVmInstance.setImage(vmModelRepository.getByCourse(teamRepository.getByName(team).getCourse()).getImage()); //TODO:link here
         newVmInstance.setVmModel(vmModelRepository.getByCourse(teamRepository.getByName(team).getCourse()));
         return modelMapper.map(vmInstanceRepository.save(newVmInstance), VmInstanceDTO.class);
     }

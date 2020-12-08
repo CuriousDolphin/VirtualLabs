@@ -1,6 +1,5 @@
 package it.polito.ai.virtualLabs;
 
-import it.polito.ai.virtualLabs.dtos.CourseDTO;
 import it.polito.ai.virtualLabs.dtos.TeamDTO;
 import it.polito.ai.virtualLabs.entities.*;
 import it.polito.ai.virtualLabs.repositories.*;
@@ -12,15 +11,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 @SpringBootApplication
 public class VirtualLabs {
@@ -48,13 +48,24 @@ public class VirtualLabs {
                 if(vmConfigurationRepository.findAll().stream().noneMatch(vc -> vc.getVmModel() == null)) {
                     vmConfigurationRepository.save(VmConfiguration.builder()
                             .vmModel(null)
-                            .maxVcpusPerVm(5)
-                            .maxRamPerVm(16)
-                            .maxDiskPerVm(500)
-                            .maxRunningVms(2)
-                            .maxVms(4)
+                            .maxVcpusPerVm(5*6)
+                            .maxRamPerVm(8*6)
+                            .maxDiskPerVm(500*6)
+                            .maxRunningVms(3)
+                            .maxVms(6)
                             .build());
                 }
+                //copy default VM images
+                courseRepository.findAll().forEach(course -> {
+                    if(!Files.exists(Path.of("src/main/webapp/WEB-INF/VM_images/" + course.getAcronym() + "/" + course.getAcronym() + "_default.png"))) {
+                        try {
+                            Files.createDirectory(Path.of("src/main/webapp/WEB-INF/VM_images/" + course.getAcronym()));
+                            Files.copy(Path.of("src/main/webapp/WEB-INF/defaultVmImage.png"), new FileOutputStream("src/main/webapp/WEB-INF/VM_images/" + course.getAcronym() + "/"+ course.getAcronym() + "_default.png"));
+                        } catch(Exception e) {
+                            System.out.println("error copying VM image");
+                        }
+                    }
+                });
 
                 generateMockData(courseRepository, vmModelRepository, teamRepository, userRepository, passwordEncoder, studentRepository, teamService, notificationService, tokenTeamRepository);
 
@@ -82,9 +93,14 @@ public class VirtualLabs {
                         .max(4)
                         .build();
                 cr.save(newCourse);
+                try {
+                    Files.createDirectory(Path.of("src/main/webapp/WEB-INF/VM_images/" + newCourse.getAcronym()));
+                    Files.copy(Path.of("src/main/webapp/WEB-INF/defaultVmImage.png"), new FileOutputStream("src/main/webapp/WEB-INF/VM_images/" + newCourse.getAcronym() + "/"+ newCourse.getAcronym() + "_default.png"));
+                } catch(Exception e) {
+                    System.out.println("error copying VM image");
+                }
                 VmModel newVmModel = VmModel.builder()
-                        .name("VmModelDefault-" + newCourse.getAcronym())
-                        .image("ThisIsTheDefaultVmImage")
+                        .image(newCourse.getAcronym() + "_default.png")
                         .course(newCourse)
                         .build();
                 vmr.save(newVmModel);
@@ -97,9 +113,14 @@ public class VirtualLabs {
                         .max(6)
                         .build();
                 cr.save(newCourse);
+                try {
+                    Files.createDirectory(Path.of("src/main/webapp/WEB-INF/VM_images/" + newCourse.getAcronym()));
+                    Files.copy(Path.of("src/main/webapp/WEB-INF/defaultVmImage.png"), new FileOutputStream("src/main/webapp/WEB-INF/VM_images/" + newCourse.getAcronym() + "/"+ newCourse.getAcronym() + "_default.png"));
+                } catch(Exception e) {
+                    System.out.println("error copying VM image");
+                }
                 newVmModel = VmModel.builder()
-                        .name("VmModelDefault-" + newCourse.getAcronym())
-                        .image("ThisIsTheDefaultVmImage")
+                        .image(newCourse.getAcronym() + "_default.png")
                         .course(newCourse)
                         .build();
                 vmr.save(newVmModel);
@@ -112,9 +133,14 @@ public class VirtualLabs {
                         .max(10)
                         .build();
                 cr.save(newCourse);
+                try {
+                    Files.createDirectory(Path.of("src/main/webapp/WEB-INF/VM_images/" + newCourse.getAcronym()));
+                    Files.copy(Path.of("src/main/webapp/WEB-INF/defaultVmImage.png"), new FileOutputStream("src/main/webapp/WEB-INF/VM_images/" + newCourse.getAcronym() + "/"+ newCourse.getAcronym() + "_default.png"));
+                } catch(Exception e) {
+                    System.out.println("error copying VM image");
+                }
                 newVmModel = VmModel.builder()
-                        .name("VmModelDefault-" + newCourse.getAcronym())
-                        .image("ThisIsTheDefaultVmImage")
+                        .image(newCourse.getAcronym() + "_default.png")
                         .course(newCourse)
                         .build();
                 vmr.save(newVmModel);

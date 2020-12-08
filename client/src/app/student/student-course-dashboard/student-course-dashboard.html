@@ -30,7 +30,7 @@
     <div class="tab-container">
       <app-teams
         [studentId]="studentId"
-        [currentCourse]="currentCourse"
+        [currentCourse]="currentCourse.name"
         [teams]="studentTeams$ | async"
         [studentsNotInTeams]="studentsNotInTeams$ | async"
         (createTeam)="createTeam($event)"
@@ -43,6 +43,8 @@
     <div class="tab-container">
       <app-vms-student
         [studentId]="studentId"
+        [course]="currentCourse.name"
+        [courseAc]="currentCourse.acronym"
         [vmInstances]="studentVmInstances$ | async"
         [teams]="studentTeams$ | async"
         [vmConfiguration]="currentVmConfiguration$ | async"

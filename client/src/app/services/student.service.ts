@@ -2,10 +2,7 @@ import { Injectable } from "@angular/core";
 import { Student } from "../models/student.model";
 import { HttpClient } from "@angular/common/http";
 import {
-  BehaviorSubject,
   Observable,
-  throwError,
-  combineLatest,
   of,
 } from "rxjs";
 import { catchError, retry, tap } from "rxjs/operators";
