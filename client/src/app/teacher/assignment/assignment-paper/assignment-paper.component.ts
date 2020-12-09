@@ -1,6 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Paper } from 'src/app/models/paper.model';
+import { formatDate } from '@angular/common'
+import { MatSort } from "@angular/material/sort";
 
 @Component({
   selector: 'app-assignment-paper',
@@ -11,7 +13,9 @@ export class AssignmentPaperComponent implements OnInit {
 
   constructor() { }
 
-  colsToDisplay = ["id", "status", "vote", "lastUpdateTime", "studentId", "studentName", "studentLastName"]
+  @ViewChild(MatSort, {static: true}) sort: MatSort
+
+  colsToDisplay = ["studentId", "studentName", "studentLastName", "status", "lastUpdateTime", ]
   dataSource = new MatTableDataSource<Paper>()
   @Input() set papersData(papers: Paper[]) {
     if( papers != null) {
@@ -19,7 +23,12 @@ export class AssignmentPaperComponent implements OnInit {
     }
   }
 
+  format(date) {
+    return formatDate(date, 'yyyy-MM-dd hh:mm:ss', 'en', 'GMT')
+  }
+
   ngOnInit(): void {
+    this.dataSource.sort = this.sort;
   }
 
 }

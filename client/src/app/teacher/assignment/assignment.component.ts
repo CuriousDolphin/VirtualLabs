@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Assignment } from 'src/app/models/assignment.model';
 import { Paper } from 'src/app/models/paper.model';
+
 @Component({
   selector: 'app-assignment',
   templateUrl: './assignment.component.html',

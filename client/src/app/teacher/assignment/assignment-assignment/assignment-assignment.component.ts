@@ -1,6 +1,8 @@
-import { Component, OnInit, Input, EventEmitter, Output} from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ViewChild} from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Assignment } from 'src/app/models/assignment.model';
+import { formatDate } from '@angular/common'
+import { MatSort } from "@angular/material/sort";
 
 @Component({
   selector: 'app-assignment-assignment',
@@ -11,7 +13,9 @@ export class AssignmentAssignmentComponent implements OnInit {
 
   constructor() { }
 
-  colsToDisplay=["id", "content", "releaseDate", "expiryDate"]
+  @ViewChild(MatSort, {static: true}) sort: MatSort
+
+  colsToDisplay=["content", "releaseDate", "expiryDate"]
   dataSource = new MatTableDataSource<Assignment>();
   @Input() set assignmentsData(assignments: Assignment[]) {
     if(assignments != null) {
@@ -25,7 +29,14 @@ export class AssignmentAssignmentComponent implements OnInit {
     this.clickAssignmentEvent.emit(assignmentId);
   }
 
+  format(date) {
+    return formatDate(date, 'yyyy-MM-dd hh:mm:ss', 'en', 'GMT')
+  }
+
+
+
   ngOnInit(): void {
+    this.dataSource.sort = this.sort
   }
 
 }

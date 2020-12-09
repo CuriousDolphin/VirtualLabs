@@ -46,6 +46,7 @@ import { TeacherLandingPageComponent } from './teacher/teacher-landing-page/teac
 import { AssignmentComponent } from './teacher/assignment/assignment.component';
 import { AssignmentAssignmentComponent } from './teacher/assignment/assignment-assignment/assignment-assignment.component';
 import { AssignmentPaperComponent } from './teacher/assignment/assignment-paper/assignment-paper.component';
+import { AssignmentPapersnapshotComponent } from './teacher/assignment/assignment-papersnapshot/assignment-papersnapshot.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { AssignmentPaperComponent } from './teacher/assignment/assignment-paper/
     AssignmentComponent,
     AssignmentAssignmentComponent,
     AssignmentPaperComponent,
+    AssignmentPapersnapshotComponent,
   ],
   imports: [
     BrowserModule,

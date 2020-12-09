@@ -3,5 +3,10 @@
     //min-height: 600px
 
 .mat-row:hover 
-  background-color: grey
+  background-color: lighten(yellow, 30%)
   cursor: pointer
+
+.mat-row:nth-child(odd)
+  background-color: lighten(grey, 40%)
+  &:hover
+    background-color: lighten(yellow, 30%)
