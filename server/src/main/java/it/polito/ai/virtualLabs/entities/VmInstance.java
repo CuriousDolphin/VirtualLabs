@@ -25,6 +25,7 @@ public class VmInstance {
     private int countRam;
     private int countDisks;
     private String owner;
+    private String creator;
     private String image;
 
 }

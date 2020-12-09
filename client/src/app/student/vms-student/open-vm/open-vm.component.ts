@@ -20,7 +20,7 @@ export interface DialogData {
 })
 export class OpenVmComponent implements OnInit {
 
-  imageName: String;
+  imageLink: String = "http://localhost:8080/VM_images/" + this.data.image;
 
   path: String;
 
@@ -31,9 +31,6 @@ export class OpenVmComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.imageName = this.data.image.replace(".png", "");
-    this.imageName = this.imageName.replace("http://localhost:8080/VM_images/", "");
-    this.imageName = this.imageName.replace("/", ": ");
   }
 
   closeVm(): void {

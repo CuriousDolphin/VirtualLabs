@@ -133,7 +133,7 @@ export class VmsStudentComponent implements OnInit {
         countDisk: vm.countDisks,
         fakeId: this._vmInstances.indexOf(vm) + 1,
         course: this.course,
-        image: "http://localhost:8080/VM_images/" + this.courseAc + "/" + vm.image, //TODO: link
+        image: vm.image, //TODO: link
       },
     });
   }

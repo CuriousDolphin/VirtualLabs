@@ -560,6 +560,7 @@ public class TeamServiceImpl implements TeamService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, vmInstance.getOwner());
 
         VmInstance newVmInstance = modelMapper.map(vmInstance, VmInstance.class);
+        newVmInstance.setCreator(studentId);
         newVmInstance.setTeam(teamRepository.getByName(team));
         newVmInstance.setImage(vmModelRepository.getByCourse(teamRepository.getByName(team).getCourse()).getImage()); //TODO:link here
         newVmInstance.setVmModel(vmModelRepository.getByCourse(teamRepository.getByName(team).getCourse()));

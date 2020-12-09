@@ -55,17 +55,6 @@ public class VirtualLabs {
                             .maxVms(6)
                             .build());
                 }
-                //copy default VM images
-                courseRepository.findAll().forEach(course -> {
-                    if(!Files.exists(Path.of("src/main/webapp/WEB-INF/VM_images/" + course.getAcronym() + "/" + course.getAcronym() + "_default.png"))) {
-                        try {
-                            Files.createDirectory(Path.of("src/main/webapp/WEB-INF/VM_images/" + course.getAcronym()));
-                            Files.copy(Path.of("src/main/webapp/WEB-INF/defaultVmImage.png"), new FileOutputStream("src/main/webapp/WEB-INF/VM_images/" + course.getAcronym() + "/"+ course.getAcronym() + "_default.png"));
-                        } catch(Exception e) {
-                            System.out.println("error copying VM image");
-                        }
-                    }
-                });
 
                 generateMockData(courseRepository, vmModelRepository, teamRepository, userRepository, passwordEncoder, studentRepository, teamService, notificationService, tokenTeamRepository);
 
@@ -93,14 +82,8 @@ public class VirtualLabs {
                         .max(4)
                         .build();
                 cr.save(newCourse);
-                try {
-                    Files.createDirectory(Path.of("src/main/webapp/WEB-INF/VM_images/" + newCourse.getAcronym()));
-                    Files.copy(Path.of("src/main/webapp/WEB-INF/defaultVmImage.png"), new FileOutputStream("src/main/webapp/WEB-INF/VM_images/" + newCourse.getAcronym() + "/"+ newCourse.getAcronym() + "_default.png"));
-                } catch(Exception e) {
-                    System.out.println("error copying VM image");
-                }
                 VmModel newVmModel = VmModel.builder()
-                        .image(newCourse.getAcronym() + "_default.png")
+                        .image("defaultVmImage.png")
                         .course(newCourse)
                         .build();
                 vmr.save(newVmModel);
@@ -113,14 +96,8 @@ public class VirtualLabs {
                         .max(6)
                         .build();
                 cr.save(newCourse);
-                try {
-                    Files.createDirectory(Path.of("src/main/webapp/WEB-INF/VM_images/" + newCourse.getAcronym()));
-                    Files.copy(Path.of("src/main/webapp/WEB-INF/defaultVmImage.png"), new FileOutputStream("src/main/webapp/WEB-INF/VM_images/" + newCourse.getAcronym() + "/"+ newCourse.getAcronym() + "_default.png"));
-                } catch(Exception e) {
-                    System.out.println("error copying VM image");
-                }
                 newVmModel = VmModel.builder()
-                        .image(newCourse.getAcronym() + "_default.png")
+                        .image("defaultVmImage.png")
                         .course(newCourse)
                         .build();
                 vmr.save(newVmModel);
@@ -133,14 +110,8 @@ public class VirtualLabs {
                         .max(10)
                         .build();
                 cr.save(newCourse);
-                try {
-                    Files.createDirectory(Path.of("src/main/webapp/WEB-INF/VM_images/" + newCourse.getAcronym()));
-                    Files.copy(Path.of("src/main/webapp/WEB-INF/defaultVmImage.png"), new FileOutputStream("src/main/webapp/WEB-INF/VM_images/" + newCourse.getAcronym() + "/"+ newCourse.getAcronym() + "_default.png"));
-                } catch(Exception e) {
-                    System.out.println("error copying VM image");
-                }
                 newVmModel = VmModel.builder()
-                        .image(newCourse.getAcronym() + "_default.png")
+                        .image("defaultVmImage.png")
                         .course(newCourse)
                         .build();
                 vmr.save(newVmModel);

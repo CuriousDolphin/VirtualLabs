@@ -20,7 +20,6 @@ public class VmModel {
     private Long id;
 
     @NotEmpty
-    @Column(unique = true)
     private String image;
 
     @OneToOne()

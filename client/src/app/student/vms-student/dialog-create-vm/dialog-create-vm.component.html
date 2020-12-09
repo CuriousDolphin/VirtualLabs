@@ -38,5 +38,5 @@
 </div>
 <div mat-dialog-actions>
     <button mat-raised-button (click)="onNoClick()">Discard</button>
-    <button mat-raised-button (click)=confirmCreateVm(data) color="primary">Confirm</button>
+    <button mat-raised-button (click)=confirmCreateVm(data) color="primary" [disabled]="createForm.invalid">Confirm</button>
 </div>

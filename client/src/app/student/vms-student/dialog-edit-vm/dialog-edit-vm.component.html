@@ -21,5 +21,5 @@
 </div>
 <div mat-dialog-actions>
     <button mat-raised-button (click)="onNoClick()">Discard</button>
-    <button mat-raised-button (click)="confirmEditVm(data)" color="primary">Confirm</button>
+    <button mat-raised-button (click)="confirmEditVm(data)" color="primary" [disabled]="editForm.invalid">Confirm</button>
 </div>

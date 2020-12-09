@@ -13,17 +13,4 @@ import java.io.IOException;
 public interface VmModelRepository extends JpaRepository<VmModel,Long> {
     VmModel getByCourse(Course course);
 
-    public static byte[] pngImageToByteArray(String imageName) {
-        try {
-            BufferedImage bImage = null;
-            bImage = ImageIO.read(new File("src/main/resources/VM_images/" + imageName));
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ImageIO.write(bImage, "png", bos );
-            return bos.toByteArray();
-        } catch (IOException ioe) {
-            System.out.println("unable to read image "+imageName);
-        }
-        return null;
-    }
-
 }
