@@ -1,7 +1,6 @@
 package it.polito.ai.virtualLabs.services;
 
 import it.polito.ai.virtualLabs.dtos.*;
-import it.polito.ai.virtualLabs.entities.VmConfiguration;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -22,8 +21,6 @@ public interface TeamService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     boolean addStudent(StudentDTO student);
-
-
 
     Optional<StudentDTO> getStudent(String studentId);
 
@@ -112,6 +109,13 @@ public interface TeamService {
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or (#id == authentication.principal.id and hasRole('ROLE_STUDENT'))")
     VmInstanceDTO editVmInstance(@Param("id") String studentId, String team, Long idVmInstance, VmInstanceDTO vmInstance);
 
+    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
+    VmModelDTO getVmModel(String course);
+
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or (#id == authentication.principal.id and hasRole('ROLE_STUDENT'))")
-    VmConfigurationDTO getVmConfiguration(@Param("id") String studentId, String team);
+    VmModelDTO getVmModel(String id, String team);
+
+    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') ")
+    List<VmInstanceDTO> getVmInstancesPerCourse(@Param("courseName") String course);
+
 }

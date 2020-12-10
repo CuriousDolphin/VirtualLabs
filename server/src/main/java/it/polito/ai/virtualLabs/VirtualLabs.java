@@ -16,9 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.io.FileOutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -39,22 +36,12 @@ public class VirtualLabs {
     }
 
     @Bean
-    CommandLineRunner runner(ModelMapper modelMapper, TeamRepository teamRepository, UserRepository userRepository, CourseRepository courseRepository, PasswordEncoder passwordEncoder, VmModelRepository vmModelRepository, VmConfigurationRepository vmConfigurationRepository, StudentRepository studentRepository, TeamService teamService, NotificationService notificationService, TokenTeamRepository tokenTeamRepository) {
+    CommandLineRunner runner(ModelMapper modelMapper, TeamRepository teamRepository, UserRepository userRepository, CourseRepository courseRepository, PasswordEncoder passwordEncoder, VmModelRepository vmModelRepository, StudentRepository studentRepository, TeamService teamService, NotificationService notificationService, TokenTeamRepository tokenTeamRepository) {
         return new CommandLineRunner() {
 
             @Override
             public void run(String... args) throws Exception {
                 //create default VmConfiguration if not exists
-                if(vmConfigurationRepository.findAll().stream().noneMatch(vc -> vc.getVmModel() == null)) {
-                    vmConfigurationRepository.save(VmConfiguration.builder()
-                            .vmModel(null)
-                            .maxVcpusPerVm(5*6)
-                            .maxRamPerVm(8*6)
-                            .maxDiskPerVm(500*6)
-                            .maxRunningVms(3)
-                            .maxVms(6)
-                            .build());
-                }
 
                 generateMockData(courseRepository, vmModelRepository, teamRepository, userRepository, passwordEncoder, studentRepository, teamService, notificationService, tokenTeamRepository);
 
@@ -85,6 +72,11 @@ public class VirtualLabs {
                 VmModel newVmModel = VmModel.builder()
                         .image("defaultVmImage.png")
                         .course(newCourse)
+                        .maxVms(6)
+                        .maxRunningVms(3)
+                        .maxVcpusPerVm(6*5)
+                        .maxRamPerVm(6*8)
+                        .maxDiskPerVm(6*500)
                         .build();
                 vmr.save(newVmModel);
                 //Course: ML
@@ -99,6 +91,11 @@ public class VirtualLabs {
                 newVmModel = VmModel.builder()
                         .image("defaultVmImage.png")
                         .course(newCourse)
+                        .maxVms(6)
+                        .maxRunningVms(3)
+                        .maxVcpusPerVm(6*5)
+                        .maxRamPerVm(6*8)
+                        .maxDiskPerVm(6*500)
                         .build();
                 vmr.save(newVmModel);
                 //Course: AI
@@ -113,6 +110,11 @@ public class VirtualLabs {
                 newVmModel = VmModel.builder()
                         .image("defaultVmImage.png")
                         .course(newCourse)
+                        .maxVms(6)
+                        .maxRunningVms(3)
+                        .maxVcpusPerVm(6*5)
+                        .maxRamPerVm(6*8)
+                        .maxDiskPerVm(6*500)
                         .build();
                 vmr.save(newVmModel);
 

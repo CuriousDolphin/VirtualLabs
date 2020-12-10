@@ -5,6 +5,9 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from "rxjs";
 import { switchMap, tap, map } from "rxjs/operators";
 import { Course } from "src/app/models/course.model";
 import { Student } from "src/app/models/student.model";
+import { Team } from 'src/app/models/team.model';
+import { VmModel } from 'src/app/models/vm-model.model';
+import { VmInstance } from 'src/app/models/vm-instance.model';
 import { CourseService } from "src/app/services/course.service";
 import { StudentService } from "src/app/services/student.service";
 import { ToastService } from "src/app/services/toast.service";
@@ -35,6 +38,9 @@ export class CourseDashboard implements OnInit, OnDestroy {
   currentCourse: Course;
   currentCourse$: Observable<Course>;
   enrolledStudents$: Observable<Student[]>;
+  courseTeams$: Observable<Team[]>;
+  courseVmInstances$: Observable<VmInstance[]>;
+  courseVmModel$: Observable<VmModel>;
   isLoading = false;
   constructor(
     private studentService: StudentService,
@@ -75,6 +81,36 @@ export class CourseDashboard implements OnInit, OnDestroy {
         this.currentCourse = course;
       })
     );
+
+    this.courseTeams$ = this.currentCourse$.pipe(
+      tap(() => (this.isLoading = true)),
+      switchMap((course: Course) => {
+          return this.courseService.getTeamsPerCourse(
+            course.name
+          );
+      }),
+      tap(() => (this.isLoading = false, console.log("Retrieved course's teams")))
+    )
+
+    this.courseVmInstances$ = this.currentCourse$.pipe(
+      tap(() => (this.isLoading = true)),
+      switchMap((course: Course) => {
+          return this.courseService.getVmInstancesPerCourse(
+            course.name
+          );
+      }),
+      tap(() => (this.isLoading = false, console.log("Retrieved vmInstances")))
+    )
+
+    this.courseVmModel$ = this.currentCourse$.pipe(
+      tap(() => (this.isLoading = true)),
+      switchMap((course: Course) => {
+          return this.courseService.getCourseVmModel(
+            course.name
+          );
+      }),
+      tap(() => (this.isLoading = false, console.log("Retrieved vmInstances")))
+    )
 
     this.enrolledStudents$ = combineLatest([
       this.currentCourse$,

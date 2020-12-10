@@ -15,13 +15,16 @@ import { Course } from "../models/course.model";
 import { TeamProposal } from "../models/teamProposal.model";
 import { NetErr } from "../models/error.model";
 import { ToastService } from "./toast.service";
+import { Team } from '../models/team.model';
+import { VmInstance } from '../models/vm-instance.model';
+import { VmModel } from '../models/vm-model.model';
 const BASE_PATH = environment.apiUrl;
 
 @Injectable({
   providedIn: "root",
 })
 export class CourseService {
-  constructor(private http: HttpClient, private toastService: ToastService) {}
+  constructor(private http: HttpClient, private toastService: ToastService) { }
 
   // TODO MODIFY THIS TO GETALLCOURSE BY TEACHER
   getAllCourses(): Observable<Course[]> {
@@ -98,6 +101,21 @@ export class CourseService {
   }
   rejectTeam(token: string): Observable<any> {
     const url = BASE_PATH + "notification/reject/" + token;
+    return this.http.get(url).pipe(catchError((e) => this.handleError(e)));
+  }
+
+  getTeamsPerCourse(courseName: String): Observable<Team[]> {
+    const url = BASE_PATH + "courses/" + courseName + "/teams";
+    return this.http.get(url).pipe(catchError((e) => this.handleError(e)));
+  }
+
+  getVmInstancesPerCourse(courseName: String): Observable<VmInstance[]> {
+    const url = BASE_PATH + "courses/" + courseName + "/vmInstances";
+    return this.http.get(url).pipe(catchError((e) => this.handleError(e)));
+  }
+
+  getCourseVmModel(courseName: String): Observable<VmModel> {
+    const url = BASE_PATH + "courses/" + courseName + "/vmmodel";
     return this.http.get(url).pipe(catchError((e) => this.handleError(e)));
   }
 

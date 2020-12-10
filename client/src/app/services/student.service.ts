@@ -12,7 +12,7 @@ import { ToastService } from "./toast.service";
 import { Course } from "../models/course.model";
 import { Team } from "../models/team.model";
 import { VmInstance } from "../models/vm-instance.model";
-import { VmConfiguration } from '../models/vm-configuration.model';
+import { VmModel } from '../models/vm-model.model';
 
 const BASE_PATH = environment.apiUrl;
 
@@ -58,10 +58,10 @@ export class StudentService {
       .pipe(catchError((e) => this.handleError(e)));
   }
 
-  getVmConfigurationPerTeam(studentId: String, teamName: String): Observable<VmConfiguration> {
-    const url = BASE_PATH + "students/" + studentId + "/" + teamName + "/vmconfiguration";
+  getCourseVmModel(studentId: String, teamName: String): Observable<VmModel> {
+    const url = BASE_PATH + "students/" + studentId + "/" + teamName + "/vmmodel";
     return this.http
-      .get<VmConfiguration>(url)
+      .get<VmModel>(url)
       .pipe(catchError((e) => this.handleError(e)));
   }
 

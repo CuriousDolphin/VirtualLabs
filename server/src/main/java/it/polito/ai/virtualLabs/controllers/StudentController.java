@@ -2,11 +2,9 @@ package it.polito.ai.virtualLabs.controllers;
 
 import it.polito.ai.virtualLabs.dtos.CourseDTO;
 import it.polito.ai.virtualLabs.dtos.StudentDTO;
-import it.polito.ai.virtualLabs.dtos.VmConfigurationDTO;
 import it.polito.ai.virtualLabs.dtos.VmInstanceDTO;
-import it.polito.ai.virtualLabs.entities.VmConfiguration;
+import it.polito.ai.virtualLabs.dtos.VmModelDTO;
 import it.polito.ai.virtualLabs.exceptions.StudentNotFoundException;
-import it.polito.ai.virtualLabs.exceptions.VmInstanceException;
 import it.polito.ai.virtualLabs.services.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -122,8 +120,9 @@ public class StudentController {
         return teamService.editVmInstance(id, team, idvmL, vmInstance);
     }
 
-    @GetMapping({"/{id}/{team}/vmconfiguration"})
-    VmConfigurationDTO getVmConfiguration(@PathVariable("id") String id, @PathVariable("team") String team) {
-        return teamService.getVmConfiguration(id, team);
+    @GetMapping("/{id}/{team}/vmmodel")
+    VmModelDTO vmConfigurations(@PathVariable("id") String id, @PathVariable("team") String team) {
+        return teamService.getVmModel(id, team);
     }
+
 }

@@ -33,7 +33,13 @@
 
 
   </mat-tab>
-  <mat-tab label="vm"> Content 2 </mat-tab>
+  <mat-tab label="vm">
+    <app-vms-teacher
+    [teams]="courseTeams$ | async"
+    [vmInstances]="courseVmInstances$ | async"
+    [vmModel]="courseVmModel$ | async">
+    </app-vms-teacher>
+  </mat-tab>
 </mat-tab-group>
 
 <!-- <nav mat-tab-nav-bar class="white-smoke">

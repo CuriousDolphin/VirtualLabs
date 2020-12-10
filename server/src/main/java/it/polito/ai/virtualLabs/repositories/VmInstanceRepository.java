@@ -1,5 +1,6 @@
 package it.polito.ai.virtualLabs.repositories;
 
+import it.polito.ai.virtualLabs.entities.Course;
 import it.polito.ai.virtualLabs.entities.Team;
 import it.polito.ai.virtualLabs.entities.VmInstance;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,4 +15,6 @@ public interface VmInstanceRepository extends JpaRepository<VmInstance,Long> {
 
     int countDistinctByTeamAndStateEquals(Team team, int state);
 
+    @Query("SELECT vm FROM VmInstance vm WHERE vm.team.course=:courseName")
+    List<VmInstance> getVmInstancesByCourse(Course courseName);
 }

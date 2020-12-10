@@ -20,7 +20,6 @@ import { MatSortModule } from "@angular/material/sort";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { StudentsComponent } from "./teacher/students/students.component";
 import { HomeComponent } from "./home/home.component";
-import { VmsComponent } from "./teacher/vms/vms.component";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatDialogModule } from "@angular/material/dialog";
@@ -49,13 +48,13 @@ import { DialogCreateVmComponent } from './student/vms-student/dialog-create-vm/
 import {MatRadioModule} from '@angular/material/radio';
 import { DialogEditVmComponent } from './student/vms-student/dialog-edit-vm/dialog-edit-vm.component';
 import { OpenVmComponent } from './student/vms-student/open-vm/open-vm.component';
+import { VmsTeacherComponent } from './teacher/vms-teacher/vms-teacher.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     StudentsComponent,
     HomeComponent,
-    VmsComponent,
     PageNotFoundComponent,
     LoginDialogComponent,
     TeacherComponent,
@@ -71,6 +70,7 @@ import { OpenVmComponent } from './student/vms-student/open-vm/open-vm.component
     DialogCreateVmComponent,
     DialogEditVmComponent,
     OpenVmComponent,
+    VmsTeacherComponent,
   ],
   imports: [
     BrowserModule,

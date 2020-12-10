@@ -1,13 +1,12 @@
 package it.polito.ai.virtualLabs.controllers;
 
 import it.polito.ai.virtualLabs.TeamProposal;
-import it.polito.ai.virtualLabs.dtos.CourseDTO;
-import it.polito.ai.virtualLabs.dtos.EnrolledStudentDTO;
-import it.polito.ai.virtualLabs.dtos.StudentDTO;
-import it.polito.ai.virtualLabs.dtos.TeamDTO;
+import it.polito.ai.virtualLabs.dtos.*;
 import it.polito.ai.virtualLabs.exceptions.*;
+import it.polito.ai.virtualLabs.repositories.VmModelRepository;
 import it.polito.ai.virtualLabs.services.NotificationService;
 import it.polito.ai.virtualLabs.services.TeamService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -32,10 +31,14 @@ public class CourseController {
     @Autowired
     TeamService teamService;
 
-
+    @Autowired
+    ModelMapper modelMapper;
 
     @Autowired
     NotificationService notificationService;
+
+    @Autowired
+    VmModelRepository vmr;
 
     @GetMapping({"", "/"})
     List<CourseDTO> all() {
@@ -215,5 +218,16 @@ public class CourseController {
         }
     }
 
+    /* VMs */
+
+    @GetMapping("/{name}/vmInstances")
+    List<VmInstanceDTO> vmInstances(@PathVariable("name") String name) {
+        return teamService.getVmInstancesPerCourse(name);
+    }
+
+    @GetMapping("/{name}/vmmodel")
+    VmModelDTO vmConfigurations(@PathVariable("name") String name) {
+        return teamService.getVmModel(name);
+    }
 
 }

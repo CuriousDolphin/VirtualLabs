@@ -47,7 +47,7 @@
         [courseAc]="currentCourse.acronym"
         [vmInstances]="studentVmInstances$ | async"
         [teams]="studentTeams$ | async"
-        [vmConfiguration]="currentVmConfiguration$ | async"
+        [vmModel]="currentVmModel$ | async"
         (deleteVm)="deleteVm($event)"
         (startVm)="startVm($event)"
         (stopVm)="stopVm($event)"

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
@@ -25,5 +26,16 @@ public class VmModel {
     @OneToOne()
     @JoinColumn(name = "course_id")
     Course course;
+
+    @NotNull
+    private int maxVcpusPerVm;
+    @NotNull
+    private int maxRamPerVm;
+    @NotNull
+    private int maxDiskPerVm;
+    @NotNull
+    private int maxRunningVms;
+    @NotNull
+    private int maxVms;
 
 }
