@@ -7,7 +7,7 @@ public class VmConfigurationDTO {
     private Long id;
     private int maxVcpusPerVm;
     private int maxRamPerVm;
-    private int maxDisksPerVm;
+    private int maxDiskPerVm;
     private int maxRunningVms;
     private int maxVms;
 }

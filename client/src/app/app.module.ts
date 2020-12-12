@@ -44,6 +44,12 @@ import { MatExpansionModule } from "@angular/material/expansion";
 import { StudentLandingPageComponent } from "./student/student-landing-page/student-landing-page.component";
 import { TeacherLandingPageComponent } from "./teacher/teacher-landing-page/teacher-landing-page.component";
 import { MatMenuModule } from "@angular/material/menu";
+import { VmsStudentComponent } from './student/vms-student/vms-student.component';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { DialogCreateVmComponent } from './student/vms-student/dialog-create-vm/dialog-create-vm.component';
+import {MatRadioModule} from '@angular/material/radio';
+import { DialogEditVmComponent } from './student/vms-student/dialog-edit-vm/dialog-edit-vm.component';
+import { OpenVmComponent } from './student/vms-student/open-vm/open-vm.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +69,10 @@ import { MatMenuModule } from "@angular/material/menu";
     TeamsComponent,
     StudentLandingPageComponent,
     TeacherLandingPageComponent,
+    VmsStudentComponent,
+    DialogCreateVmComponent,
+    DialogEditVmComponent,
+    OpenVmComponent,
   ],
   imports: [
     BrowserModule,
@@ -93,6 +103,8 @@ import { MatMenuModule } from "@angular/material/menu";
     MatCardModule,
     MatExpansionModule,
     MatMenuModule,
+    MatGridListModule,
+    MatRadioModule,
   ],
   providers: [
     {

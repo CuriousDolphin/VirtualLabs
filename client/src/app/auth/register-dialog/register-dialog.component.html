@@ -20,29 +20,11 @@
             <input type="password" matInput formControlName="confirmPassword" required />
             <mat-error *ngIf="registerForm.get('confirmPassword').errors && registerForm.get('confirmPassword').hasError('required')">Insert a value</mat-error>
             <mat-error *ngIf="registerForm.get('confirmPassword').errors && registerForm.get('confirmPassword').hasError('minlength')">password must have at least 3 characters</mat-error>
+            <mat-error
+            *ngIf="registerForm.controls['confirmPassword'].errors?.mustMatch"
+            >Password's must match</mat-error>
         </mat-form-field>   
 
-    <mat-form-field class="full-width" appearance="outline">
-      <mat-label>Confirm password</mat-label>
-      <input
-        type="password"
-        matInput
-        formControlName="confirmPassword"
-        required
-        autocomplete="new-password"
-      />
-      <mat-error
-        *ngIf="
-          registerForm.controls['confirmPassword'].invalid &&
-          !registerForm.controls['confirmPassword'].errors?.mustMatch
-        "
-        >insert a value</mat-error
-      >
-      <mat-error
-        *ngIf="registerForm.controls['confirmPassword'].errors?.mustMatch"
-        >Password's must match</mat-error
-      >
-    </mat-form-field>
 
     <mat-form-field class="full-width" appearance="outline" autocomplete="off">
       <mat-label>Enter your first name</mat-label>

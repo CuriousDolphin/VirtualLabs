@@ -3,7 +3,6 @@ package it.polito.ai.virtualLabs.entities;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 
 @Data
 @Entity
@@ -26,5 +25,7 @@ public class VmInstance {
     private int countRam;
     private int countDisks;
     private String owner;
+    private String creator;
+    private String image;
 
 }
