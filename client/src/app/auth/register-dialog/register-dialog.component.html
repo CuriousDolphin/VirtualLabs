@@ -1,9 +1,9 @@
-<h1 mat-dialog-title>Register</h1>
+<h1 mat-dialog-title>Signin</h1>
 <div mat-dialog-content>
     <div class="main-container" [formGroup]="registerForm">
         <mat-form-field class="full-width" appearance="outline">
             <mat-label>Enter your email</mat-label>
-            <input matInput placeholder="someone@example.com" formControlName="email" required />
+            <input matInput placeholder="someone@example.com" formControlName="email" required autocomplete="off" />
             <mat-error *ngIf="registerForm.get('email').errors && registerForm.get('email').hasError('required')">Insert a value</mat-error>
             <mat-error *ngIf="registerForm.get('email').errors && registerForm.get('email').hasError('email')">Insert a valid email</mat-error>
             <mat-error *ngIf="registerForm.get('email').errors && registerForm.get('email').hasError('pattern') && !registerForm.get('email').hasError('email') ">email must be: "s[matr.]@studenti.polito.it" or "d[matr.]@polito.it"</mat-error>
@@ -22,28 +22,71 @@
             <mat-error *ngIf="registerForm.get('confirmPassword').errors && registerForm.get('confirmPassword').hasError('minlength')">password must have at least 3 characters</mat-error>
         </mat-form-field>   
 
-        <mat-form-field class="full-width" appearance="outline">
-            <mat-label>Enter your first name</mat-label>
-            <input type="text" matInput formControlName="firstName" required />
-            <mat-error *ngIf="registerForm.controls['firstName'].invalid">Insert your first name</mat-error>
-        </mat-form-field>
-        <mat-form-field class="full-width" appearance="outline">
-            <mat-label>Enter your last name</mat-label>
-            <input type="text" matInput formControlName="lastName" required />
-            <mat-error *ngIf="registerForm.controls['lastName'].invalid">Insert your last name</mat-error>
-        </mat-form-field>
+    <mat-form-field class="full-width" appearance="outline">
+      <mat-label>Confirm password</mat-label>
+      <input
+        type="password"
+        matInput
+        formControlName="confirmPassword"
+        required
+        autocomplete="new-password"
+      />
+      <mat-error
+        *ngIf="
+          registerForm.controls['confirmPassword'].invalid &&
+          !registerForm.controls['confirmPassword'].errors?.mustMatch
+        "
+        >insert a value</mat-error
+      >
+      <mat-error
+        *ngIf="registerForm.controls['confirmPassword'].errors?.mustMatch"
+        >Password's must match</mat-error
+      >
+    </mat-form-field>
 
-        <mat-label class="my_label" *ngIf="showError">
-            Error during registration,check your data to continue.
-        </mat-label>
-    </div>
+    <mat-form-field class="full-width" appearance="outline" autocomplete="off">
+      <mat-label>Enter your first name</mat-label>
+      <input
+        type="text"
+        matInput
+        formControlName="firstName"
+        required
+        autocomplete="off"
+      />
+      <mat-error *ngIf="registerForm.controls['firstName'].invalid"
+        >Insert your first name</mat-error
+      >
+    </mat-form-field>
+    <mat-form-field class="full-width" appearance="outline" autocomplete="off">
+      <mat-label>Enter your last name</mat-label>
+      <input
+        type="text"
+        matInput
+        formControlName="lastName"
+        required
+        autocomplete="off"
+      />
+      <mat-error *ngIf="registerForm.controls['lastName'].invalid"
+        >Insert your last name</mat-error
+      >
+    </mat-form-field>
+
+    <mat-label class="my_label" *ngIf="showError">
+      Error during registration,check your data to continue.
+    </mat-label>
+  </div>
 </div>
 <div mat-dialog-actions>
-    <button [disabled]="!registerForm.valid" mat-raised-button color="primary" (click)="attemptRegister()">
-        Register
-    </button>
-    <button mat-button color="primary" (click)="cancel()">Cancel</button>
-    <mat-spinner *ngIf="isLoading" [diameter]="24"></mat-spinner>
+  <button
+    [disabled]="!registerForm.valid"
+    mat-raised-button
+    color="primary"
+    (click)="attemptRegister()"
+  >
+    Register
+  </button>
+  <button mat-button color="primary" (click)="cancel()">Cancel</button>
+  <mat-spinner *ngIf="isLoading" [diameter]="24"></mat-spinner>
 </div>
 
 <!-- TODO:  spostare il register dall'auth service. 
