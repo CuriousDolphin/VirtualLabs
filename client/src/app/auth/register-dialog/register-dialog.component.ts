@@ -24,6 +24,7 @@ export class RegisterDialogComponent implements OnInit {
   isLoading = false;
   showError = false;
   authSubscription: Subscription;
+  regex = new RegExp('^s\d+@studenti.polito.it|^d\d+@polito.it');
 
   constructor(
     public dialogRef: MatDialogRef<RegisterDialogComponent>,
@@ -31,11 +32,11 @@ export class RegisterDialogComponent implements OnInit {
     private authService: AuthService
   ) {
     this.registerForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email,isStudentOrTeacher()]],
+      email: ['', [Validators.required, Validators.email, Validators.pattern(new RegExp('^s\\d+@studenti.polito.it$|^d\\d+@polito.it$'))]],// [Validators.required, Validators.email,isStudentOrTeacher()]],
       password: ['', [Validators.required, Validators.minLength(3)]],
-      confirmPassword: ['',[Validators.required ]],
-      firstName: ['', [Validators.required, Validators.minLength(1)]],
-      lastName: ['', [Validators.required, Validators.minLength(1)]],
+      confirmPassword: ['',[Validators.required, Validators.minLength(3) ]],
+      firstName: ['', [Validators.required,removeSpaces]],
+      lastName: ['', [Validators.required,removeSpaces]],
     },{validator: this.passwordConfirming});
   }
 
@@ -85,11 +86,17 @@ export class RegisterDialogComponent implements OnInit {
 export function isStudentOrTeacher(): ValidatorFn {  
   return (control: AbstractControl): { [key: string]: any } | null =>  
       //((studente and start with s) or (docente and start with d)) and (check solo numeri dopo lettera)
-      ( (control.value?.toLowerCase().endsWith('@studenti.polito.it') && control.value?.toLowerCase().startsWith("s") ) 
-      || (control.value?.toLowerCase().endsWith('@polito.it') && control.value?.toLowerCase().startsWith("d")) 
-      //&& Number(control.value?.toLowerCase().split("@")[0].substr(1)) != NaN && !isNaN(Number('as'))
-      )
-          ? null : {wrongDomain: control.value};
+      //( (control.value?.toLowerCase().endsWith('@studenti.polito.it') && control.value?.toLowerCase().startsWith("s") ) 
+      //|| (control.value?.toLowerCase().endsWith('@polito.it') && control.value?.toLowerCase().startsWith("d")) 
+      //)
+      new RegExp('^s\d+@studenti.polito.it|^d\d+@polito.it').test(control.value?.toLowerCase()) ? null : {wrongDomain: control.value};
+}
+
+export function removeSpaces(control: AbstractControl) {
+  if (control && control.value && !control.value.trim().length) {
+    control.setValue('');
+  }
+  return null;
 }
 
 

@@ -4,18 +4,22 @@
         <mat-form-field class="full-width" appearance="outline">
             <mat-label>Enter your email</mat-label>
             <input matInput placeholder="someone@example.com" formControlName="email" required />
-            <mat-error *ngIf="registerForm.controls['email'].invalid">Not a valid email</mat-error>
+            <mat-error *ngIf="registerForm.get('email').errors && registerForm.get('email').hasError('required')">Insert a value</mat-error>
+            <mat-error *ngIf="registerForm.get('email').errors && registerForm.get('email').hasError('email')">Insert a valid email</mat-error>
+            <mat-error *ngIf="registerForm.get('email').errors && registerForm.get('email').hasError('pattern') && !registerForm.get('email').hasError('email') ">email must be: "s[matr.]@studenti.polito.it" or "d[matr.]@polito.it"</mat-error>
         </mat-form-field>
         <mat-form-field class="full-width" appearance="outline">
             <mat-label>Enter your password</mat-label>
             <input type="password" matInput formControlName="password" required />
-            <mat-error *ngIf="registerForm.controls['password'].invalid">Not a valid password</mat-error>
+            <mat-error *ngIf="registerForm.get('password').errors && registerForm.get('password').hasError('required')">Insert a value</mat-error>
+            <mat-error *ngIf="registerForm.get('password').errors && registerForm.get('password').hasError('minlength')">password must have at least 3 characters</mat-error>
         </mat-form-field>
         <div><mat-error *ngIf="registerForm.errors?.invalid && !registerForm.controls['confirmPassword'].invalid">Password must match</mat-error></div>
         <mat-form-field class="full-width" appearance="outline">
             <mat-label>Confirm password</mat-label>
             <input type="password" matInput formControlName="confirmPassword" required />
-            <mat-error *ngIf="registerForm.controls['confirmPassword'].invalid">insert a value</mat-error>
+            <mat-error *ngIf="registerForm.get('confirmPassword').errors && registerForm.get('confirmPassword').hasError('required')">Insert a value</mat-error>
+            <mat-error *ngIf="registerForm.get('confirmPassword').errors && registerForm.get('confirmPassword').hasError('minlength')">password must have at least 3 characters</mat-error>
         </mat-form-field>   
 
         <mat-form-field class="full-width" appearance="outline">
