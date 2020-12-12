@@ -39,6 +39,9 @@ public class TeamServiceImpl implements TeamService {
     PaperRepository paperRepository;
 
     @Autowired
+    PaperSnapshotRepository paperSnapshotRepository;
+
+    @Autowired
     AssignmentRepository assignmentRepository;
     @Autowired
     VmConfigurationRepository vmConfigurationRepository;
@@ -512,11 +515,21 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public List<PaperDTO> getAllPapersForAssignment(Long assignmentId) {
-        if(!assignmentRepository.findById(assignmentId).isPresent()) throw new AssignmentNotFoundException();
+        if(assignmentRepository.findById(assignmentId).isEmpty()) throw new AssignmentNotFoundException();
 
         return paperRepository.findAllByAssignment_Id(assignmentId)
                 .stream()
                 .map(paper -> modelMapper.map(paper, PaperDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PaperSnapshotDTO> getAllPaperSnapshotsForPaper(Long paperId) {
+        if(!paperRepository.existsById(paperId)) throw new PaperNotFoundException();
+
+        return paperSnapshotRepository.findAllByPaper_Id(paperId)
+                .stream()
+                .map(paperSnapshot -> modelMapper.map(paperSnapshot, PaperSnapshotDTO.class))
                 .collect(Collectors.toList());
     }
 

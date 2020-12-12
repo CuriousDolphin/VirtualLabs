@@ -91,8 +91,12 @@ public interface TeamService {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     List<PaperDTO> getAllPapersForAssignment(Long assignmentId);
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
+    List<PaperSnapshotDTO> getAllPaperSnapshotsForPaper(Long paperId);
+
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT') ")
     void activateTeam(Long teamId);
+
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT') ")
     void evictTeam(Long teamId);
 

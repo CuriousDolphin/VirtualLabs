@@ -8,13 +8,13 @@
       </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <div *ngIf="toShowLevel !== 0">
+      <ng-container *ngIf="toShowLevel !== 0">
         <button mat-flat-button (click)="back()" class="radius-20" style="background-color: transparent">
           <mat-icon color="primary">
             arrow_back
           </mat-icon>
         </button>
-      </div>
+      </ng-container>
       <ng-container *ngIf="toShowLevel === 0">
         <app-assignment-assignment [assignmentsData]="assignmentsData"
           (clickAssignmentEvent)="assignmentClicked($event)">

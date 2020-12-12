@@ -234,6 +234,13 @@ public class CourseController {
         }
     }
 
-
+    @GetMapping("/assignments/papers/{id}/papersnapshots")
+    List<PaperSnapshotDTO> getAllPaperSnapshotForPaper(@PathVariable("id") Long paperId) {
+        try {
+            return teamService.getAllPaperSnapshotsForPaper(paperId);
+        }   catch (PaperNotFoundException paperNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Paper not found");
+        }
+    }
 
 }
