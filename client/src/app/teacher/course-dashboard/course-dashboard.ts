@@ -12,6 +12,7 @@ import { StudentService } from "src/app/services/student.service";
 import { ToastService } from "src/app/services/toast.service";
 import { UtilsService } from "src/app/services/utils.service";
 import { CourseDialogComponent } from "../course-dialog/course-dialog.component";
+import { PaperSnapshot } from "src/app/models/papersnapshot.model";
 
 @Component({
   selector: "app-course-dashboard",
@@ -25,6 +26,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
   private _reloadCourse$: BehaviorSubject<void> = new BehaviorSubject(null);
   private _reloadAssignments$: BehaviorSubject<void> = new BehaviorSubject(null);
   private _reloadPapers$: BehaviorSubject<void> = new BehaviorSubject(null);
+  private _reloadPapersnapshots: BehaviorSubject<void> = new BehaviorSubject(null);
 
   private courseSubscription: Subscription;
   private routeSubscription: Subscription;
@@ -40,6 +42,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
   enrolledStudents$: Observable<Student[]>;
   assignments$: Observable<Assignment[]>
   papers$: Observable<Paper[]>
+  papersnapshots$: Observable<PaperSnapshot[]>
   isLoading = false;
   constructor(
     private studentService: StudentService,
@@ -218,6 +221,15 @@ export class CourseDashboard implements OnInit, OnDestroy {
     this.isLoading = true
     this.papers$ = this.courseService
       .getAllPapersForAssignment(assignmentId)
+      .pipe(
+        tap(() => this.isLoading = false)
+      )
+  }
+
+  setCurrentPaper(paperId: number) {
+    this.isLoading = true
+    this.papersnapshots$ = this.courseService
+      .getAllPapersnapshotsForPaper(paperId)
       .pipe(
         tap(() => this.isLoading = false)
       )

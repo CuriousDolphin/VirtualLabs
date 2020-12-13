@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Paper } from 'src/app/models/paper.model';
 import { formatDate } from '@angular/common'
@@ -15,12 +15,18 @@ export class AssignmentPaperComponent implements OnInit {
 
   @ViewChild(MatSort, {static: true}) sort: MatSort
 
-  colsToDisplay = ["studentId", "studentName", "studentLastName", "status", "lastUpdateTime", ]
+  colsToDisplay = ["studentId", "studentName", "studentLastName", "status", "lastUpdateTime" ]
   dataSource = new MatTableDataSource<Paper>()
   @Input() set papersData(papers: Paper[]) {
     if( papers != null) {
       this.dataSource.data = papers
     }
+  }
+
+  @Output() clickPaperEvent = new EventEmitter<number>()
+
+  clickPaper(paperId: number) {
+    this.clickPaperEvent.emit(paperId)
   }
 
   format(date) {

@@ -39,7 +39,9 @@
       <app-assignment 
       [assignments]="assignments$ | async"
       [papers]="papers$ | async"
-      (assignmentClickedEvent)="setCurrentAssignment($event)">
+      [papersnapshots]= "papersnapshots$ | async"
+      (assignmentClickedEvent)="setCurrentAssignment($event)"
+      (paperClickedEvent)="setCurrentPaper($event)">
       </app-assignment>
     </div>>
   </mat-tab>

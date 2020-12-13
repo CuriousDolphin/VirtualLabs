@@ -1,40 +1,18 @@
 <table mat-table [dataSource]="dataSource" class="elevation-z6">
 
   <ng-container matColumnDef="id">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-    <td mat-cell *matCellDef="let paper">{{paper.id}}</td>
+    <th mat-header-cell *matHeaderCellDef>Id</th>
+    <td mat-cell *matCellDef="let papersnapshot">{{papersnapshot.id}}</td>
   </ng-container>
 
-  <ng-container matColumnDef="status">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
-    <td mat-cell *matCellDef="let paper">
-      <mat-icon *ngIf="paper.status === null">mark_email_unread</mat-icon>
-    </td>
+  <ng-container matColumnDef="content">
+    <th mat-header-cell *matHeaderCellDef>Content</th>
+    <td mat-cell *matCellDef="let papersnapshot">{{papersnapshot.content}}</td>
   </ng-container>
 
-  <ng-container matColumnDef="vote">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Vote</th>
-    <td mat-cell *matCellDef="let paper">{{paper.vote}}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="lastUpdateTime">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Last update time</th>
-    <td mat-cell *matCellDef="let paper">{{format(paper.lastUpdateTime)}}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="studentId">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Student Id</th>
-    <td mat-cell *matCellDef="let paper">{{paper.student.id}}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="studentName">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Student Name</th>
-    <td mat-cell *matCellDef="let paper">{{paper.student.name}}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="studentLastName">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Student Lastname</th>
-    <td mat-cell *matCellDef="let paper">{{paper.student.lastName}}</td>
+  <ng-container matColumnDef="submissionDate">
+    <th mat-header-cell *matHeaderCellDef>Submission date</th>
+    <td mat-cell *matCellDef="let papersnapshot">{{format(papersnapshot.submissionDate)}}</td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="colsToDisplay"></tr>

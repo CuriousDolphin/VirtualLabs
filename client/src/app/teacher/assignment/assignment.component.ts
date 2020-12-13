@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Assignment } from 'src/app/models/assignment.model';
 import { Paper } from 'src/app/models/paper.model';
+import { PaperSnapshot } from 'src/app/models/papersnapshot.model';
 
 @Component({
   selector: 'app-assignment',
@@ -10,6 +11,7 @@ import { Paper } from 'src/app/models/paper.model';
 export class AssignmentComponent implements OnInit {
   assignmentsData = []
   papersData = []
+  papersnapshotsData = []
   toShowLevel: number
 
   @Input() set assignments(assignments: Assignment[]) {
@@ -23,7 +25,14 @@ export class AssignmentComponent implements OnInit {
     }
   }
 
+  @Input() set papersnapshots(papersnapshots: PaperSnapshot[]) {
+    if (papersnapshots != null) {
+      this.papersnapshotsData = papersnapshots
+    }
+  }
+
   @Output() assignmentClickedEvent = new EventEmitter<number>()
+  @Output() paperClickedEvent = new EventEmitter<number>()
 
   constructor() { }
 
@@ -39,4 +48,10 @@ export class AssignmentComponent implements OnInit {
     this.assignmentClickedEvent.emit(assignmentId)
     this.toShowLevel = this.toShowLevel + 1 
   }
+
+  paperClicked(paperId: number) {
+    this.paperClickedEvent.emit(paperId)
+    this.toShowLevel = this.toShowLevel + 1
+  }
+
 }

@@ -54,7 +54,8 @@ public class VirtualLabs {
                              NotificationService notificationService,
                              TokenTeamRepository tokenTeamRepository,
                              VmConfigurationRepository vmConfigurationRepository,
-                             PaperRepository paperRepository) {
+                             PaperRepository paperRepository,
+                             PaperSnapshotRepository paperSnapshotRepository) {
         return new CommandLineRunner() {
 
             @Override
@@ -71,7 +72,7 @@ public class VirtualLabs {
                             .build());
                 }
 
-                generateMockData(courseRepository, vmModelRepository, teamRepository, userRepository, assignmentRepository, passwordEncoder, studentRepository, teamService, notificationService, tokenTeamRepository, paperRepository);
+                generateMockData(courseRepository, vmModelRepository, teamRepository, userRepository, assignmentRepository, passwordEncoder, studentRepository, teamService, notificationService, tokenTeamRepository, paperRepository, paperSnapshotRepository);
 
                 System.out.println("Printing all courses:");
                 courseRepository.findAll().forEach(v -> System.out.println(" - Course :" + v.toString()));
@@ -85,7 +86,8 @@ public class VirtualLabs {
                 assignmentRepository.findAll().forEach(assignment -> System.out.println(" - Assignments :" + assignment.toString()));
                 System.out.println("Printing all papers:");
                 paperRepository.findAll().forEach(paper -> System.out.println(" - Paper :" + paper.toString()));
-
+                System.out.println("Printing alla paperSnapshots:");
+                paperSnapshotRepository.findAll().forEach(paperSnapshot -> System.out.println(" - PaperSnapshot :" + paperSnapshot.toString()));
             }
         };
     }
@@ -102,7 +104,8 @@ public class VirtualLabs {
             TeamService teamService,
             NotificationService notificationService,
             TokenTeamRepository ttr,
-            PaperRepository pr) {
+            PaperRepository pr,
+            PaperSnapshotRepository psr) {
 
         if (!ur.findAll().stream().anyMatch(u -> u.getUsername().equals("admin@polito.it"))) {
             try {
@@ -134,6 +137,7 @@ public class VirtualLabs {
                         .status(null)
                         .vote(0)
                         .lastUpdateTime(releaseDate)
+                        .paperSnapshots(new ArrayList<>())
                         .build();
                 Paper paper4 = Paper.builder()
                         .status(null)
@@ -166,13 +170,27 @@ public class VirtualLabs {
                 paper1.setAssignment(assignment1);
                 paper4.setAssignment(assignment1);
                 paper5.setAssignment(assignment1);
+                PaperSnapshot paperSnapshot1 = PaperSnapshot.builder()
+                        .content("Soluzione")
+                        .submissionDate(expiryDate)
+                        .build();
+                PaperSnapshot paperSnapshot2 = PaperSnapshot.builder()
+                        .content("Soluzione")
+                        .submissionDate(expiryDate)
+                        .build();
+                PaperSnapshot paperSnapshot3 = PaperSnapshot.builder()
+                        .content("Soluzione")
+                        .submissionDate(expiryDate)
+                        .build();
+                paperSnapshot1.setPaper(paper1);
+                paperSnapshot2.setPaper(paper1);
+                paperSnapshot3.setPaper(paper1);
                 assignment1.setCourse(newCourse);
                 assignment4.setCourse(newCourse);
                 assignment5.setCourse(newCourse);
                 ar.save(assignment1);
                 ar.save(assignment4);
                 ar.save(assignment5);
-
                 //Course: ML
                 newCourse = Course.builder()
                         .name("Machine Learning")
@@ -319,6 +337,9 @@ public class VirtualLabs {
                 pr.save(paper3);
                 pr.save(paper4);
                 pr.save(paper5);
+                psr.save(paperSnapshot1);
+                psr.save(paperSnapshot2);
+                psr.save(paperSnapshot3);
             } catch (Exception e) {
                 System.out.println("Exception insert mock data: " + e.getMessage());
             } finally {

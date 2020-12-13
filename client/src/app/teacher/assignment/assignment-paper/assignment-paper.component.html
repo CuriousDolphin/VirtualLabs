@@ -38,5 +38,5 @@
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="colsToDisplay"></tr>
-  <tr mat-row *matRowDef="let row; columns: colsToDisplay"></tr>
+  <tr mat-row (click)="clickPaper(row.id)" *matRowDef="let row; columns: colsToDisplay"></tr>
 </table>

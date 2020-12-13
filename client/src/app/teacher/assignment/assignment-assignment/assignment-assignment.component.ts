@@ -33,8 +33,6 @@ export class AssignmentAssignmentComponent implements OnInit {
     return formatDate(date, 'yyyy-MM-dd hh:mm:ss', 'en', 'GMT')
   }
 
-
-
   ngOnInit(): void {
     this.dataSource.sort = this.sort
   }

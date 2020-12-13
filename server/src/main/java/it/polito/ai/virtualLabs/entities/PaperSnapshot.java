@@ -35,4 +35,9 @@ public class PaperSnapshot {
         }
     }
 
+    @Override
+    public String toString() {
+        return this.content +  "_" + this.submissionDate;
+    }
+
 }

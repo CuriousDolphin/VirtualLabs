@@ -17,6 +17,7 @@ import { NetErr } from "../models/error.model";
 import { ToastService } from "./toast.service";
 import { Assignment } from '../models/assignment.model';
 import { Paper } from '../models/paper.model';
+import { PaperSnapshot } from "../models/papersnapshot.model";
 
 const BASE_PATH = environment.apiUrl;
 
@@ -120,9 +121,15 @@ export class CourseService {
   
   getAllPapersForAssignment(assignmentId: number): Observable<Paper[]> {
     const url = BASE_PATH + "courses/" + "assignments/" + assignmentId + "/papers";
-    //non entra
     return this.http
     .get<Paper[]>(url)
+    .pipe(catchError((e) => this.handleError(e)))
+  }
+
+  getAllPapersnapshotsForPaper(paperId: number): Observable<PaperSnapshot[]> {
+    const url = BASE_PATH + "courses/" + "assignments/" + "papers/" + paperId + "/papersnapshots"
+    return this.http
+    .get<PaperSnapshot[]>(url)
     .pipe(catchError((e) => this.handleError(e)))
   }
 
