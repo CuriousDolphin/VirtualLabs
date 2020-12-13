@@ -89,7 +89,7 @@ public class VirtualLabs {
                 assignmentRepository.findAll().forEach(assignment -> System.out.println(" - Assignments :" + assignment.toString()));
                 System.out.println("Printing all papers:");
                 paperRepository.findAll().forEach(paper -> System.out.println(" - Paper :" + paper.toString()));
-                System.out.println("Printing alla paperSnapshots:");
+                System.out.println("Printing all paperSnapshots:");
                 paperSnapshotRepository.findAll().forEach(paperSnapshot -> System.out.println(" - PaperSnapshot :" + paperSnapshot.toString()));
             }
         };
@@ -121,7 +121,7 @@ public class VirtualLabs {
                 Timestamp expiryDate = new Timestamp(calendar.getTime().getTime());
 
                 //Course: PDS
-                Course newCourse = Course.builder()
+                Course course1 = Course.builder()
                         .name("Programmazione di Sistema")
                         .acronym("PDS")
                         .enabled(true)
@@ -129,12 +129,11 @@ public class VirtualLabs {
                         .min(2)
                         .max(4)
                         .build();
-                cr.save(newCourse);
-                VmModel newVmModel = VmModel.builder()
+
+                VmModel VmModel1 = VmModel.builder()
                         .image("defaultVmImage.png")
-                        .course(newCourse)
+                        .course(course1)
                         .build();
-                vmr.save(newVmModel);
                 Paper paper1 = Paper.builder()
                         .status(null)
                         .vote(0)
@@ -187,14 +186,12 @@ public class VirtualLabs {
                 paperSnapshot1.setPaper(paper1);
                 paperSnapshot2.setPaper(paper1);
                 paperSnapshot3.setPaper(paper1);
-                assignment1.setCourse(newCourse);
-                assignment4.setCourse(newCourse);
-                assignment5.setCourse(newCourse);
-                ar.save(assignment1);
-                ar.save(assignment4);
-                ar.save(assignment5);
+                assignment1.setCourse(course1);
+                assignment4.setCourse(course1);
+                assignment5.setCourse(course1);
+
                 //Course: ML
-                newCourse = Course.builder()
+                Course course2 = Course.builder()
                         .name("Machine Learning")
                         .acronym("ML")
                         .enabled(true)
@@ -202,12 +199,10 @@ public class VirtualLabs {
                         .min(3)
                         .max(6)
                         .build();
-                cr.save(newCourse);
-                newVmModel = VmModel.builder()
+                VmModel VmModel2 = VmModel.builder()
                         .image("defaultVmImage.png")
-                        .course(newCourse)
+                        .course(course2)
                         .build();
-                vmr.save(newVmModel);
                 Paper paper2 = Paper.builder()
                         .status(null)
                         .vote(0)
@@ -220,11 +215,10 @@ public class VirtualLabs {
                         .content("Laboratorio 1")
                         .build();
                 paper2.setAssignment(assignment2);
-                assignment2.setCourse(newCourse);
-                ar.save(assignment2);
+                assignment2.setCourse(course2);
 
                 //Course: AI
-                newCourse = Course.builder()
+                Course course3 = Course.builder()
                         .name("Applicazioni Internet")
                         .acronym("AI")
                         .enabled(false)
@@ -232,12 +226,10 @@ public class VirtualLabs {
                         .min(5)
                         .max(10)
                         .build();
-                cr.save(newCourse);
-                newVmModel = VmModel.builder()
+                VmModel VmModel3 = VmModel.builder()
                         .image("defaultVmImage.png")
-                        .course(newCourse)
+                        .course(course3)
                         .build();
-                vmr.save(newVmModel);
                 Paper paper3 = Paper.builder()
                         .status(null)
                         .vote(0)
@@ -250,25 +242,29 @@ public class VirtualLabs {
                         .content("Laboratorio 1")
                         .build();
                 paper3.setAssignment(assignment3);
-                assignment3.setCourse(newCourse);
-                ar.save(assignment3);
+                assignment3.setCourse(course3);
 
                 //User-Admin
                 ur.save(User.builder()
                         .id("s000000")
+                        .enabled(true)
                         .username("admin@polito.it")
                         .password(passwordEncoder.encode("pwd"))
                         .roles(Arrays.asList("ROLE_STUDENT", "ROLE_PROF", "ROLE_ADMIN"))
                         .build()
                 );
+
                 //User-teacher
                 ur.save(User.builder()
                         .id("s654321")
+                        .enabled(true)
                         .username("teacher@polito.it")
                         .password(passwordEncoder.encode("pwd"))
                         .roles(Arrays.asList("ROLE_PROF"))
                         .build()
                 );
+
+
                 //set admin credentials to call protected functions
                 SecurityContext ctx = SecurityContextHolder.createEmptyContext();
                 SecurityContextHolder.setContext(ctx);
@@ -276,36 +272,42 @@ public class VirtualLabs {
                 //User-Student: s123456 (Mario Rossi)
                 ur.save(User.builder()
                         .id("s123456")
+                        .enabled(true)
                         .username("s123456@studenti.polito.it")
                         .password(passwordEncoder.encode("pwd"))
                         .roles(Arrays.asList("ROLE_STUDENT"))
                         .build()
                 );
-                Student newStudent = Student.builder()
+                Student student1 = Student.builder()
                         .id("s123456")
                         .email("s123456@studenti.polito.it")
                         .lastName("Rossi")
                         .name("Mario")
                         .papers(new ArrayList<>())
                         .build();
-                paper1.setStudent(newStudent);
-                paper5.setStudent(newStudent);
-                sr.save(newStudent);
+                paper1.setStudent(student1);
+                paper5.setStudent(student1);
+
                 //User-Student: s234567 (Giacomo Bianchi)
                 ur.save(User.builder()
                         .id("s234567")
+                        .enabled(true)
                         .username("s234567@studenti.polito.it")
                         .password(passwordEncoder.encode("pwd"))
                         .roles(Arrays.asList("ROLE_STUDENT"))
                         .build()
                 );
-                sr.save(Student.builder()
+                 Student student3 = Student.builder()
                         .id("s234567")
                         .email("s234567@studenti.polito.it")
                         .lastName("Bianchi")
                         .name("Giacomo")
-                        .build());
+                        .build();
+
                 //enroll studenti in pds
+                cr.save(course1);
+                sr.save(student1);
+                sr.save(student3);
                 teamService.enrollAll(new ArrayList<String>(Arrays.asList("s123456", "s234567")), "Programmazione di Sistema");
                 //crea team
                 TeamDTO teamDTO = teamService.proposeTeam("Programmazione di Sistema", "Team1", new ArrayList<String>(Arrays.asList("s234567")), "s123456", 1);
@@ -316,22 +318,34 @@ public class VirtualLabs {
                 //User-Student: s345678 (Dario Verdi)
                 ur.save(User.builder()
                         .id("s345678")
+                        .enabled(true)
                         .username("s345678@studenti.polito.it")
                         .password(passwordEncoder.encode("pwd"))
                         .roles(Arrays.asList("ROLE_STUDENT"))
                         .build()
                 );
-                newStudent = Student.builder()
+                Student student2 = Student.builder()
                         .id("s345678")
                         .email("s345678@studenti.polito.it")
                         .lastName("Dario")
                         .name("Verdi")
                         .papers(new ArrayList<>())
                         .build();
-                paper2.setStudent(newStudent);
-                paper3.setStudent(newStudent);
-                paper4.setStudent(newStudent);
-                sr.save(newStudent);
+                paper2.setStudent(student2);
+                paper3.setStudent(student2);
+                paper4.setStudent(student2);
+
+                cr.save(course2);
+                cr.save(course3);
+                vmr.save(VmModel1);
+                vmr.save(VmModel2);
+                vmr.save(VmModel3);
+                sr.save(student2);
+                ar.save(assignment1);
+                ar.save(assignment2);
+                ar.save(assignment3);
+                ar.save(assignment4);
+                ar.save(assignment5);
                 pr.save(paper1);
                 pr.save(paper2);
                 pr.save(paper3);
@@ -340,7 +354,9 @@ public class VirtualLabs {
                 psr.save(paperSnapshot1);
                 psr.save(paperSnapshot2);
                 psr.save(paperSnapshot3);
-            } catch (Exception e) {
+
+            }
+            catch (Exception e) {
                 System.out.println("Exception insert mock data: " + e.getMessage());
             } finally {
                 SecurityContextHolder.clearContext();

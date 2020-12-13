@@ -25,7 +25,7 @@ const BASE_PATH = environment.apiUrl;
   providedIn: "root",
 })
 export class CourseService {
-  constructor(private http: HttpClient, private toastService: ToastService) {}
+  constructor(private http: HttpClient, private toastService: ToastService) { }
 
   // TODO MODIFY THIS TO GETALLCOURSE BY TEACHER
   getAllCourses(): Observable<Course[]> {
@@ -35,12 +35,12 @@ export class CourseService {
       .pipe(catchError((e) => this.handleError(e)));
   }
 
-getCoursesByTeacher(userId: String): Observable<Course[]> {
-  const url = BASE_PATH + "courses/teacher/" + userId;
-  return this.http
-    .get<Course[]>(url)
-    .pipe(catchError((e) => this.handleError(e)));
-}
+  getCoursesByTeacher(userId: String): Observable<Course[]> {
+    const url = BASE_PATH + "courses/teacher/" + userId;
+    return this.http
+      .get<Course[]>(url)
+      .pipe(catchError((e) => this.handleError(e)));
+  }
 
   getCourse(name: string): Observable<Course> {
     const url = BASE_PATH + "courses/" + name;
@@ -59,7 +59,7 @@ getCoursesByTeacher(userId: String): Observable<Course[]> {
       userId
     };
     return this.http.patch(url, body)
-    .pipe(catchError((e) => this.handleError(e)));
+      .pipe(catchError((e) => this.handleError(e)));
   }
 
   addCourse(course: Course, userId: String) {
@@ -69,7 +69,7 @@ getCoursesByTeacher(userId: String): Observable<Course[]> {
       userId
     };
     return this.http.post(url, body)
-    .pipe(catchError((e) => this.handleError(e)));
+      .pipe(catchError((e) => this.handleError(e)));
     //return this.http
     //  .post<Course>(url, course)
     //  .pipe(catchError((e) => this.handleError(e)));
@@ -128,29 +128,30 @@ getCoursesByTeacher(userId: String): Observable<Course[]> {
   getAllAssignments(courseName: string): Observable<Assignment[]> {
     const url = BASE_PATH + "courses/" + courseName + "/assignments";
     return this.http
-    .get<Assignment[]>(url)
-    .pipe(catchError((e) => this.handleError(e)));
+      .get<Assignment[]>(url)
+      .pipe(catchError((e) => this.handleError(e)));
   }
 
   getAssignment(assignmentId: number): Observable<Assignment> {
     const url = BASE_PATH + "courses/" + "assignments/" + assignmentId;
     return this.http
-    .get<Assignment>(url)
-    .pipe(catchError((e) => this.handleError(e)))
+      .get<Assignment>(url)
+      .pipe(catchError((e) => this.handleError(e)))
   }
-  
+
+
   getAllPapersForAssignment(assignmentId: number): Observable<Paper[]> {
     const url = BASE_PATH + "courses/" + "assignments/" + assignmentId + "/papers";
     return this.http
-    .get<Paper[]>(url)
-    .pipe(catchError((e) => this.handleError(e)))
+      .get<Paper[]>(url)
+      .pipe(catchError((e) => this.handleError(e)))
   }
 
   getAllPapersnapshotsForPaper(paperId: number): Observable<PaperSnapshot[]> {
     const url = BASE_PATH + "courses/" + "assignments/" + "papers/" + paperId + "/papersnapshots"
     return this.http
-    .get<PaperSnapshot[]>(url)
-    .pipe(catchError((e) => this.handleError(e)))
+      .get<PaperSnapshot[]>(url)
+      .pipe(catchError((e) => this.handleError(e)))
   }
 
   private handleError(error) {
