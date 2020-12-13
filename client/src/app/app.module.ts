@@ -38,6 +38,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatCardModule } from "@angular/material/card";
 import { StudentComponent } from "./student/student.component";
 import { StudentCourseDashboard } from "./student/student-course-dashboard/student-course-dashboard";
+import { RegisterDialogComponent } from "./auth/register-dialog/register-dialog.component";
 import { TeamsComponent } from "./student/teams/teams.component";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { StudentLandingPageComponent } from "./student/student-landing-page/student-landing-page.component";
@@ -47,6 +48,12 @@ import { AssignmentComponent } from './teacher/assignment/assignment.component';
 import { AssignmentAssignmentComponent } from './teacher/assignment/assignment-assignment/assignment-assignment.component';
 import { AssignmentPaperComponent } from './teacher/assignment/assignment-paper/assignment-paper.component';
 import { AssignmentPapersnapshotComponent } from './teacher/assignment/assignment-papersnapshot/assignment-papersnapshot.component';
+import { VmsStudentComponent } from './student/vms-student/vms-student.component';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { DialogCreateVmComponent } from './student/vms-student/dialog-create-vm/dialog-create-vm.component';
+import {MatRadioModule} from '@angular/material/radio';
+import { DialogEditVmComponent } from './student/vms-student/dialog-edit-vm/dialog-edit-vm.component';
+import { OpenVmComponent } from './student/vms-student/open-vm/open-vm.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +66,7 @@ import { AssignmentPapersnapshotComponent } from './teacher/assignment/assignmen
     TeacherComponent,
     CourseDashboard,
     CourseDialogComponent,
+    RegisterDialogComponent,
     ToastComponent,
     StudentComponent,
     StudentCourseDashboard,
@@ -69,6 +77,10 @@ import { AssignmentPapersnapshotComponent } from './teacher/assignment/assignmen
     AssignmentAssignmentComponent,
     AssignmentPaperComponent,
     AssignmentPapersnapshotComponent,
+    VmsStudentComponent,
+    DialogCreateVmComponent,
+    DialogEditVmComponent,
+    OpenVmComponent,
   ],
   imports: [
     BrowserModule,
@@ -99,6 +111,8 @@ import { AssignmentPapersnapshotComponent } from './teacher/assignment/assignmen
     MatCardModule,
     MatExpansionModule,
     MatMenuModule,
+    MatGridListModule,
+    MatRadioModule,
   ],
   providers: [
     {
@@ -108,6 +122,6 @@ import { AssignmentPapersnapshotComponent } from './teacher/assignment/assignmen
     },
   ],
   bootstrap: [AppComponent],
-  entryComponents: [LoginDialogComponent],
+  entryComponents: [LoginDialogComponent, RegisterDialogComponent],
 })
 export class AppModule {}

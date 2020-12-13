@@ -1,3 +1,4 @@
+
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { MatSidenav } from "@angular/material/sidenav";
 import { MatDialog } from "@angular/material/dialog";
@@ -9,6 +10,7 @@ import { ActivatedRoute, Params, Router } from "@angular/router";
 import * as _ from "lodash";
 import { ToastService } from "./services/toast.service";
 import { UtilsService } from "./services/utils.service";
+import { RegisterDialogComponent } from "./auth/register-dialog/register-dialog.component";
 
 @Component({
   selector: "app-root",
@@ -81,6 +83,9 @@ export class AppComponent implements OnInit, OnDestroy {
     this.openLoginDialog();
     // this.router.navigate(['home'], { queryParams: { doLogin: true } });
   }
+  goToRegister() {
+    this.openRegisterDialog();
+  }
   private openLoginDialog(redirectTo?: string) {
     if (this.dialogSubscription) this.dialogSubscription.unsubscribe();
 
@@ -110,5 +115,22 @@ export class AppComponent implements OnInit, OnDestroy {
   logout() {
     this.authService.logout();
     this.router.navigate(["home"]);
+  }
+  private openRegisterDialog() {
+    //Se ha già una subscription faccio un unsubscribe
+    if (this.dialogSubscription) this.dialogSubscription.unsubscribe();
+
+    const dialogRef = this.dialog.open(RegisterDialogComponent);
+
+    this.dialogSubscription = dialogRef.afterClosed().subscribe((result) => {
+      console.log(`Dialog result: ${result}`);
+      if (result === true) {
+        this.toastService.success('Register with success! Please confirm your email.')
+        this.router.navigate(['home']);
+      } else {
+        //this.router.navigate(['home']);
+      }
+    });
+
   }
 }

@@ -13,12 +13,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,15 +62,16 @@ public class VirtualLabs {
 
             @Override
             public void run(String... args) throws Exception {
+
                 //create default VmConfiguration if not exists
                 if (vmConfigurationRepository.findAll().stream().noneMatch(vc -> vc.getVmModel() == null)) {
                     vmConfigurationRepository.save(VmConfiguration.builder()
                             .vmModel(null)
-                            .maxVcpusPerVm(5)
-                            .maxRamPerVm(500)
-                            .maxDiskPerVm(500)
-                            .maxRunningVms(2)
-                            .maxVms(4)
+                            .maxVcpusPerVm(5*6)
+                            .maxRamPerVm(8*6)
+                            .maxDiskPerVm(500*6)
+                            .maxRunningVms(3)
+                            .maxVms(6)
                             .build());
                 }
 
@@ -128,8 +131,7 @@ public class VirtualLabs {
                         .build();
                 cr.save(newCourse);
                 VmModel newVmModel = VmModel.builder()
-                        .name("VmModelDefault-" + newCourse.getAcronym())
-                        .image("ThisIsTheDefaultVmImage")
+                        .image("defaultVmImage.png")
                         .course(newCourse)
                         .build();
                 vmr.save(newVmModel);
@@ -202,8 +204,7 @@ public class VirtualLabs {
                         .build();
                 cr.save(newCourse);
                 newVmModel = VmModel.builder()
-                        .name("VmModelDefault-" + newCourse.getAcronym())
-                        .image("ThisIsTheDefaultVmImage")
+                        .image("defaultVmImage.png")
                         .course(newCourse)
                         .build();
                 vmr.save(newVmModel);
@@ -233,8 +234,7 @@ public class VirtualLabs {
                         .build();
                 cr.save(newCourse);
                 newVmModel = VmModel.builder()
-                        .name("VmModelDefault-" + newCourse.getAcronym())
-                        .image("ThisIsTheDefaultVmImage")
+                        .image("defaultVmImage.png")
                         .course(newCourse)
                         .build();
                 vmr.save(newVmModel);

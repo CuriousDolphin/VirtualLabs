@@ -13,12 +13,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
-import java.io.Reader;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,17 +57,31 @@ public class TeamServiceImpl implements TeamService {
     @Autowired
     VmInstanceRepository vmInstanceRepository;
 
+    @Autowired
+    TeacherRepository teacherRepository;
+
+
     @Override
-    public boolean addCourse(CourseDTO course) {
+    public boolean addCourse(CourseDTO course, String userId) {
         if (courseRepository.findByNameIgnoreCase(course.getName()).isPresent()) {
             return false;
         } else {
             if (course.getName() != null && !course.getName().equals("")) {
                 Course newCourse = modelMapper.map(course, Course.class);
+                Optional<Teacher> optTeacher = teacherRepository.findById(userId);
+                if(optTeacher.isPresent())
+                    newCourse.addTeacher(optTeacher.get());
+                else
+                    return false;
                 //default VmModel for course
+                try {
+                    Files.createDirectory(Path.of("src/main/webapp/WEB-INF/VM_images/" + course.getAcronym()));
+                    Files.copy(Path.of("src/main/webapp/WEB-INF/defaultVmImage.png"), new FileOutputStream("src/main/webapp/WEB-INF/VM_images/" + course.getAcronym() + "/"+ course.getAcronym() + "_default.png"));
+                } catch(Exception e) {
+                    System.out.println("error copying VM image");
+                }
                 VmModel newVmModel = VmModel.builder()
-                        .name("VmModelDefault-" + course.getAcronym())
-                        .image("ThisIsTheDefaultVmImage")
+                        .image(course.getAcronym() + "_default.png")
                         .course(newCourse)
                         .build();
                 vmModelRepository.save(newVmModel);
@@ -78,11 +93,16 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public CourseDTO updateCourse(CourseDTO course, String courseName) {
+    public CourseDTO updateCourse(CourseDTO course, String courseName, String userId) {
         //if (!courseRepository.existsById(courseName)) throw new CourseNotFoundException();
         if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
 
         Course c = courseRepository.findByNameIgnoreCase(courseName).get();
+        Optional<Teacher> optTeacher = teacherRepository.findById(userId);
+        if(!optTeacher.isPresent())
+            throw new CourseNotFoundException();
+        if(!c.getTeachers().contains(optTeacher.get()))
+            throw new CourseNotFoundException();
         c.setAcronym(course.getAcronym());
         c.setEnabled(course.isEnabled());
         c.setMax(course.getMax());
@@ -585,18 +605,20 @@ public class TeamServiceImpl implements TeamService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, studentId);
         if (vmInstanceRepository.getVmInstancesByTeam(teamRepository.getByName(team)).size() + 1 > teamRepository.getByName(team).getVmConfiguration().getMaxVms())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "MaxVmsInstances");
-        if (vmInstance.getCountDisks() > teamRepository.getByName(team).getVmConfiguration().getMaxDiskPerVm())
+        if (vmInstance.getCountDisks() > teamRepository.getByName(team).getVmConfiguration().getMaxDiskPerVm() || vmInstance.getCountDisks() < 1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountDisks");
-        if (vmInstance.getCountRam() > teamRepository.getByName(team).getVmConfiguration().getMaxRamPerVm())
+        if (vmInstance.getCountRam() > teamRepository.getByName(team).getVmConfiguration().getMaxRamPerVm() || vmInstance.getCountRam() < 1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountRam");
-        if (vmInstance.getCountVcpus() > teamRepository.getByName(team).getVmConfiguration().getMaxVcpusPerVm())
+        if (vmInstance.getCountVcpus() > teamRepository.getByName(team).getVmConfiguration().getMaxVcpusPerVm() || vmInstance.getCountVcpus() < 1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountVcpus");
         if (vmInstance.getOwner() != null &&
                 (!studentRepository.existsById(vmInstance.getOwner()) || !vmInstance.getOwner().equals(studentId)))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, vmInstance.getOwner());
 
         VmInstance newVmInstance = modelMapper.map(vmInstance, VmInstance.class);
+        newVmInstance.setCreator(studentId);
         newVmInstance.setTeam(teamRepository.getByName(team));
+        newVmInstance.setImage(vmModelRepository.getByCourse(teamRepository.getByName(team).getCourse()).getImage()); //TODO:link here
         newVmInstance.setVmModel(vmModelRepository.getByCourse(teamRepository.getByName(team).getCourse()));
         return modelMapper.map(vmInstanceRepository.save(newVmInstance), VmInstanceDTO.class);
     }
@@ -673,17 +695,35 @@ public class TeamServiceImpl implements TeamService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, id);
         if (vmInstanceRepository.getOne(idVmInstance).getState() != 0)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "VmRunning");
-        if (vmInstance.getCountDisks() > teamRepository.getByName(team).getVmConfiguration().getMaxDiskPerVm())
+        if (vmInstance.getCountDisks() > teamRepository.getByName(team).getVmConfiguration().getMaxDiskPerVm() || vmInstance.getCountDisks() < 1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountDisks");
-        if (vmInstance.getCountRam() > teamRepository.getByName(team).getVmConfiguration().getMaxRamPerVm())
+        if (vmInstance.getCountRam() > teamRepository.getByName(team).getVmConfiguration().getMaxRamPerVm() || vmInstance.getCountRam() < 1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountRam");
-        if (vmInstance.getCountVcpus() > teamRepository.getByName(team).getVmConfiguration().getMaxVcpusPerVm())
+        if (vmInstance.getCountVcpus() > teamRepository.getByName(team).getVmConfiguration().getMaxVcpusPerVm() || vmInstance.getCountVcpus() < 1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountVcpus");
 
         vmInstanceRepository.getOne(idVmInstance).setCountDisks(vmInstance.getCountDisks());
         vmInstanceRepository.getOne(idVmInstance).setCountRam(vmInstance.getCountRam());
         vmInstanceRepository.getOne(idVmInstance).setCountVcpus(vmInstance.getCountVcpus());
         return modelMapper.map(vmInstanceRepository.getOne(idVmInstance), VmInstanceDTO.class);
+    }
+
+    @Override
+    public List<CourseDTO> getAllTeacherCourses(String userId)
+    {
+        return courseRepository.findAllByTeacher(userId)
+                .stream()
+                .map(course -> modelMapper.map(course, CourseDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    public VmConfigurationDTO getVmConfiguration(String id, String team) {
+        if (teamRepository.getByName(team) == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, team);
+        if (!teamRepository.getByName(team).getMembers().contains(studentRepository.getOne(id)))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, id);
+
+        return modelMapper.map(teamRepository.getByName(team).getVmConfiguration(), VmConfigurationDTO.class);
     }
 
 }

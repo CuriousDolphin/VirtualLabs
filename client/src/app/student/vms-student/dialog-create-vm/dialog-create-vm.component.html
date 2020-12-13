@@ -1,0 +1,42 @@
+<h1 mat-dialog-title>Setup New VM</h1>
+<div [formGroup]="createForm">
+    <mat-form-field class="full-width">
+        <mat-label>VCPUs number</mat-label>
+        <input matInput type="number" min="1" [max]="data.maxVcpus" formControlName="vcpus"
+            *ngIf="data.maxVcpus !== 0; else noVcpus">
+        <mat-error *ngIf="createForm.controls['vcpus'].invalid"></mat-error>
+        <ng-template #noVcpus>
+            <input matInput type="number" min="0" [max]="0" formControlName="vcpus">
+            <mat-error></mat-error>
+        </ng-template>
+        <span matSuffix>/ {{data.maxVcpus}} available</span>
+    </mat-form-field>
+    <mat-form-field class="full-width">
+        <mat-label>RAM dimension</mat-label>
+        <input matInput type="number" min="1" [max]="data.maxRam" formControlName="ram"
+        *ngIf="data.maxRam !== 0; else noRam">
+        <mat-error *ngIf="createForm.controls['ram'].invalid"></mat-error>
+        <ng-template #noRam>
+            <input matInput type="number" min="0" [max]="0" formControlName="ram">
+            <mat-error></mat-error>
+        </ng-template>
+        <span matSuffix>GB / {{data.maxRam}} GB available</span>
+    </mat-form-field>
+    <mat-form-field class="full-width">
+        <mat-label>Disk dimension</mat-label>
+        <input matInput type="number" min="1" [max]="data.maxDisk" formControlName="disk"
+        *ngIf="data.maxDisk !== 0; else noDisk">
+        <mat-error *ngIf="createForm.controls['disk'].invalid"></mat-error>
+        <ng-template #noDisk>
+            <input matInput type="number" min="0" [max]="0" formControlName="disk">
+            <mat-error></mat-error>
+        </ng-template>
+        <span matSuffix>GB / {{data.maxDisk}} GB available</span>
+    </mat-form-field>
+    <mat-checkbox formControlName="owner">Accessible to Every Teammates
+    </mat-checkbox>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button (click)="onNoClick()">Discard</button>
+    <button mat-raised-button (click)=confirmCreateVm(data) color="primary" [disabled]="createForm.invalid">Confirm</button>
+</div>

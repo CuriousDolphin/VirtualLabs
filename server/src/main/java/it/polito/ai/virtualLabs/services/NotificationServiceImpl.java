@@ -1,11 +1,12 @@
 package it.polito.ai.virtualLabs.services;
 
 import it.polito.ai.virtualLabs.controllers.NotificationController;
+import it.polito.ai.virtualLabs.controllers.NotificationRegistrationController;
 import it.polito.ai.virtualLabs.dtos.TeamDTO;
-import it.polito.ai.virtualLabs.entities.Student;
-import it.polito.ai.virtualLabs.entities.Team;
-import it.polito.ai.virtualLabs.entities.TokenTeam;
+import it.polito.ai.virtualLabs.dtos.UserDTO;
+import it.polito.ai.virtualLabs.entities.*;
 import it.polito.ai.virtualLabs.exceptions.TokenNotFoundException;
+import it.polito.ai.virtualLabs.repositories.RegistrationTokenRepository;
 import it.polito.ai.virtualLabs.repositories.StudentRepository;
 import it.polito.ai.virtualLabs.repositories.TeamRepository;
 import it.polito.ai.virtualLabs.repositories.TokenTeamRepository;
@@ -46,6 +47,9 @@ public class NotificationServiceImpl implements NotificationService{
     @Autowired
     ModelMapper modelMapper;
 
+    @Autowired
+    RegistrationTokenRepository registrationRepository;
+
 
     @Autowired
     TeamRepository teamRepository;
@@ -54,7 +58,7 @@ public class NotificationServiceImpl implements NotificationService{
         Timestamp t = new Timestamp(System.currentTimeMillis());
         System.out.println("SCHEDULED TASK "+t);
         List<TokenTeam> expired=tokenRepository.findAllByExpiryBefore(t);
-        System.out.println("FOUNDED  "+expired.size()+" EXPIRED TOKEN");
+        System.out.println("FOUNDED  "+expired.size()+" EXPIRED TEAM TOKEN");
 
         ArrayList<Long> teamsId = new ArrayList<Long>();
 
@@ -74,17 +78,42 @@ public class NotificationServiceImpl implements NotificationService{
                 continue;
             }
         }
+
+        List<RegistrationToken> expiredRegistration =registrationRepository.findAllByExpiryBefore(t);
+        System.out.println("FOUNDED  "+expiredRegistration.size()+" EXPIRED USER TOKEN");
+
+
+
+        ArrayList<String> usersId = new ArrayList<String>();
+
+        expiredRegistration.forEach(token ->{
+            usersId.add(token.getUser().getId());
+            registrationRepository.delete(token);
+        });
+
+        for (String id:usersId){
+            try{
+                if(registrationRepository.existsById(id)){
+                    registrationRepository.deleteById(id);
+                    System.out.println("Eliminato user "+id);
+                }
+            }catch(Exception e){
+                System.out.println("Errore nel rimuovere l'utente "+e.toString());
+                continue;
+            }
+        }
+
     }
 
 
-    /*public void sendMessage(String address, String subject, String body){
+    public void sendMessage(String address, String subject, String body){
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo("s263138@studenti.polito.it");
+        message.setTo("progetto.webapp.dreamteam@gmail.com");
         message.setSubject(subject);
         message.setText(body);
         emailSender.send(message);
 
-    }*/
+    }
 
 
 
@@ -169,6 +198,54 @@ public class NotificationServiceImpl implements NotificationService{
 
         });
 
+    }
+
+    @Override
+    @Async
+    public void notifyRegistration(UserDTO user) {
+        long now = System.currentTimeMillis();
+        String id = user.getId();
+        System.out.println(id);
+        RegistrationToken t = new RegistrationToken();
+        t.setId(UUID.randomUUID().toString());
+        t.setExpiryDate(new Timestamp(now +3600000));
+        t.setUser(modelMapper.map(user, User.class));
+        registrationRepository.save(t);
+        String confirmLink = linkTo(NotificationRegistrationController.class).slash("confirm_registration").slash(t.getId()).toString();
+        String subject="VirtualLabs registration";
+        String text =   "We have recived a registration attempt of a user with id number:" + id + "\n" +
+                        "If it's your id, please confirm your registration by clicking this link: "+confirmLink + "\n" +
+                        "If this is not your id number, please ignore this email.";
+        sendMessage('s'+id+"@studenti.polito.it",subject,text);
+    }
+
+    @Override
+    public boolean confirmRegistration(String token)
+    {
+        boolean res = true;
+        try {
+            Optional<RegistrationToken> foundToken = registrationRepository.findById(token);
+            if (foundToken.isEmpty()) {
+                System.out.println("TOKEN NON ESISTE");
+                throw new TokenNotFoundException();
+            }
+            System.out.println("SCADENZA TOKEN " + foundToken.get().getExpiryDate().toString());
+            //token scaduto, lo elimino e lancio eccezione
+            if (foundToken.get().getExpiryDate().before(new Timestamp(System.currentTimeMillis()))) {
+                System.out.println("TOKEN SCADUTO");
+                registrationRepository.delete(foundToken.get());
+                throw new TokenNotFoundException();
+            }
+            User user = foundToken.get().getUser();
+            user.setEnabled(true);
+
+            registrationRepository.delete(foundToken.get()); // elimino il token
+        }
+        catch(TokenNotFoundException e)
+        {
+            res = false;
+        }
+        return res;
     }
 }
 

@@ -34,6 +34,8 @@ public class Course {
     private List<Team> teams = new ArrayList<>();
     @OneToMany(mappedBy = "course")
     private List<Assignment> assignments = new ArrayList<>();
+    @ManyToMany(mappedBy = "courses")
+    private List<Teacher> teachers = new ArrayList<>();
 
     public void addStudent(Student s){
         if(!this.students.contains(s))  this.students.add(s);
@@ -64,6 +66,10 @@ public class Course {
     public void removeAssignment(Assignment assignment) {
         if(assignment.getCourse().equals(this)) assignment.setCourse(null);
         if(assignments.contains(assignment)) assignments.remove(assignment);
+    }
+    public void addTeacher(Teacher t){
+        if(!this.teachers.contains(t))  this.teachers.add(t);
+        if(!t.getCourses().contains(this))  t.addCourse(this);
     }
 
     @Override

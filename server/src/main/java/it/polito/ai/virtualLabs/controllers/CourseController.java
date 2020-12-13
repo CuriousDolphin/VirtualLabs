@@ -1,5 +1,6 @@
 package it.polito.ai.virtualLabs.controllers;
 
+import it.polito.ai.virtualLabs.CourseProposal;
 import it.polito.ai.virtualLabs.TeamProposal;
 import it.polito.ai.virtualLabs.dtos.*;
 import it.polito.ai.virtualLabs.exceptions.*;
@@ -29,6 +30,7 @@ public class CourseController {
     @Autowired
     TeamService teamService;
 
+
     @Autowired
     NotificationService notificationService;
 
@@ -43,14 +45,28 @@ public class CourseController {
 
     }
 
+    @GetMapping({"/teacher/{userId}"})
+    List<CourseDTO> getAllByTeacher(@PathVariable("userId") String userId) {
+
+        return teamService
+                .getAllTeacherCourses(userId)
+                .stream()
+                .map(courseDTO -> ModelHelper.enrich(courseDTO))
+                .collect(Collectors.toList());
+
+    }
+
     @PostMapping({"", "/"})
     @ResponseStatus(HttpStatus.CREATED)
-    CourseDTO addCourse(@Valid @RequestBody(required = true) CourseDTO dto, BindingResult result) {
+    CourseDTO addCourse(@Valid @RequestBody(required = true) CourseProposal body, BindingResult result) {
+        CourseDTO courseDTO = body.getCourse();
+        String userId = body.getUserId();
+
         if (result.hasErrors()) throw new ResponseStatusException(HttpStatus.CONFLICT);
-        if (!teamService.addCourse(dto))
-            throw new ResponseStatusException(HttpStatus.CONFLICT, dto.getName());
+        if (!teamService.addCourse(courseDTO,userId))
+            throw new ResponseStatusException(HttpStatus.CONFLICT, courseDTO.getName());
         // notificationService.sendMessage("isnob46@gmail.com","nuova materia inserita",dto.getName().toString());
-        return ModelHelper.enrich(dto);
+        return ModelHelper.enrich(courseDTO);
 
     }
 
@@ -215,10 +231,9 @@ public class CourseController {
     }
 
     @PatchMapping("/{name}")
-    CourseDTO updateCourse(@RequestBody @Valid CourseDTO course, @PathVariable("name") String courseName) {
-
+    CourseDTO updateCourse(@RequestBody @Valid CourseProposal body, @PathVariable("name") String courseName) {
         try {
-            CourseDTO c=teamService.updateCourse(course,courseName);
+            CourseDTO c=teamService.updateCourse(body.getCourse(),courseName,body.getUserId());
             return c;
         } catch (CourseNotFoundException ce) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
