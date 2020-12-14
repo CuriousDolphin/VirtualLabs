@@ -37,7 +37,8 @@
     <app-vms-teacher
     [teams]="courseTeams$ | async"
     [vmInstances]="courseVmInstances$ | async"
-    [vmModel]="courseVmModel$ | async">
+    [vmModel]="courseVmModel$ | async"
+    [currentCourse]="currentCourse$ | async">
     </app-vms-teacher>
   </mat-tab>
 </mat-tab-group>

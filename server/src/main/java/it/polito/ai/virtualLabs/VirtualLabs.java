@@ -74,9 +74,9 @@ public class VirtualLabs {
                         .course(newCourse)
                         .maxVms(6)
                         .maxRunningVms(3)
-                        .maxVcpusPerVm(6*5)
-                        .maxRamPerVm(6*8)
-                        .maxDiskPerVm(6*500)
+                        .maxVcpus(6*5)
+                        .maxRam(6*8)
+                        .maxDisk(6*500)
                         .build();
                 vmr.save(newVmModel);
                 //Course: ML
@@ -93,9 +93,9 @@ public class VirtualLabs {
                         .course(newCourse)
                         .maxVms(6)
                         .maxRunningVms(3)
-                        .maxVcpusPerVm(6*5)
-                        .maxRamPerVm(6*8)
-                        .maxDiskPerVm(6*500)
+                        .maxVcpus(6*5)
+                        .maxRam(6*8)
+                        .maxDisk(6*500)
                         .build();
                 vmr.save(newVmModel);
                 //Course: AI
@@ -112,9 +112,9 @@ public class VirtualLabs {
                         .course(newCourse)
                         .maxVms(6)
                         .maxRunningVms(3)
-                        .maxVcpusPerVm(6*5)
-                        .maxRamPerVm(6*8)
-                        .maxDiskPerVm(6*500)
+                        .maxVcpus(6*5)
+                        .maxRam(6*8)
+                        .maxDisk(6*500)
                         .build();
                 vmr.save(newVmModel);
 

@@ -28,11 +28,11 @@ public class VmModel {
     Course course;
 
     @NotNull
-    private int maxVcpusPerVm;
+    private int maxVcpus;
     @NotNull
-    private int maxRamPerVm;
+    private int maxRam;
     @NotNull
-    private int maxDiskPerVm;
+    private int maxDisk;
     @NotNull
     private int maxRunningVms;
     @NotNull

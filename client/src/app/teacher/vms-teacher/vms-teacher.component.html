@@ -1,19 +1,76 @@
-<div *ngFor="let team of _teams">
+<ng-container *ngIf="loadedVmModel$ | async">
     <mat-card class="courseCard">
-        <mat-card-header>
-            <mat-card-title>
-                {{team.name}}
-            </mat-card-title>
-        </mat-card-header>
-        <div>
-            Maximum resources allowed: 
-        </div>
-
+        <mat-card-title>
+            Virtual Machine MODEL accessible to each {{courseAcronym$.getValue()}} team:
+        </mat-card-title>
         <mat-card-content>
-            <mat-card>
-                <mat-card-title>
-                </mat-card-title>
-            </mat-card>
+            <mat-grid-list cols="100" rowHeight="2rem">
+                <mat-grid-tile colspan="30" rowspan="2">
+                    Maximum VMs allowed:
+                </mat-grid-tile>
+                <mat-grid-tile colspan="30" rowspan="2">
+                    Maximum VMs running simultaneously allowed:
+                </mat-grid-tile>
+                <mat-grid-tile colspan="30" rowspan="1">
+                    Maximum resources allowed:
+                </mat-grid-tile>
+                <mat-grid-tile colspan="10" rowspan="4">
+                    <button mat-raised-button color="primary">
+                        <mat-icon matListIcon>
+                            create</mat-icon>
+                        EDIT MODEL
+                    </button>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="10" rowspan="1">
+                    VCPUs
+                </mat-grid-tile>
+                <mat-grid-tile colspan="10" rowspan="1">
+                    RAM
+                </mat-grid-tile>
+                <mat-grid-tile colspan="10" rowspan="1">
+                    Disk
+                </mat-grid-tile>
+                <mat-grid-tile colspan="30" rowspan="2">
+                    {{_vmModel.maxVms}} VMs
+                </mat-grid-tile>
+                <mat-grid-tile colspan="30" rowspan="2">
+                    {{_vmModel.maxRunningVms}} VMs
+                </mat-grid-tile>
+                <mat-grid-tile colspan="10" rowspan="2">
+                    {{_vmModel.maxVcpus}}
+                </mat-grid-tile>
+                <mat-grid-tile colspan="10" rowspan="2">
+                    {{_vmModel.maxRam}} GB
+                </mat-grid-tile>
+                <mat-grid-tile colspan="10" rowspan="2">
+                    {{_vmModel.maxDisk}} GB
+                </mat-grid-tile>
+            </mat-grid-list>
         </mat-card-content>
     </mat-card>
-</div>
+</ng-container>
+<mat-card class="courseCard">
+    <mat-card-title>
+        {{courseAcronym$.getValue()}} Student Teams:
+    </mat-card-title>
+    <div *ngFor="let team of _teams">
+        <mat-card class="courseCard">
+            <mat-card-header>
+                <mat-card-title>
+                    {{team.name}} [
+                    <a *ngFor="let student of team.members">
+                        {{student.id}} 
+                    </a>
+                    ]
+                </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div *ngFor="let vmInstance of team.vmInstances">
+                    <mat-card>
+                        aaa
+                    </mat-card>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</mat-card>

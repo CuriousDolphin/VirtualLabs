@@ -1,8 +1,8 @@
 export class VmModel {
     id: number;
-    maxDiskPerVm: number;
-    maxRamPerVm: number;
-    maxVcpusPerVm: number;
+    maxDisk: number;
+    maxRam: number;
+    maxVcpus: number;
     maxVms: number;
     maxRunningVms: number;
     image: String;
