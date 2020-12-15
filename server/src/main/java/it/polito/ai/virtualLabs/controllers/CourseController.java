@@ -230,4 +230,9 @@ public class CourseController {
         return teamService.getVmModel(name);
     }
 
+    @PostMapping({"/{name}/editvmmodel"})
+    VmModelDTO editVmModel(@PathVariable("name") String name, @Valid @RequestBody(required = true) VmModelDTO vmModel) {
+        return teamService.editVmModel(name, vmModel);
+    }
+
 }

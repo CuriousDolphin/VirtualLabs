@@ -9,6 +9,7 @@ import it.polito.ai.virtualLabs.repositories.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -674,6 +675,29 @@ public class TeamServiceImpl implements TeamService {
         return vmInstanceRepository.getVmInstancesByCourse(courseRepository.findByNameIgnoreCase(course).get()).stream()
                 .map(vmi -> modelMapper.map(vmi, VmInstanceDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public VmModelDTO editVmModel(String course, VmModelDTO vmModel) {
+        if (courseRepository.findByNameIgnoreCase(course).isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, course);
+
+        if(vmModel.getMaxVms() != vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxVms()){
+            if(vmModel.getMaxVms() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxVms())
+                vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxVms(vmModel.getMaxVms());
+            else {
+                System.out.println("--------"+vmInstanceRepository.getMaxVmsPerTeam());
+                if(vmInstanceRepository.getMaxVmsPerTeam() > vmModel.getMaxVms())
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "maxVms");
+                vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxVms(vmModel.getMaxVms());
+            }
+        }
+
+        vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxRunningVms(vmModel.getMaxRunningVms());
+        vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxVcpus(vmModel.getMaxVcpus());
+        vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxRam(vmModel.getMaxRam());
+        vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxDisk(vmModel.getMaxDisk());
+        return modelMapper.map(vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()), VmModelDTO.class);
     }
 
 }

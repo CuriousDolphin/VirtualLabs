@@ -162,4 +162,20 @@ export class VmsStudentComponent implements OnInit {
     }
   }
 
+  countRunningVms(vms: VmInstance[]): number{
+    return _.sumBy(vms, (vm) => { return vm.state });
+  }
+
+  countVcpus(vms: VmInstance[]): number{
+    return _.sumBy(vms, (vm) => { return vm.countVcpus });
+  }
+
+  countRam(vms: VmInstance[]): number{
+    return _.sumBy(vms, (vm) => { return vm.countRam });
+  }
+
+  countDisk(vms: VmInstance[]): number{
+    return _.sumBy(vms, (vm) => { return vm.countDisks });
+  }
+
 }

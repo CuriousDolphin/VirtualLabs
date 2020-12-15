@@ -17,4 +17,8 @@ public interface VmInstanceRepository extends JpaRepository<VmInstance,Long> {
 
     @Query("SELECT vm FROM VmInstance vm WHERE vm.team.course=:courseName")
     List<VmInstance> getVmInstancesByCourse(Course courseName);
+
+    @Query("SELECT COUNT(distinct vm) FROM VmInstance vm GROUP BY vm.team")
+    int getMaxVmsPerTeam();
+
 }

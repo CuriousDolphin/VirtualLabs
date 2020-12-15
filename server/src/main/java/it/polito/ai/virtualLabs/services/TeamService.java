@@ -118,4 +118,7 @@ public interface TeamService {
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') ")
     List<VmInstanceDTO> getVmInstancesPerCourse(@Param("courseName") String course);
 
+    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
+    VmModelDTO editVmModel(String course, VmModelDTO vmModel);
+
 }
