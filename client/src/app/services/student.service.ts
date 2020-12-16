@@ -102,7 +102,6 @@ export class StudentService {
     var jsonToString: String = JSON.stringify(newVm);
     jsonToString = jsonToString.replace(',"owner":"true"', '');
     jsonToString = jsonToString.replace('false', <string>studentId);
-    console.log(jsonToString)
     newVm = JSON.parse(<string>jsonToString)
     return this.http
       .post<VmInstance[]>(url, newVm)      

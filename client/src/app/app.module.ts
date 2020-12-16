@@ -49,6 +49,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import { DialogEditVmComponent } from './student/vms-student/dialog-edit-vm/dialog-edit-vm.component';
 import { OpenVmComponent } from './student/vms-student/open-vm/open-vm.component';
 import { VmsTeacherComponent } from './teacher/vms-teacher/vms-teacher.component';
+import { DialogEditModelComponent } from './teacher/vms-teacher/dialog-edit-model/dialog-edit-model.component';
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import { VmsTeacherComponent } from './teacher/vms-teacher/vms-teacher.component
     DialogEditVmComponent,
     OpenVmComponent,
     VmsTeacherComponent,
+    DialogEditModelComponent,
   ],
   imports: [
     BrowserModule,

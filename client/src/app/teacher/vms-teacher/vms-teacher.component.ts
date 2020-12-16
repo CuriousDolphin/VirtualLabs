@@ -1,10 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Team } from 'src/app/models/team.model';
 import { VmModel } from 'src/app/models/vm-model.model';
 import { VmInstance } from 'src/app/models/vm-instance.model';
 import { BehaviorSubject } from 'rxjs';
 import { Course } from 'src/app/models/course.model';
 import * as _ from 'lodash';
+import { DialogEditModelComponent } from './dialog-edit-model/dialog-edit-model.component';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-vms-teacher',
@@ -13,63 +15,87 @@ import * as _ from 'lodash';
 })
 export class VmsTeacherComponent implements OnInit {
 
-  loadedVmModel$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  loadedVmInstances$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  @Output() editModel = new EventEmitter<JSON>();
+
+  editModelDialog: MatDialogRef<DialogEditModelComponent, any>
+
   courseAcronym$: BehaviorSubject<String> = new BehaviorSubject("");
 
   @Input() set teams(teams: Team[]) {
-    this._teams = teams;
-    if (this._teams !== null) {
-      if (this._teams.length === 0)
-        this.hasTeams = true;
-      else
-        this.hasTeams = false;
+    if (teams !== null) {
+      this._teams = teams;
+      this.hasLoadedTeams = true;
     }
   }
   @Input() set vmInstances(vmInstances: VmInstance[]) {
-    this._vmInstances = vmInstances;
+    if (vmInstances !== null) {
+      this._vmInstances = vmInstances;
+      this.hasLoadedVmInstances = true;
+    }
   }
   @Input() set vmModel(vmModel: VmModel) {
-    this._vmModel = vmModel;
+    if (vmModel !== null) {
+      this._vmModel = vmModel;
+      this.hasLoadedVmModel = true;
+    }
   }
   @Input() currentCourse: Course;
 
   _teams: Team[];
   _vmInstances: VmInstance[];
   _vmModel: VmModel;
-  hasTeams = false;
+  hasLoadedVmInstances = false;
+  hasLoadedVmModel = false;
+  hasLoadedTeams = false;
 
-  constructor() { }
+  constructor(public dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
 
-  ngOnChanges(): void {
-    if (this._vmModel !== undefined && this._vmModel !== null) {
-      this.loadedVmModel$.next(true);
-    }
-    if (this._vmInstances !== undefined && this._vmInstances !== null) {
-      this.loadedVmInstances$.next(true);
-    }
-    if (this.currentCourse != undefined && this.currentCourse != null) {
-      this.courseAcronym$.next(this.currentCourse.acronym)
-    }
-  }
-
-  countRunningVms(vms: VmInstance[]): number{
+  countRunningVms(vms: VmInstance[]): number {
     return _.sumBy(vms, (vm) => { return vm.state });
   }
 
-  countVcpus(vms: VmInstance[]): number{
+  countVcpus(vms: VmInstance[]): number {
     return _.sumBy(vms, (vm) => { return vm.countVcpus });
   }
 
-  countRam(vms: VmInstance[]): number{
+  countRam(vms: VmInstance[]): number {
     return _.sumBy(vms, (vm) => { return vm.countRam });
   }
 
-  countDisk(vms: VmInstance[]): number{
+  countDisk(vms: VmInstance[]): number {
     return _.sumBy(vms, (vm) => { return vm.countDisks });
+  }
+
+  openEditModel(vmModel: VmModel): void {
+    console.log("----- "+this._teams.map((t) => {return t.vmInstances.length}).sort()[0])
+    this.editModelDialog = this.dialog.open(DialogEditModelComponent, {
+      data: {
+        maxVms: vmModel.maxVms,
+        minVms: this._teams.map((t) => {return t.vmInstances.length}).sort[0],
+        maxRunningVms: vmModel.maxRunningVms,
+        //minRunningVms: _.map(_.groupBy(this._teams.filter((t) => {t.state === 1}), 'group_by'), (t) => {summed: _.sumBy(t, 'sum_me')}),
+        maxVcpus: vmModel.maxVcpus,
+        maxRam: vmModel.maxRam,
+        maxDisk: vmModel.maxDisk,
+        courseAc: this.courseAcronym$.getValue(),
+      },
+      width: "22%",
+    });
+    this.editModelDialog.afterClosed().subscribe((newModel) => { this.emitEditModel(newModel) });
+  }
+
+  public emitEditModel(newModel: JSON) {
+    if (newModel !== undefined) {
+      if (newModel['maxVms'] != this._vmModel.maxVms ||
+        newModel['maxRunningVms'] != this._vmModel.maxRunningVms ||
+        newModel['maxVcpus'] != this._vmModel.maxVcpus ||
+        newModel['maxRam'] != this._vmModel.maxRam ||
+        newModel['maxDisk'] != this._vmModel.maxDisk)
+        this.editModel.emit(newModel);
+    }
   }
 
 }

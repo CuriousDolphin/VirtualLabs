@@ -1,4 +1,4 @@
-<ng-container *ngIf="loadedVmModel$ && loadedVmInstances$ | async">
+<ng-container *ngIf="hasLoadedVmModel && hasLoadedVmInstances && hasLoadedTeams">
     <mat-card >
         <mat-card-title>
             Virtual Machine MODEL accessible to each team:
@@ -15,7 +15,7 @@
                     Maximum resources allowed (sum of VMs)
                 </mat-grid-tile>
                 <mat-grid-tile colspan="10" rowspan="4">
-                    <button mat-raised-button color="primary">
+                    <button mat-raised-button color="primary" (click)="openEditModel(_vmModel)">
                         <mat-icon matListIcon>
                             create</mat-icon>
                         EDIT MODEL

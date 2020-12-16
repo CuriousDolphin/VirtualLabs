@@ -1,0 +1,35 @@
+<h1 mat-dialog-title>Change {{data.courseAc}} MODEL maximum resources allowed</h1>
+<div [formGroup]="editForm">
+    <mat-form-field class="full-width">
+        <mat-label>Maximum VMs number</mat-label>
+        <input matInput type="number" min="1" formControlName="maxVms">
+        <mat-error *ngIf="editForm.controls['maxVms'].invalid">Some team has more than {{data.minVms}}</mat-error>
+    </mat-form-field>
+    <mat-form-field class="full-width">
+        <mat-label>Maximum VCPUs number running simultaneously</mat-label>
+        <input matInput type="number" min="1" max="editForm.controls['maxVms'].value" formControlName="maxRunningVms">
+        <mat-error *ngIf="editForm.controls['maxRunningVms'].invalid"></mat-error>
+    </mat-form-field>
+    <mat-form-field class="full-width">
+        <mat-label>Maximum VCPUs number</mat-label>
+        <input matInput type="number" min="1" formControlName="maxVcpus">
+        <mat-error *ngIf="editForm.controls['maxVcpus'].invalid"></mat-error>
+    </mat-form-field>
+    <mat-form-field class="full-width">
+        <mat-label>Maximum RAM dimension</mat-label>
+        <input matInput type="number" min="1" formControlName="maxRam">
+        <mat-error *ngIf="editForm.controls['maxRam'].invalid"></mat-error>
+        <span matSuffix>GB</span>
+    </mat-form-field>
+    <mat-form-field class="full-width">
+        <mat-label>Disk dimension</mat-label>
+        <input matInput type="number" min="1" formControlName="maxDisk">
+        <mat-error *ngIf="editForm.controls['maxDisk'].invalid"></mat-error>
+        <span matSuffix>GB</span>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button (click)="onNoClick()">Discard</button>
+    <button mat-raised-button (click)="confirmEditModel(data)" color="primary"
+        [disabled]="editForm.invalid">Confirm</button>
+</div>

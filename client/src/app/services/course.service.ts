@@ -119,6 +119,13 @@ export class CourseService {
     return this.http.get(url).pipe(catchError((e) => this.handleError(e)));
   }
 
+  editModel(course: String, newModel: JSON): Observable<VmModel> {
+    const url = BASE_PATH + "courses/" + course + "/editvmmodel/";
+    return this.http
+      .post<VmModel>(url, newModel)      
+      .pipe(catchError((e) => this.handleError(e)));
+  }
+
   private handleError(error) {
     let errorMessage = "";
     if (error.error instanceof ErrorEvent) {

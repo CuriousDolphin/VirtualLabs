@@ -33,6 +33,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
   private unenrollSubscription: Subscription;
   private dialogSubscription: Subscription;
   private uploadSubscription: Subscription;
+  private editModelSubscription: Subscription;
 
   studentsDB$: Observable<Student[]>;
   currentCourse: Course;
@@ -232,11 +233,30 @@ export class CourseDashboard implements OnInit, OnDestroy {
       });
   }
 
+  editModel(newModel: JSON) {
+    if (this.editModelSubscription) this.editModelSubscription.unsubscribe();
+
+    console.log("edit MODEL requested")
+    this.editModelSubscription = this.courseService.editModel(this.currentCourse.name, newModel)
+    .subscribe(
+      (data) => {
+        this._reloadCourse$.next(null);
+        this.toastService.success("MODEL edit success! \n");
+      },
+      (error) => {
+        this.toastService.error(
+          "Error edit MODEL, try again later \n" + error
+        );
+      }
+    );
+  }
+
   ngOnDestroy(): void {
     if (this.dialogSubscription) this.dialogSubscription.unsubscribe();
     if (this.courseSubscription) this.courseSubscription.unsubscribe();
     if (this.routeSubscription) this.routeSubscription.unsubscribe();
     if (this.enrollSubscription) this.enrollSubscription.unsubscribe();
     if (this.unenrollSubscription) this.unenrollSubscription.unsubscribe();
+    if (this.editModelSubscription) this.editModelSubscription.unsubscribe();
   }
 }

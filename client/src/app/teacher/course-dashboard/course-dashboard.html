@@ -40,7 +40,8 @@
       [teams]="courseTeams$ | async" 
       [vmInstances]="courseVmInstances$ | async"
       [vmModel]="courseVmModel$ | async" 
-      [currentCourse]="currentCourse$ | async">
+      [currentCourse]="currentCourse$ | async"
+      (editModel)="editModel($event)">
       </app-vms-teacher>
     </div>
 

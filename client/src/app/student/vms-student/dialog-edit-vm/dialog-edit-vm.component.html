@@ -2,8 +2,8 @@
 <div [formGroup]="editForm">
     <mat-form-field class="full-width">
         <mat-label>VCPUs number</mat-label>
-        <input matInput type="number" min="1" [max]="data.maxVcpus" formControlName="vcpus">
-        <mat-error *ngIf="editForm.controls['vcpus'].invalid"></mat-error>
+        <input matInput type="number" min="1" [max]="data.maxVcpus" formControlName="maxVcpus">
+        <mat-error *ngIf="editForm.controls['maxVcpus'].invalid"></mat-error>
         <span matSuffix>/ {{data.maxVcpus}} available</span>
     </mat-form-field>
     <mat-form-field class="full-width">
