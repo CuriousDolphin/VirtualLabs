@@ -692,10 +692,46 @@ public class TeamServiceImpl implements TeamService {
             }
         }
 
-        vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxRunningVms(vmModel.getMaxRunningVms());
-        vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxVcpus(vmModel.getMaxVcpus());
-        vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxRam(vmModel.getMaxRam());
-        vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxDisk(vmModel.getMaxDisk());
+        if(vmModel.getMaxRunningVms() != vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxRunningVms()){
+            if(vmModel.getMaxRunningVms() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxRunningVms())
+                vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxRunningVms(vmModel.getMaxRunningVms());
+            else {
+                if(false) //TODO: implement control query
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "maxRunningVms");
+                vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxRunningVms(vmModel.getMaxRunningVms());
+            }
+        }
+
+        if(vmModel.getMaxVms() != vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxVms()){
+            if(vmModel.getMaxVms() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxVms())
+                vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxVcpus(vmModel.getMaxVms());
+            else {
+                if(false) //TODO: implement control query
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "maxVcpus");
+                vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxVms(vmModel.getMaxVms());
+            }
+        }
+
+        if(vmModel.getMaxRam() != vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxRam()){
+            if(vmModel.getMaxRam() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxRam())
+                vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxRam(vmModel.getMaxRam());
+            else {
+                if(false) //TODO: implement control query
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "maxRam");
+                vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxRam(vmModel.getMaxRam());
+            }
+        }
+
+        if(vmModel.getMaxDisk() != vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxDisk()){
+            if(vmModel.getMaxDisk() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxDisk())
+                vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxDisk(vmModel.getMaxDisk());
+            else {
+                if(false) //TODO: implement control query
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "maxDiak");
+                vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxDisk(vmModel.getMaxDisk());
+            }
+        }
+
         return modelMapper.map(vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()), VmModelDTO.class);
     }
 
