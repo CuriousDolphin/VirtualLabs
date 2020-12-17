@@ -7,9 +7,13 @@ export interface DialogData {
   maxVms: number;
   minVms: number;
   maxRunningVms: number;
+  minRunningVms: number;
   maxVcpus: number;
+  minVcpus: number;
   maxRam: number;
+  minRam: number;
   maxDisk: number;
+  minDisk: number;
   courseAc: String;
 }
 
@@ -30,10 +34,10 @@ export class DialogEditModelComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.editForm = this.fb.group({
       maxVms: [data.maxVms, [Validators.min(data.minVms)]],
-      maxRunningVms: [data.maxRunningVms, [Validators.min(1)]],
-      maxVcpus: [data.maxVcpus, [Validators.min(1)]],
-      maxRam: [data.maxRam, [Validators.min(1)]],
-      maxDisk: [data.maxDisk, [Validators.min(1)]],
+      maxRunningVms: [data.maxRunningVms, [Validators.min(data.minRunningVms)]],
+      maxVcpus: [data.maxVcpus, [Validators.min(data.minVcpus)]],
+      maxRam: [data.maxRam, [Validators.min(data.minRam)]],
+      maxDisk: [data.maxDisk, [Validators.min(data.minDisk)]],
     },
       { validator: this.mustMinMaxVms() });
   }
@@ -44,7 +48,7 @@ export class DialogEditModelComponent implements OnInit {
 
   mustMinMaxVms() {
     return (formGroup: FormGroup) => {
-      if (formGroup.controls['maxRunningVms'].value > formGroup.controls['maxVms'].value)
+      if (formGroup.controls['maxRunningVms'].value > formGroup.controls['maxVms'].value || formGroup.controls['maxRunningVms'].value < this.data.minRunningVms)
         formGroup.controls['maxRunningVms'].setErrors({ mustMinMaxVms: true });
       else
         formGroup.controls['maxRunningVms'].setErrors(null);

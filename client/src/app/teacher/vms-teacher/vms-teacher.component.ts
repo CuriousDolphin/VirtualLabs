@@ -7,6 +7,7 @@ import { Course } from 'src/app/models/course.model';
 import * as _ from 'lodash';
 import { DialogEditModelComponent } from './dialog-edit-model/dialog-edit-model.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { filter } from 'lodash';
 
 @Component({
   selector: 'app-vms-teacher',
@@ -39,7 +40,10 @@ export class VmsTeacherComponent implements OnInit {
       this.hasLoadedVmModel = true;
     }
   }
-  @Input() currentCourse: Course;
+  @Input() set currentCourse(currentCourse: Course) {
+    if (currentCourse !== null)
+      this.courseAcronym$.next(currentCourse.acronym)
+  }
 
   _teams: Team[];
   _vmInstances: VmInstance[];
@@ -70,16 +74,23 @@ export class VmsTeacherComponent implements OnInit {
   }
 
   openEditModel(vmModel: VmModel): void {
-    console.log("----- "+this._teams.map((t) => {return t.vmInstances.length}).sort()[0])
     this.editModelDialog = this.dialog.open(DialogEditModelComponent, {
       data: {
         maxVms: vmModel.maxVms,
-        minVms: this._teams.map((t) => {return t.vmInstances.length}).sort[0],
+        minVms: this._teams.length > 0 && this._teams.map((t) => { return t.vmInstances.length }).reduce((a, b) => a + b, 0) !== 0 ?
+          this._teams.map((t) => { return t.vmInstances.length }).sort()[0] : 1,
         maxRunningVms: vmModel.maxRunningVms,
-        //minRunningVms: _.map(_.groupBy(this._teams.filter((t) => {t.state === 1}), 'group_by'), (t) => {summed: _.sumBy(t, 'sum_me')}),
+        minRunningVms: this._teams.length > 0 && this._teams.map((t) => { return t.vmInstances.length }).reduce((a, b) => a + b, 0) !== 0 ?
+          this._teams.map((t) => { return t.vmInstances.filter((vm) => { return vm.state === 1 }).length }).sort()[0] : 1,
         maxVcpus: vmModel.maxVcpus,
+        minVcpus: this._teams.length > 0 && this._teams.map((t) => { return t.vmInstances.length }).reduce((a, b) => a + b, 0) !== 0 ?
+          this._teams.map((t) => { return t.vmInstances.map((vm) => { return vm.countVcpus }).reduce((a, b) => a + b, 0) }).sort()[0] : 1,
         maxRam: vmModel.maxRam,
+        minRam: this._teams.length > 0 && this._teams.map((t) => { return t.vmInstances.length }).reduce((a, b) => a + b, 0) !== 0 ?
+          this._teams.map((t) => { return t.vmInstances.map((vm) => { return vm.countRam }).reduce((a, b) => a + b, 0) }).sort()[0] : 1,
         maxDisk: vmModel.maxDisk,
+        minDisk: this._teams.length > 0 && this._teams.map((t) => { return t.vmInstances.length }).reduce((a, b) => a + b, 0) !== 0 ?
+          this._teams.map((t) => { return t.vmInstances.map((vm) => { return vm.countDisks }).reduce((a, b) => a + b, 0) }).sort()[0] : 1,
         courseAc: this.courseAcronym$.getValue(),
       },
       width: "22%",
