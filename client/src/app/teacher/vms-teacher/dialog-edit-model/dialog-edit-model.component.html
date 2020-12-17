@@ -3,14 +3,15 @@
     <mat-form-field class="full-width">
         <mat-label>Maximum VMs number</mat-label>
         <input matInput type="number" min="{{data.minVms}}" formControlName="maxVms">
-        <mat-error *ngIf="editForm.controls['maxVms'].invalid">Some team has {{data.minVms}} VMs</mat-error>
+        <mat-error *ngIf="editForm.controls['maxVms'].invalid && editForm.controls['maxVms'].value > 1">Some team has {{data.minVms}} VMs</mat-error>
+        <mat-error *ngIf="editForm.controls['maxVms'].value < 1">Must be at least 1</mat-error>
     </mat-form-field>
     <mat-form-field class="full-width">
         <mat-label>Maximum VMs number running simultaneously</mat-label>
         <input matInput type="number" min="{{data.minRunningVms}}" max="{{editForm.controls['maxVms'].value}}" formControlName="maxRunningVms">
         <mat-error *ngIf="editForm.controls['maxRunningVms'].invalid && editForm.controls['maxVms'].value > editForm.controls['maxRunningVms'].value; else minMaxVms">Some team is running {{data.minRunningVms}} VMs</mat-error>
         <ng-template #minMaxVms>
-            <mat-error>Max running VMs must be <= than max VMs</mat-error>
+            <mat-error>Must be between {{data.minRunningVms}} and {{editForm.controls['maxVms'].value}}</mat-error>
         </ng-template>
         <span matSuffix>/ {{editForm.controls['maxVms'].value}}</span>
     </mat-form-field>

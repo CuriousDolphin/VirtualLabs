@@ -16,8 +16,6 @@ import { OpenVmComponent } from './open-vm/open-vm.component';
 })
 export class VmsStudentComponent implements OnInit {
 
-  hasLoadedVmInstances$: Observable<VmInstance[]>;
-  hasLoadedVmModel$: Observable<VmModel>;
   canRun$: BehaviorSubject<boolean> = new BehaviorSubject(true);
   canCreate$: BehaviorSubject<number> = new BehaviorSubject(0);
 
@@ -31,16 +29,18 @@ export class VmsStudentComponent implements OnInit {
   @Input() course: String;
   @Input() courseAc: String;
   @Input() set vmInstances(vmInstances: VmInstance[]) {
-    this._vmInstances = vmInstances.sort((vm1: VmInstance, vm2: VmInstance) => {
-      if (vm1.id > vm2.id) return 1;
-      else return -1;
-    });
-    this.hasLoadedVmInstances$ = of<VmInstance[]>(this._vmInstances);
+    if (vmInstances !== null) {
+      this._vmInstances = vmInstances.sort((vm1: VmInstance, vm2: VmInstance) => {
+        if (vm1.id > vm2.id) return 1;
+        else return -1;
+      });
+      this.hasLoadedVmInstances = true;
+    }
   }
   @Input() set vmModel(vmModel: VmModel) {
     if (vmModel !== null) {
       this._vmModel = vmModel;
-      this.hasLoadedVmModel$ = of<VmModel>(this._vmModel);
+      this.hasLoadedVmModel = true;
     }
   }
   @Input() set teams(teams: Team[]) {
@@ -64,6 +64,8 @@ export class VmsStudentComponent implements OnInit {
   vcpusAvailable: String;
   ramAvailable: String;
   diskAvailable: String;
+  hasLoadedVmModel = false;
+  hasLoadedVmInstances = false;
 
   constructor(public dialog: MatDialog) { }
 
@@ -112,7 +114,7 @@ export class VmsStudentComponent implements OnInit {
         maxRam: (vm.countRam + this._vmModel.maxRam - _.sumBy(this._vmInstances, (vm) => { return vm.countRam })),
         maxDisk: (vm.countDisks + this._vmModel.maxDisk - _.sumBy(this._vmInstances, (vm) => { return vm.countDisks })),
         id: vm.id,
-        mockId: this._vmInstances.indexOf(vm)
+        fakeId: this._vmInstances.indexOf(vm)
       },
       width: "22%",
     });
@@ -161,19 +163,19 @@ export class VmsStudentComponent implements OnInit {
     }
   }
 
-  countRunningVms(vms: VmInstance[]): number{
+  countRunningVms(vms: VmInstance[]): number {
     return _.sumBy(vms, (vm) => { return vm.state });
   }
 
-  countVcpus(vms: VmInstance[]): number{
+  countVcpus(vms: VmInstance[]): number {
     return _.sumBy(vms, (vm) => { return vm.countVcpus });
   }
 
-  countRam(vms: VmInstance[]): number{
+  countRam(vms: VmInstance[]): number {
     return _.sumBy(vms, (vm) => { return vm.countRam });
   }
 
-  countDisk(vms: VmInstance[]): number{
+  countDisk(vms: VmInstance[]): number {
     return _.sumBy(vms, (vm) => { return vm.countDisks });
   }
 
