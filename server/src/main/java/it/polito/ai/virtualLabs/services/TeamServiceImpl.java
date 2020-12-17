@@ -702,13 +702,13 @@ public class TeamServiceImpl implements TeamService {
             }
         }
 
-        if(vmModel.getMaxVms() != vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxVms()){
-            if(vmModel.getMaxVms() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxVms())
-                vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxVcpus(vmModel.getMaxVms());
+        if(vmModel.getMaxVcpus() != vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxVcpus()){
+            if(vmModel.getMaxVcpus() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxVcpus())
+                vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxVcpus(vmModel.getMaxVcpus());
             else {
                 if(false) //TODO: implement control query
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "maxVcpus");
-                vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxVms(vmModel.getMaxVms());
+                vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxVcpus(vmModel.getMaxVcpus());
             }
         }
 
