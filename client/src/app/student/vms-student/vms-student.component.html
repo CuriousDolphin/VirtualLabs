@@ -6,8 +6,8 @@
                 <mat-grid-tile colspan="4" rowspan="2">VM</mat-grid-tile>
                 <mat-grid-tile colspan="10" rowspan="2">Creator</mat-grid-tile>
                 <mat-grid-tile colspan="10" rowspan="2">Accessible</mat-grid-tile>
-                <mat-grid-tile colspan="10" rowspan="2">State</mat-grid-tile>
                 <mat-grid-tile colspan="30" rowspan="1">Resources</mat-grid-tile>
+                <mat-grid-tile colspan="10" rowspan="2">State</mat-grid-tile>
                 <mat-grid-tile colspan="36" rowspan="2">Actions</mat-grid-tile>
                 <mat-grid-tile colspan="10" rowspan="1">VCPUs</mat-grid-tile>
                 <mat-grid-tile colspan="10" rowspan="1">RAM</mat-grid-tile>
@@ -21,12 +21,10 @@
                         <mat-grid-tile colspan="4">{{id + 1}}</mat-grid-tile>
                         <mat-grid-tile colspan="10">{{ vmInstance.creator }}
                         </mat-grid-tile>
-                        <mat-grid-tile *ngIf="vmInstance.owner == null"
-                            colspan="5">
+                        <mat-grid-tile *ngIf="vmInstance.owner == null" colspan="5">
                             <mat-icon matListIcon>people</mat-icon>
                         </mat-grid-tile>
-                        <mat-grid-tile *ngIf="vmInstance.owner != null"
-                            colspan="5">
+                        <mat-grid-tile *ngIf="vmInstance.owner != null" colspan="5">
                             <mat-icon matListIcon>person</mat-icon>
                         </mat-grid-tile>
                         <mat-grid-tile *ngIf="vmInstance.owner == null || vmInstance.owner == this.studentId"
@@ -37,12 +35,6 @@
                             colspan="5">
                             <mat-icon matListIcon>lock</mat-icon>
                         </mat-grid-tile>
-                        <mat-grid-tile *ngIf="vmInstance.state == 0" colspan="10">
-                            <mat-icon matListIcon>stop</mat-icon>
-                        </mat-grid-tile>
-                        <mat-grid-tile *ngIf="vmInstance.state == 1" colspan="10">
-                            <mat-icon matListIcon>play_arrow</mat-icon>
-                        </mat-grid-tile>
                         <mat-grid-tile colspan="10">
                             {{ vmInstance.countVcpus }}
                         </mat-grid-tile>
@@ -51,6 +43,12 @@
                         </mat-grid-tile>
                         <mat-grid-tile colspan="10">
                             {{ vmInstance.countDisks }} GB
+                        </mat-grid-tile>
+                        <mat-grid-tile *ngIf="vmInstance.state == 0" colspan="10">
+                            <mat-icon matListIcon>stop</mat-icon>
+                        </mat-grid-tile>
+                        <mat-grid-tile *ngIf="vmInstance.state == 1" colspan="10">
+                            <mat-icon matListIcon>play_arrow</mat-icon>
                         </mat-grid-tile>
                         <mat-grid-tile *ngIf="vmInstance.state == 0" colspan="9">
                             <div *ngIf="canRun$ | async; else cantRun">
@@ -142,7 +140,7 @@
                 <mat-card class="mat-elevation-z3">
                     <mat-grid-list cols="100" rowHeight="5rem" class="vmTable">
                         <mat-grid-tile colspan="4">{{_vmInstances.length + 1}}</mat-grid-tile>
-                        <mat-grid-tile colspan="30"></mat-grid-tile>
+                        <mat-grid-tile colspan="20"></mat-grid-tile>
                         <mat-grid-tile colspan="10">
                             up to {{vcpusAvailable}}
                         </mat-grid-tile>
@@ -152,8 +150,10 @@
                         <mat-grid-tile colspan="10">
                             up to {{diskAvailable}} GB
                         </mat-grid-tile>
+                        <mat-grid-tile colspan="10"></mat-grid-tile>
                         <mat-grid-tile colspan="36">
-                            <button mat-raised-button color="primary" (click)="createVmDialog()" class="myButton">
+                            <button mat-raised-button color="primary" (click)="createVmDialog()" class="myButton"
+                                [disabled]="vcpusAvailable === '0' || ramAvailable === '0' || diskAvailable === '0'">
                                 <mat-icon matListIcon>
                                     add</mat-icon>
                                 NEW VIRTUAL MACHINE
@@ -173,13 +173,12 @@
             <div>
                 <mat-grid-list cols="100" rowHeight="4rem" style="margin-right: 2.2%; margin-left: 2.2%;">
                     <mat-grid-tile colspan="4">{{_vmInstances.length}} / {{_vmModel.maxVms}}</mat-grid-tile>
-                    <mat-grid-tile colspan="10"></mat-grid-tile>
-                    <mat-grid-tile colspan="10"></mat-grid-tile>
-                    <mat-grid-tile colspan="10">
-                        {{countRunningVms(_vmInstances)}} / {{_vmModel.maxRunningVms}}</mat-grid-tile>
+                    <mat-grid-tile colspan="20"></mat-grid-tile>
                     <mat-grid-tile colspan="10">{{countVcpus(_vmInstances)}} / {{_vmModel.maxVcpus}}</mat-grid-tile>
                     <mat-grid-tile colspan="10">{{countRam(_vmInstances)}} / {{_vmModel.maxRam}} GB</mat-grid-tile>
                     <mat-grid-tile colspan="10">{{countDisk(_vmInstances)}} / {{_vmModel.maxDisk}} GB</mat-grid-tile>
+                    <mat-grid-tile colspan="10">
+                        {{countRunningVms(_vmInstances)}} / {{_vmModel.maxRunningVms}}</mat-grid-tile>
                     <mat-grid-tile colspan="36"></mat-grid-tile>
                 </mat-grid-list>
             </div>

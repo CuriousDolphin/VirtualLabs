@@ -686,7 +686,6 @@ public class TeamServiceImpl implements TeamService {
             if(vmModel.getMaxVms() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxVms())
                 vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxVms(vmModel.getMaxVms());
             else {
-                System.out.println("--------"+vmInstanceRepository.getMaxVmsPerTeam());
                 if(vmInstanceRepository.getMaxVmsPerTeam() > vmModel.getMaxVms())
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "maxVms");
                 vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxVms(vmModel.getMaxVms());

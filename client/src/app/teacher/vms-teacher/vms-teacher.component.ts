@@ -7,7 +7,7 @@ import { Course } from 'src/app/models/course.model';
 import * as _ from 'lodash';
 import { DialogEditModelComponent } from './dialog-edit-model/dialog-edit-model.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { filter } from 'lodash';
+import { OpenVmComponent } from 'src/app/student/vms-student/open-vm/open-vm.component';
 
 @Component({
   selector: 'app-vms-teacher',
@@ -19,6 +19,7 @@ export class VmsTeacherComponent implements OnInit {
   @Output() editModel = new EventEmitter<JSON>();
 
   editModelDialog: MatDialogRef<DialogEditModelComponent, any>
+  openVmDialog: MatDialogRef<OpenVmComponent, any>
 
   courseAcronym$: BehaviorSubject<String> = new BehaviorSubject("");
 
@@ -98,7 +99,7 @@ export class VmsTeacherComponent implements OnInit {
     this.editModelDialog.afterClosed().subscribe((newModel) => { this.emitEditModel(newModel) });
   }
 
-  public emitEditModel(newModel: JSON) {
+  public emitEditModel(newModel: JSON): void{
     if (newModel !== undefined) {
       if (newModel['maxVms'] != this._vmModel.maxVms ||
         newModel['maxRunningVms'] != this._vmModel.maxRunningVms ||
@@ -107,6 +108,18 @@ export class VmsTeacherComponent implements OnInit {
         newModel['maxDisk'] != this._vmModel.maxDisk)
         this.editModel.emit(newModel);
     }
+  }
+
+  OpenVm(vm: VmInstance): void{
+    this.openVmDialog = this.dialog.open(OpenVmComponent, {
+      data: {
+        countVcpus: vm.countVcpus,
+        countRam: vm.countRam,
+        countDisk: vm.countDisks,
+        courseAc: this.courseAcronym$.getValue(),
+        image: vm.image, //TODO: link
+      },
+    });
   }
 
 }

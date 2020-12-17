@@ -1,5 +1,5 @@
 <ng-container *ngIf="hasLoadedVmModel && hasLoadedVmInstances && hasLoadedTeams">
-    <mat-card >
+    <mat-card class="mat-elevation-z3">
         <mat-card-title>
             Virtual Machine MODEL accessible to each team:
         </mat-card-title>
@@ -34,7 +34,7 @@
                     Disk
                 </mat-grid-tile>
                 <mat-grid-tile colspan="20" rowspan="3">
-                    <img src="http://localhost:8080/VM_images/defaultVmImage.png" style="height: 100%; width: 65%;">
+                    <img src="http://localhost:8080/VM_images/defaultVmImage.png" style="height: 100px; width: 200px;">
                 </mat-grid-tile>
                 <mat-grid-tile colspan="20" rowspan="2">
                     {{_vmModel.maxVms}} VMs
@@ -71,13 +71,13 @@
                 </mat-card-header>
                 <mat-card-content>
                     <div *ngIf="team.vmInstances.length !== 0">
-                        <mat-grid-list cols="100" rowHeight="3rem" style="margin-right: 2.2%; margin-left: 2.2%;">
-                            <mat-grid-tile colspan="4" rowspan="2">VM</mat-grid-tile>
+                        <mat-grid-list cols="80" rowHeight="3rem" style="margin-right: 2.2%; margin-left: 2.2%;">
+                            <mat-grid-tile colspan="10" rowspan="2">VM</mat-grid-tile>
                             <mat-grid-tile colspan="10" rowspan="2">Creator</mat-grid-tile>
                             <mat-grid-tile colspan="10" rowspan="2">Accessibility</mat-grid-tile>
-                            <mat-grid-tile colspan="10" rowspan="2">State</mat-grid-tile>
                             <mat-grid-tile colspan="30" rowspan="1">Resources</mat-grid-tile>
-                            <mat-grid-tile colspan="36" rowspan="2">Actions</mat-grid-tile>
+                            <mat-grid-tile colspan="10" rowspan="2">State</mat-grid-tile>
+                            <mat-grid-tile colspan="10" rowspan="2">Access</mat-grid-tile>
                             <mat-grid-tile colspan="10" rowspan="1">VCPUs</mat-grid-tile>
                             <mat-grid-tile colspan="10" rowspan="1">RAM</mat-grid-tile>
                             <mat-grid-tile colspan="10" rowspan="1">Disk</mat-grid-tile>
@@ -85,8 +85,8 @@
                     </div>
                     <div *ngFor="let vmInstance of team.vmInstances; let i = index">
                         <mat-card class="mat-elevation-z3">
-                            <mat-grid-list cols="100" rowHeight="4rem">
-                                <mat-grid-tile colspan="4">{{i + 1}}</mat-grid-tile>
+                            <mat-grid-list cols="80" rowHeight="4rem">
+                                <mat-grid-tile colspan="10">{{i + 1}}</mat-grid-tile>
                                 <mat-grid-tile colspan="10">{{vmInstance.creator}}</mat-grid-tile>
                                 <mat-grid-tile colspan="10" *ngIf="vmInstance.creator === vmInstance.owner">
                                     <mat-icon matListIcon>person</mat-icon>
@@ -94,41 +94,18 @@
                                 <mat-grid-tile colspan="10" *ngIf="vmInstance.creator !== vmInstance.owner">
                                     <mat-icon matListIcon>people</mat-icon>
                                 </mat-grid-tile>
+                                <mat-grid-tile colspan="10">{{vmInstance.countVcpus}}</mat-grid-tile>
+                                <mat-grid-tile colspan="10">{{vmInstance.countRam}} GB</mat-grid-tile>
+                                <mat-grid-tile colspan="10">{{vmInstance.countDisks}} GB</mat-grid-tile>
                                 <mat-grid-tile colspan="10" *ngIf="vmInstance.state === 0">
                                     <mat-icon matListIcon>stop</mat-icon>
                                 </mat-grid-tile>
                                 <mat-grid-tile colspan="10" *ngIf="vmInstance.state === 1">
                                     <mat-icon matListIcon>play_arrow</mat-icon>
                                 </mat-grid-tile>
-                                <mat-grid-tile colspan="10">{{vmInstance.countVcpus}}</mat-grid-tile>
-                                <mat-grid-tile colspan="10">{{vmInstance.countRam}} GB</mat-grid-tile>
-                                <mat-grid-tile colspan="10">{{vmInstance.countDisks}} GB</mat-grid-tile>
-                                <mat-grid-tile *ngIf="vmInstance.state == 0" colspan="9">
-                                    <div *ngIf="vmInstance.state === 0; else cantRun">
-                                        <button mat-raised-button color="accent" class="myButton">
-                                            <mat-icon matListIcon>
-                                                play_arrow</mat-icon>
-                                            START
-                                        </button>
-                                    </div>
-                                    <ng-template #cantRun>
-                                        <button mat-raised-button disabled class="myButton">
-                                            <mat-icon matListIcon>
-                                                play_arrow</mat-icon>
-                                            START
-                                        </button>
-                                    </ng-template>
-                                </mat-grid-tile>
-                                <mat-grid-tile *ngIf="vmInstance.state === 1" colspan="9">
-                                    <button mat-raised-button color="primary" class="myButton">
-                                        <mat-icon matListIcon>
-                                            stop</mat-icon>
-                                        STOP
-                                    </button>
-                                </mat-grid-tile>
-                                <mat-grid-tile colspan="9">
-                                    <button mat-raised-button color="accent" *ngIf="vmInstance.state == 1; else cantOpen"
-                                        class="myButton">
+                                <mat-grid-tile colspan="10">
+                                    <button mat-raised-button color="accent"
+                                        *ngIf="vmInstance.state == 1; else cantOpen" class="myButton" (click)="OpenVm(vmInstance)">
                                         <mat-icon matListIcon>
                                             launch</mat-icon>
                                         OPEN
@@ -141,50 +118,23 @@
                                         </button>
                                     </ng-template>
                                 </mat-grid-tile>
-                                <mat-grid-tile colspan="9">
-                                    <button mat-raised-button color="primary"
-                                        *ngIf="vmInstance.state == 0; else cantCreate" class="myButton">
-                                        <mat-icon matListIcon>
-                                            create</mat-icon>
-                                        EDIT
-                                    </button>
-                                    <ng-template #cantCreate>
-                                        <button mat-raised-button disabled class="myButton">
-                                            <mat-icon matListIcon>
-                                                create</mat-icon>
-                                            EDIT
-                                        </button>
-                                    </ng-template>
-                                </mat-grid-tile>
-                                <mat-grid-tile colspan="9">
-                                    <button mat-raised-button color="primary"
-                                        *ngIf="vmInstance.state === 0; else cantDelete" class="myButton">
-                                        <mat-icon matListIcon>
-                                            delete</mat-icon>
-                                        DELETE
-                                    </button>
-                                    <ng-template #cantDelete>
-                                        <button mat-raised-button disabled class="myButton">
-                                            <mat-icon matListIcon>
-                                                delete</mat-icon>
-                                            DELETE
-                                        </button>
-                                    </ng-template>
-                                </mat-grid-tile>
                             </mat-grid-list>
                         </mat-card>
                     </div>
                     <div>
-                        <mat-grid-list cols="100" rowHeight="4rem" style="margin-right: 2.2%; margin-left: 2.2%;">
-                            <mat-grid-tile colspan="4">{{team.vmInstances.length}} / {{_vmModel.maxVms}}</mat-grid-tile>
-                            <mat-grid-tile colspan="10"></mat-grid-tile>
-                            <mat-grid-tile colspan="10"></mat-grid-tile>
+                        <mat-grid-list cols="80" rowHeight="4rem" style="margin-right: 2.2%; margin-left: 2.2%;">
+                            <mat-grid-tile colspan="10">{{team.vmInstances.length}} / {{_vmModel.maxVms}}
+                            </mat-grid-tile>
+                            <mat-grid-tile colspan="20"></mat-grid-tile>
+                            <mat-grid-tile colspan="10">{{countVcpus(team.vmInstances)}} / {{_vmModel.maxVcpus}}
+                            </mat-grid-tile>
+                            <mat-grid-tile colspan="10">{{countRam(team.vmInstances)}} / {{_vmModel.maxRam}} GB
+                            </mat-grid-tile>
+                            <mat-grid-tile colspan="10">{{countDisk(team.vmInstances)}} / {{_vmModel.maxDisk}} GB
+                            </mat-grid-tile>
                             <mat-grid-tile colspan="10" *ngIf="team.vmInstances !== null">
                                 {{countRunningVms(team.vmInstances)}} / {{_vmModel.maxRunningVms}}</mat-grid-tile>
-                            <mat-grid-tile colspan="10">{{countVcpus(team.vmInstances)}} / {{_vmModel.maxVcpus}}</mat-grid-tile>
-                            <mat-grid-tile colspan="10">{{countRam(team.vmInstances)}} / {{_vmModel.maxRam}} GB</mat-grid-tile>
-                            <mat-grid-tile colspan="10">{{countDisk(team.vmInstances)}} / {{_vmModel.maxDisk}} GB</mat-grid-tile>
-                            <mat-grid-tile colspan="36"></mat-grid-tile>
+                            <mat-grid-tile colspan="10"></mat-grid-tile>
                         </mat-grid-list>
                     </div>
                 </mat-card-content>

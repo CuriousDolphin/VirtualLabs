@@ -7,9 +7,7 @@ export interface DialogData {
   countVcpus: number;
   countRam: number;
   countDisk: number;
-  fakeId: number;
   image: String;
-  course: String;
   courseAc: String;
 }
 

@@ -131,8 +131,7 @@ export class VmsStudentComponent implements OnInit {
         countVcpus: vm.countVcpus,
         countRam: vm.countRam,
         countDisk: vm.countDisks,
-        fakeId: this._vmInstances.indexOf(vm) + 1,
-        course: this.course,
+        courseAc: this.courseAc,
         image: vm.image, //TODO: link
       },
     });
