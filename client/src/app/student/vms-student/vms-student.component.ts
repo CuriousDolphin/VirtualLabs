@@ -6,8 +6,9 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DialogCreateVmComponent } from './dialog-create-vm/dialog-create-vm.component';
 import { VmModel } from 'src/app/models/vm-model.model';
 import { DialogEditVmComponent } from './dialog-edit-vm/dialog-edit-vm.component';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { OpenVmComponent } from './open-vm/open-vm.component';
+import { DialogConfirmDeleteComponent } from './dialog-confirm-delete/dialog-confirm-delete.component';
 
 @Component({
   selector: 'app-vms-student',
@@ -55,6 +56,7 @@ export class VmsStudentComponent implements OnInit {
   }
   dialogCreateRef: MatDialogRef<DialogCreateVmComponent, any>
   dialogEditRef: MatDialogRef<DialogEditVmComponent, any>
+  dialogDeleteRef: MatDialogRef<DialogConfirmDeleteComponent, any>
   openVmDialog: MatDialogRef<OpenVmComponent, any>
   hasTeam = false;
   team: Team;
@@ -134,8 +136,21 @@ export class VmsStudentComponent implements OnInit {
         countRam: vm.countRam,
         countDisk: vm.countDisks,
         courseAc: this.courseAc,
+        teamName: this.team.name,
         image: vm.image, //TODO: link
       },
+    });
+  }
+
+  confirmDeleteVm(vmInstance: VmInstance): void {
+    this.dialogDeleteRef = this.dialog.open(DialogConfirmDeleteComponent, {
+      data: { vm: vmInstance },
+      width: "18%",
+      height: "17%"
+    });
+    this.dialogDeleteRef.afterClosed().subscribe((value) => {
+      if (value !== null)
+        this.emitDeleteVm(value);
     });
   }
 

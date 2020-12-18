@@ -9,6 +9,7 @@ export interface DialogData {
   countDisk: number;
   image: String;
   courseAc: String;
+  teamName: String;
 }
 
 @Component({

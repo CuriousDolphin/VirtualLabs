@@ -50,6 +50,7 @@ import { DialogEditVmComponent } from './student/vms-student/dialog-edit-vm/dial
 import { OpenVmComponent } from './student/vms-student/open-vm/open-vm.component';
 import { VmsTeacherComponent } from './teacher/vms-teacher/vms-teacher.component';
 import { DialogEditModelComponent } from './teacher/vms-teacher/dialog-edit-model/dialog-edit-model.component';
+import { DialogConfirmDeleteComponent } from './student/vms-student/dialog-confirm-delete/dialog-confirm-delete.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import { DialogEditModelComponent } from './teacher/vms-teacher/dialog-edit-mode
     OpenVmComponent,
     VmsTeacherComponent,
     DialogEditModelComponent,
+    DialogConfirmDeleteComponent,
   ],
   imports: [
     BrowserModule,

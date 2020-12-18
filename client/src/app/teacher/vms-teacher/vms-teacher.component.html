@@ -104,8 +104,8 @@
                                     <mat-icon matListIcon>play_arrow</mat-icon>
                                 </mat-grid-tile>
                                 <mat-grid-tile colspan="10">
-                                    <button mat-raised-button color="accent"
-                                        *ngIf="vmInstance.state == 1; else cantOpen" class="myButton" (click)="OpenVm(vmInstance)">
+                                    <button mat-raised-button color="primary"
+                                        *ngIf="vmInstance.state == 1; else cantOpen" class="myButton" (click)="OpenVm(vmInstance, team.name)">
                                         <mat-icon matListIcon>
                                             launch</mat-icon>
                                         OPEN

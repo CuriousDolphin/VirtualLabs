@@ -120,7 +120,7 @@
                             <mat-grid-tile colspan="9">
                                 <button mat-raised-button color="primary"
                                     *ngIf="vmInstance.state === 0 && (vmInstance.owner === null || vmInstance.owner === this.studentId); else cantDelete"
-                                    (click)="emitDeleteVm(vmInstance)" class="myButton">
+                                    (click)="confirmDeleteVm(vmInstance)" class="myButton">
                                     <mat-icon matListIcon>
                                         delete</mat-icon>
                                     DELETE

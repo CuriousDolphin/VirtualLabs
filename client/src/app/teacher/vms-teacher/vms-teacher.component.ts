@@ -110,13 +110,14 @@ export class VmsTeacherComponent implements OnInit {
     }
   }
 
-  OpenVm(vm: VmInstance): void{
+  OpenVm(vm: VmInstance, team: String): void{
     this.openVmDialog = this.dialog.open(OpenVmComponent, {
       data: {
         countVcpus: vm.countVcpus,
         countRam: vm.countRam,
         countDisk: vm.countDisks,
         courseAc: this.courseAcronym$.getValue(),
+        teamName: team,
         image: vm.image, //TODO: link
       },
     });
