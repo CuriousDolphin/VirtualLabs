@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { PaperSnapshot } from 'src/app/models/papersnapshot.model';
 import { formatDate } from '@angular/common'
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+
 
 @Component({
   selector: 'app-assignment-papersnapshot',
@@ -10,7 +12,20 @@ import { formatDate } from '@angular/common'
 })
 export class AssignmentPapersnapshotComponent implements OnInit {
 
-  constructor() { }
+  formGroup: FormGroup;
+  toReview = new FormControl(true)
+  vote = new FormControl({value:0, disabled: this.toReview.value})
+  solution = new FormControl("")
+
+  constructor(
+    private formBuilder: FormBuilder
+  ) {
+    this.formGroup = formBuilder.group({
+      toReview: this.toReview,
+      vote: this.vote,
+      solution: this.solution
+    })
+  }
 
   colsToDisplay = ["content", "submissionDate"]
   dataSource = new MatTableDataSource<PaperSnapshot>()

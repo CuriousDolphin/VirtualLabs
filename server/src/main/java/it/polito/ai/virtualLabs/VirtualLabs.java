@@ -278,6 +278,7 @@ public class VirtualLabs {
                         .roles(Arrays.asList("ROLE_STUDENT"))
                         .build()
                 );
+
                 Student student1 = Student.builder()
                         .id("s123456")
                         .email("s123456@studenti.polito.it")
