@@ -2,7 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { PaperSnapshot } from 'src/app/models/papersnapshot.model';
 import { formatDate } from '@angular/common'
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 
 
 @Component({
@@ -13,17 +14,17 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 export class AssignmentPapersnapshotComponent implements OnInit {
 
   formGroup: FormGroup;
-  toReview = new FormControl(true)
-  vote = new FormControl({value:0, disabled: this.toReview.value})
-  solution = new FormControl("")
+  toReviewControl = new FormControl(true)
+  voteControl = new FormControl({value: 1, disabled: this.toReviewControl.value}, [Validators.min(1), Validators.max(30)])
+  solutionControl = new FormControl("")
 
   constructor(
     private formBuilder: FormBuilder
   ) {
     this.formGroup = formBuilder.group({
-      toReview: this.toReview,
-      vote: this.vote,
-      solution: this.solution
+      toReview: this.toReviewControl,
+      vote: this.voteControl,
+      solution: this.solutionControl
     })
   }
 
@@ -42,6 +43,9 @@ export class AssignmentPapersnapshotComponent implements OnInit {
   ngOnInit(): void {
   }
 
-
+  toggleVote(event: MatCheckboxChange) {
+    const control = this.formGroup.get("vote")
+    event.checked ? control.disable() : control.enable()
+  }
 
 }
