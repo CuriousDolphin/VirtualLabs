@@ -9,7 +9,6 @@ import it.polito.ai.virtualLabs.repositories.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -696,7 +695,7 @@ public class TeamServiceImpl implements TeamService {
             if(vmModel.getMaxRunningVms() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxRunningVms())
                 vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxRunningVms(vmModel.getMaxRunningVms());
             else {
-                if(false) //TODO: implement control query
+                if(vmInstanceRepository.getMaxVmsRunningPerTeam() > vmModel.getMaxRunningVms())
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "maxRunningVms");
                 vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxRunningVms(vmModel.getMaxRunningVms());
             }
@@ -706,7 +705,7 @@ public class TeamServiceImpl implements TeamService {
             if(vmModel.getMaxVcpus() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxVcpus())
                 vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxVcpus(vmModel.getMaxVcpus());
             else {
-                if(false) //TODO: implement control query
+                if(vmInstanceRepository.getMaxVcpusPerTeam() > vmModel.getMaxVcpus())
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "maxVcpus");
                 vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxVcpus(vmModel.getMaxVcpus());
             }
@@ -716,7 +715,7 @@ public class TeamServiceImpl implements TeamService {
             if(vmModel.getMaxRam() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxRam())
                 vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxRam(vmModel.getMaxRam());
             else {
-                if(false) //TODO: implement control query
+                if(vmInstanceRepository.getMaxRamPerTeam() > vmModel.getMaxRam())
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "maxRam");
                 vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxRam(vmModel.getMaxRam());
             }
@@ -726,8 +725,8 @@ public class TeamServiceImpl implements TeamService {
             if(vmModel.getMaxDisk() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxDisk())
                 vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxDisk(vmModel.getMaxDisk());
             else {
-                if(false) //TODO: implement control query
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "maxDiak");
+                if(vmInstanceRepository.getMaxDiskPerTeam() > vmModel.getMaxDisk())
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "maxDisk");
                 vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxDisk(vmModel.getMaxDisk());
             }
         }

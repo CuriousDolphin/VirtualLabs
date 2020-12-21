@@ -21,6 +21,16 @@ public interface VmInstanceRepository extends JpaRepository<VmInstance,Long> {
     @Query("SELECT COUNT(distinct vm) FROM VmInstance vm GROUP BY vm.team")
     int getMaxVmsPerTeam();
 
-    //TODO: implement implement control queries
+    @Query("SELECT SUM(vm.state) FROM VmInstance vm GROUP BY vm.team")
+    int getMaxVmsRunningPerTeam();
+
+    @Query("SELECT SUM(vm.countVcpus) FROM VmInstance vm GROUP BY vm.team")
+    int getMaxVcpusPerTeam();
+
+    @Query("SELECT SUM(vm.countRam) FROM VmInstance vm GROUP BY vm.team")
+    int getMaxRamPerTeam();
+
+    @Query("SELECT SUM(vm.countDisks) FROM VmInstance vm GROUP BY vm.team")
+    int getMaxDiskPerTeam();
 
 }
