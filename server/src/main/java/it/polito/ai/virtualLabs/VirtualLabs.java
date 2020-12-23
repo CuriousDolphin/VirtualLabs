@@ -36,7 +36,7 @@ public class VirtualLabs {
     }
 
     @Bean
-    CommandLineRunner runner(ModelMapper modelMapper, TeamRepository teamRepository, UserRepository userRepository, CourseRepository courseRepository, PasswordEncoder passwordEncoder, VmModelRepository vmModelRepository, StudentRepository studentRepository, TeamService teamService, NotificationService notificationService, TokenTeamRepository tokenTeamRepository) {
+    CommandLineRunner runner(ModelMapper modelMapper, TeamRepository teamRepository, UserRepository userRepository, CourseRepository courseRepository, PasswordEncoder passwordEncoder, VmModelRepository vmModelRepository, StudentRepository studentRepository, TeamService teamService, NotificationService notificationService, TokenTeamRepository tokenTeamRepository, TeacherRepository teacherRepository) {
         return new CommandLineRunner() {
 
             @Override
@@ -44,7 +44,7 @@ public class VirtualLabs {
 
                 //create default VmConfiguration if not exists
 
-                generateMockData(courseRepository, vmModelRepository, teamRepository, userRepository, passwordEncoder, studentRepository, teamService, notificationService, tokenTeamRepository);
+                generateMockData(courseRepository, vmModelRepository, teamRepository, userRepository, passwordEncoder, studentRepository, teamService, notificationService, tokenTeamRepository, teacherRepository);
 
                 System.out.println("Printing all courses:");
                 courseRepository.findAll().forEach(v ->  System.out.println(" - Course :" + v.toString()));
@@ -58,7 +58,7 @@ public class VirtualLabs {
     }
 
     /* generates mock data (3 courses, admin, 2 students, team, teacher) */
-    public void generateMockData(CourseRepository cr, VmModelRepository vmr, TeamRepository tr, UserRepository ur, PasswordEncoder passwordEncoder, StudentRepository sr, TeamService teamService, NotificationService notificationService, TokenTeamRepository ttr) {
+    public void generateMockData(CourseRepository cr, VmModelRepository vmr, TeamRepository tr, UserRepository ur, PasswordEncoder passwordEncoder, StudentRepository sr, TeamService teamService, NotificationService notificationService, TokenTeamRepository ttr, TeacherRepository tcr) {
         if(!ur.findAll().stream().anyMatch(u -> u.getUsername().equals("admin@polito.it"))) {
             try {
                 //Course: PDS
@@ -130,13 +130,20 @@ public class VirtualLabs {
                 );
                 //User-teacher
                 ur.save(User.builder()
-                        .id("s654321")
+                        .id("d654321")
                         .username("teacher@polito.it")
                         .enabled(true)
                         .password(passwordEncoder.encode("pwd"))
                         .roles(Arrays.asList("ROLE_PROF"))
                         .build()
                 );
+                Teacher newTeacher  = Teacher.builder()
+                        .id("d654321")
+                        .email("teacher@polito.it")
+                        .lastName("Paperoni")
+                        .name("Paperon")
+                        .build();
+                tcr.save(newTeacher);
                 //set admin credentials to call protected functions
                SecurityContext ctx = SecurityContextHolder.createEmptyContext();
                 SecurityContextHolder.setContext(ctx);
