@@ -35,7 +35,7 @@ export class AuthService {
       username,
       password,
     };
-    return this.http.post(BASE_PATH + "signin", body).pipe(
+    return this.http.post(BASE_PATH + "login", body).pipe(
       tap((evt) => {
         if (_.get(evt, "token", null) != null) {
           // login
@@ -116,5 +116,21 @@ export class AuthService {
     this.currentUserSubject$.next(null);
     localStorage.removeItem("token");
     // this.toastService.success('user logged out')
+  }
+
+  register(username: string, password: string, confirmPassword: string, name: string, lastName: string): Observable<any> {
+    const body = {
+      username,
+      password,
+      confirmPassword,
+      name,
+      lastName
+    };
+    return this.http.post(BASE_PATH + 'signin', body).pipe(
+      catchError((e) => {
+        console.log('ERRORE REGISTRAZIONE');
+        return of(null);
+      })
+    );
   }
 }

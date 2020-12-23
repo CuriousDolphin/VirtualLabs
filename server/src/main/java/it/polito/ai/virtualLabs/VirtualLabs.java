@@ -41,6 +41,7 @@ public class VirtualLabs {
 
             @Override
             public void run(String... args) throws Exception {
+
                 //create default VmConfiguration if not exists
 
                 generateMockData(courseRepository, vmModelRepository, teamRepository, userRepository, passwordEncoder, studentRepository, teamService, notificationService, tokenTeamRepository);

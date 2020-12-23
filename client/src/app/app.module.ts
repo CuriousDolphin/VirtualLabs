@@ -37,6 +37,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatCardModule } from "@angular/material/card";
 import { StudentComponent } from "./student/student.component";
 import { StudentCourseDashboard } from "./student/student-course-dashboard/student-course-dashboard";
+import { RegisterDialogComponent } from "./auth/register-dialog/register-dialog.component";
 import { TeamsComponent } from "./student/teams/teams.component";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { StudentLandingPageComponent } from "./student/student-landing-page/student-landing-page.component";
@@ -62,6 +63,7 @@ import { DialogConfirmDeleteComponent } from "./student/vms-student/dialog-confi
     TeacherComponent,
     CourseDashboard,
     CourseDialogComponent,
+    RegisterDialogComponent,
     ToastComponent,
     StudentComponent,
     StudentCourseDashboard,
@@ -116,6 +118,6 @@ import { DialogConfirmDeleteComponent } from "./student/vms-student/dialog-confi
     },
   ],
   bootstrap: [AppComponent],
-  entryComponents: [LoginDialogComponent],
+  entryComponents: [LoginDialogComponent, RegisterDialogComponent],
 })
 export class AppModule {}

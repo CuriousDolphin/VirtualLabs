@@ -129,5 +129,8 @@
       }
     }
   },
-  "defaultProject": "ai20-VirtualLabs"
+  "defaultProject": "ai20-VirtualLabs",
+  "cli": {
+    "analytics": "ca197fe4-3af4-4d20-b747-9d50d5353b8d"
+  }
 }

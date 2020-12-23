@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { Course } from 'src/app/models/course.model';
 import { CourseService } from 'src/app/services/course.service';
 import * as _ from 'lodash';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-course-dialog',
@@ -20,13 +21,12 @@ export class CourseDialogComponent implements OnInit {
 
 
   constructor(private courseService: CourseService,
+    private authService : AuthService,
     public dialogRef: MatDialogRef<CourseDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public fb: FormBuilder) {
 
     console.log(data);
-
-
     if (_.get(data, 'mode') === 'Create')
       this.courseForm = this.fb.group({
         name: ['', [Validators.required, Validators.minLength(3)]],
@@ -75,7 +75,7 @@ export class CourseDialogComponent implements OnInit {
         max: this.courseForm.get('max').value,
       };
       const oldcourse: Course = _.get(this.data, 'course');
-      this.courseSubscription = this.courseService.updateCourse(course, oldcourse.name).subscribe((evt) => {
+      this.courseSubscription = this.courseService.updateCourse(course, oldcourse.name,this.authService.getUserId()).subscribe((evt) => {
         this.isLoading = false;
         if (evt == null) {
           //  failed
@@ -98,7 +98,7 @@ export class CourseDialogComponent implements OnInit {
         min: this.courseForm.get('min').value,
         max: this.courseForm.get('max').value,
       };
-      this.courseSubscription = this.courseService.addCourse(course).subscribe((evt) => {
+      this.courseSubscription = this.courseService.addCourse(course,this.authService.getUserId()).subscribe((evt) => {
         this.isLoading = false;
         if (evt === null) {
           //  failed

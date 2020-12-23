@@ -13,6 +13,7 @@ import { MatSidenav } from "@angular/material/sidenav";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { BehaviorSubject, combineLatest, Observable, Subscription } from "rxjs";
 import { map, skip, switchMap, tap } from "rxjs/operators";
+import { AuthService } from '../auth/auth.service';
 import { Course } from "../models/course.model";
 import { CourseService } from "../services/course.service";
 import { ToastService } from "../services/toast.service";
@@ -40,7 +41,8 @@ export class TeacherComponent implements OnInit, OnDestroy {
     private courseService: CourseService,
     public dialog: MatDialog,
     private toastService: ToastService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -61,7 +63,7 @@ export class TeacherComponent implements OnInit, OnDestroy {
     this.courses$ = this._reloadSubject$.pipe(
       tap(() => (this.isLoading = true)),
       //TODO TAKE ONLY TEACHER COURSE
-      switchMap(() => this.courseService.getAllCourses()),
+      switchMap(() => this.courseService.getCoursesByTeacher(this.authService.getUserId())),
       tap(() => (this.isLoading = false))
     );
   }
