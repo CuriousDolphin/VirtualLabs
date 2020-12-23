@@ -66,6 +66,11 @@ public class TeamServiceImpl implements TeamService {
                 VmModel newVmModel = VmModel.builder()
                         .image("defaultVmImage.png")
                         .course(newCourse)
+                        .maxVms(6)
+                        .maxRunningVms(3)
+                        .maxVcpus(6*5)
+                        .maxRam(6*8)
+                        .maxDisk(6*500)
                         .build();
                 vmModelRepository.save(newVmModel);
                 courseRepository.save(newCourse);
