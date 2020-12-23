@@ -26,6 +26,9 @@ public interface TeamService {
 
     List<StudentDTO> getAllStudents();
 
+    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
+    List<CourseDTO> getAllTeacherCourses(String userId);
+
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     List<EnrolledStudentDTO> getEnrolledStudents(String courseName);
 
@@ -120,5 +123,8 @@ public interface TeamService {
 
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     VmModelDTO editVmModel(String course, VmModelDTO vmModel);
+
+
+
 
 }

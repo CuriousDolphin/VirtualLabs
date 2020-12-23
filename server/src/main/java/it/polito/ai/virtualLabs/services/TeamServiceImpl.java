@@ -669,7 +669,14 @@ public class TeamServiceImpl implements TeamService {
                 .map(course -> modelMapper.map(course, CourseDTO.class))
                 .collect(Collectors.toList());
     }
+    @Override
+    public VmModelDTO getVmModel(String courseName) {
+       if(courseRepository.findByNameIgnoreCase(courseName).isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND,courseName);
 
+       return modelMapper.map(vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(courseName).get()), VmModelDTO.class);
+    }
+
+    @Override
     public VmModelDTO getVmModel(String id, String team) {
         if (teamRepository.getByName(team) == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, team);
