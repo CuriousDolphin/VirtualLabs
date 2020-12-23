@@ -36,7 +36,7 @@ public class VirtualLabs {
     }
 
     @Bean
-    CommandLineRunner runner(ModelMapper modelMapper, TeamRepository teamRepository, UserRepository userRepository, CourseRepository courseRepository, PasswordEncoder passwordEncoder, VmModelRepository vmModelRepository, StudentRepository studentRepository, TeamService teamService, NotificationService notificationService, TokenTeamRepository tokenTeamRepository, TeacherRepository teacherRepository) {
+    CommandLineRunner runner(VmInstanceRepository vmInstanceRepository, TeamRepository teamRepository, UserRepository userRepository, CourseRepository courseRepository, PasswordEncoder passwordEncoder, VmModelRepository vmModelRepository, StudentRepository studentRepository, TeamService teamService, NotificationService notificationService, TokenTeamRepository tokenTeamRepository, TeacherRepository teacherRepository) {
         return new CommandLineRunner() {
 
             @Override
@@ -61,7 +61,7 @@ public class VirtualLabs {
                             .build());
                 }
 
-                generateMockData(courseRepository, vmModelRepository, teamRepository, userRepository, passwordEncoder, studentRepository, teamService, notificationService, tokenTeamRepository, teacherRepository);
+                generateMockData(teamRepository, vmInstanceRepository, courseRepository, vmModelRepository, userRepository, passwordEncoder, studentRepository, teamService, notificationService, tokenTeamRepository, teacherRepository);
 
                 System.out.println("Printing all users:");
                 userRepository.findAll().forEach(v ->  System.out.println(" - User: " + v.toString()));
@@ -75,7 +75,7 @@ public class VirtualLabs {
     }
 
     /* generates mock data (3 courses, admin, 2 students, team, teacher) */
-    public void generateMockData(CourseRepository cr, VmModelRepository vmr, TeamRepository tr, UserRepository ur, PasswordEncoder passwordEncoder, StudentRepository sr, TeamService teamService, NotificationService notificationService, TokenTeamRepository ttr, TeacherRepository tcr) {
+    public void generateMockData(TeamRepository tr, VmInstanceRepository ir, CourseRepository cr, VmModelRepository vmr, UserRepository ur, PasswordEncoder passwordEncoder, StudentRepository sr, TeamService teamService, NotificationService notificationService, TokenTeamRepository ttr, TeacherRepository tcr) {
         if(cr.findByNameIgnoreCase("Programmazione di Sistema").isEmpty()) {
             try {
                 //Course: PDS
@@ -199,11 +199,11 @@ public class VirtualLabs {
                 //enroll studenti in pds
                 teamService.enrollAll(new ArrayList<String>(Arrays.asList("s123456", "s234567")), "Programmazione di Sistema");
                 //crea team
-                TeamDTO teamDTO = teamService.proposeTeam("Programmazione di Sistema", "Team1", new ArrayList<String>(Arrays.asList("s234567")), "s123456", 1);
+                TeamDTO teamDTO = teamService.proposeTeam("Programmazione di Sistema", "TheDreamTeam", new ArrayList<String>(Arrays.asList("s234567")), "s123456", 1);
                 //invia e accetta inviti team
                 notificationService.notifyTeam(teamDTO, new ArrayList<String>(Arrays.asList("s123456", "s234567")), 1);
-                notificationService.confirm(ttr.findAll().stream().filter(tt -> tt.getTeam().getName().equals("Team1")).findFirst().get().getId()); // che brutto
-                notificationService.confirm(ttr.findAll().stream().filter(tt -> tt.getTeam().getName().equals("Team1")).findFirst().get().getId());
+                notificationService.confirm(ttr.findAll().stream().filter(tt -> tt.getTeam().getName().equals("TheDreamTeam")).findFirst().get().getId()); // che brutto
+                notificationService.confirm(ttr.findAll().stream().filter(tt -> tt.getTeam().getName().equals("TheDreamTeam")).findFirst().get().getId());
                 //User-Student: s345678 (Dario Verdi)
                 ur.save(User.builder()
                         .id("s345678")
@@ -220,6 +220,18 @@ public class VirtualLabs {
                         .name("Verdi")
                         .build();
                 sr.save(newStudent);
+                //insert VmInstance
+                ir.save(VmInstance.builder()
+                        .team(tr.getByName("TheDreamTeam"))
+                        .vmModel(vmr.getByCourse(tr.getByName("TheDreamTeam").getCourse()))
+                        .state(1)
+                        .countVcpus(5)
+                        .countRam(8)
+                        .countDisks(500)
+                        .owner(null)
+                        .creator(tr.getByName("TheDreamTeam").getOwner().getId())
+                        .image(vmr.getByCourse(tr.getByName("TheDreamTeam").getCourse()).getImage())
+                        .build());
             } catch (Exception e) {
                 System.out.println("Exception insert mock data: " + e.getMessage());
             } finally {
