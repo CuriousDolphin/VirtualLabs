@@ -123,6 +123,7 @@ public class VirtualLabs {
                 ur.save(User.builder()
                         .id("s000000")
                         .username("admin@polito.it")
+                        .enabled(true)
                         .password(passwordEncoder.encode("pwd"))
                         .roles(Arrays.asList("ROLE_STUDENT", "ROLE_PROF", "ROLE_ADMIN"))
                         .build()
@@ -131,17 +132,19 @@ public class VirtualLabs {
                 ur.save(User.builder()
                         .id("s654321")
                         .username("teacher@polito.it")
+                        .enabled(true)
                         .password(passwordEncoder.encode("pwd"))
                         .roles(Arrays.asList("ROLE_PROF"))
                         .build()
                 );
                 //set admin credentials to call protected functions
-                SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+               SecurityContext ctx = SecurityContextHolder.createEmptyContext();
                 SecurityContextHolder.setContext(ctx);
                 ctx.setAuthentication(new UsernamePasswordAuthenticationToken("admin@polito.it", "pwd"));
                 //User-Student: s123456 (Mario Rossi)
                 ur.save(User.builder()
                         .id("s123456")
+                        .enabled(true)
                         .username("s123456@studenti.polito.it")
                         .password(passwordEncoder.encode("pwd"))
                         .roles(Arrays.asList("ROLE_STUDENT"))
@@ -160,6 +163,7 @@ public class VirtualLabs {
                         .username("s234567@studenti.polito.it")
                         .password(passwordEncoder.encode("pwd"))
                         .roles(Arrays.asList("ROLE_STUDENT"))
+                        .enabled(true)
                         .build()
                 );
                 sr.save(Student.builder()
@@ -182,6 +186,7 @@ public class VirtualLabs {
                         .username("s345678@studenti.polito.it")
                         .password(passwordEncoder.encode("pwd"))
                         .roles(Arrays.asList("ROLE_STUDENT"))
+                        .enabled(true)
                         .build()
                 );
                 newStudent = Student.builder()
