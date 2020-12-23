@@ -61,15 +61,10 @@ public class TeamServiceImpl implements TeamService {
                     newCourse.addTeacher(optTeacher.get());
                 else
                     return false;
-                //default VmModel for course
-                try {
-                    Files.createDirectory(Path.of("src/main/webapp/WEB-INF/VM_images/" + course.getAcronym()));
-                    Files.copy(Path.of("src/main/webapp/WEB-INF/defaultVmImage.png"), new FileOutputStream("src/main/webapp/WEB-INF/VM_images/" + course.getAcronym() + "/"+ course.getAcronym() + "_default.png"));
-                } catch(Exception e) {
-                    System.out.println("error copying VM image");
-                }
+                if(!optTeacher.get().getId().equals("admin"))
+                    newCourse.addTeacher(teacherRepository.getOne("admin"));
                 VmModel newVmModel = VmModel.builder()
-                        .image(course.getAcronym() + "_default.png")
+                        .image("defaultVmImage.png")
                         .course(newCourse)
                         .build();
                 vmModelRepository.save(newVmModel);

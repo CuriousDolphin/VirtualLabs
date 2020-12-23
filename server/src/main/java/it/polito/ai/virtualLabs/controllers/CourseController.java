@@ -240,7 +240,7 @@ public class CourseController {
     }
 
     @GetMapping("/{name}/vmmodel")
-    VmModelDTO vmConfigurations(@PathVariable("name") String name) {
+    VmModelDTO vmModels(@PathVariable("name") String name) {
         return teamService.getVmModel(name);
     }
 

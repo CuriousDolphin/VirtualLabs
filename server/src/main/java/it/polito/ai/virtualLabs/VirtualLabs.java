@@ -42,16 +42,33 @@ public class VirtualLabs {
             @Override
             public void run(String... args) throws Exception {
 
-                //create default VmConfiguration if not exists
+                //insert User-Admin if not exists
+                if(userRepository.findByUsername("admin").isEmpty()) {
+                    userRepository.save(User.builder()
+                            .id("admin")
+                            .username("admin@polito.it")
+                            .enabled(true)
+                            .password(passwordEncoder.encode("pwd"))
+                            .roles(Arrays.asList("ROLE_STUDENT", "ROLE_PROF", "ROLE_ADMIN"))
+                            .build()
+                    );
+                    teacherRepository.save(Teacher.builder()
+                            .id("admin")
+                            .email("admin@polito.it")
+                            .lastName("admin")
+                            .name("admin")
+                            .courses(courseRepository.findAll())
+                            .build());
+                }
 
                 generateMockData(courseRepository, vmModelRepository, teamRepository, userRepository, passwordEncoder, studentRepository, teamService, notificationService, tokenTeamRepository, teacherRepository);
 
-                System.out.println("Printing all courses:");
-                courseRepository.findAll().forEach(v ->  System.out.println(" - Course :" + v.toString()));
                 System.out.println("Printing all users:");
-                userRepository.findAll().forEach(v ->  System.out.println(" - User :" + v.toString()));
+                userRepository.findAll().forEach(v ->  System.out.println(" - User: " + v.toString()));
+                System.out.println("Printing all courses:");
+                courseRepository.findAll().forEach(v ->  System.out.println(" - Course: " + v.toString()));
                 System.out.println("Printing all teams:");
-                teamRepository.findAll().forEach(v ->  System.out.println(" - Team :" + v.toString()));
+                teamRepository.findAll().forEach(v ->  System.out.println(" - Team: " + v.toString()));
 
             }
         };
@@ -59,20 +76,20 @@ public class VirtualLabs {
 
     /* generates mock data (3 courses, admin, 2 students, team, teacher) */
     public void generateMockData(CourseRepository cr, VmModelRepository vmr, TeamRepository tr, UserRepository ur, PasswordEncoder passwordEncoder, StudentRepository sr, TeamService teamService, NotificationService notificationService, TokenTeamRepository ttr, TeacherRepository tcr) {
-        if(!ur.findAll().stream().anyMatch(u -> u.getUsername().equals("admin@polito.it"))) {
+        if(cr.findByNameIgnoreCase("Programmazione di Sistema").isEmpty()) {
             try {
                 //Course: PDS
-                Course newCourse = Course.builder()
+                Course newCourse1 = Course.builder()
                         .name("Programmazione di Sistema")
                         .acronym("PDS")
                         .enabled(true)
                         .min(2)
                         .max(4)
                         .build();
-                cr.save(newCourse);
+                cr.save(newCourse1);
                 VmModel newVmModel = VmModel.builder()
                         .image("defaultVmImage.png")
-                        .course(newCourse)
+                        .course(newCourse1)
                         .maxVms(6)
                         .maxRunningVms(3)
                         .maxVcpus(6*5)
@@ -81,17 +98,17 @@ public class VirtualLabs {
                         .build();
                 vmr.save(newVmModel);
                 //Course: ML
-                newCourse = Course.builder()
+                Course newCourse2 = Course.builder()
                         .name("Machine Learning")
                         .acronym("ML")
                         .enabled(true)
                         .min(3)
                         .max(6)
                         .build();
-                cr.save(newCourse);
+                cr.save(newCourse2);
                 newVmModel = VmModel.builder()
                         .image("defaultVmImage.png")
-                        .course(newCourse)
+                        .course(newCourse2)
                         .maxVms(6)
                         .maxRunningVms(3)
                         .maxVcpus(6*5)
@@ -100,17 +117,17 @@ public class VirtualLabs {
                         .build();
                 vmr.save(newVmModel);
                 //Course: AI
-                newCourse = Course.builder()
+                Course newCourse3 = Course.builder()
                         .name("Applicazioni Internet")
                         .acronym("AI")
                         .enabled(false)
                         .min(5)
                         .max(10)
                         .build();
-                cr.save(newCourse);
+                cr.save(newCourse3);
                 newVmModel = VmModel.builder()
                         .image("defaultVmImage.png")
-                        .course(newCourse)
+                        .course(newCourse3)
                         .maxVms(6)
                         .maxRunningVms(3)
                         .maxVcpus(6*5)
@@ -118,34 +135,34 @@ public class VirtualLabs {
                         .maxDisk(6*500)
                         .build();
                 vmr.save(newVmModel);
-
-                //User-Admin
-                ur.save(User.builder()
-                        .id("s000000")
-                        .username("admin@polito.it")
-                        .enabled(true)
-                        .password(passwordEncoder.encode("pwd"))
-                        .roles(Arrays.asList("ROLE_STUDENT", "ROLE_PROF", "ROLE_ADMIN"))
-                        .build()
-                );
+                //set admin as teacher for all new courses
+                if(tcr.findByIdIgnoreCase("admin").isPresent())
+                    tcr.deleteById("admin");
+                tcr.save(Teacher.builder()
+                        .id("admin")
+                        .email("admin@polito.it")
+                        .lastName("admin")
+                        .name("admin")
+                        .courses(cr.findAll())
+                        .build());
                 //User-teacher
                 ur.save(User.builder()
-                        .id("d654321")
+                        .id("teacher")
                         .username("teacher@polito.it")
                         .enabled(true)
                         .password(passwordEncoder.encode("pwd"))
                         .roles(Arrays.asList("ROLE_PROF"))
                         .build()
                 );
-                Teacher newTeacher  = Teacher.builder()
-                        .id("d654321")
+                tcr.save(Teacher.builder()
+                        .id("teacher")
                         .email("teacher@polito.it")
-                        .lastName("Paperoni")
+                        .lastName("DePaperoni")
                         .name("Paperon")
-                        .build();
-                tcr.save(newTeacher);
+                        .courses(Arrays.asList(newCourse1, newCourse2, newCourse3))
+                        .build());
                 //set admin credentials to call protected functions
-               SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+                SecurityContext ctx = SecurityContextHolder.createEmptyContext();
                 SecurityContextHolder.setContext(ctx);
                 ctx.setAuthentication(new UsernamePasswordAuthenticationToken("admin@polito.it", "pwd"));
                 //User-Student: s123456 (Mario Rossi)
