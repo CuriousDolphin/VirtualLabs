@@ -3,4 +3,5 @@
 export const environment = {
   production: false,
   apiUrl: "/api/",
+  imgUrl: "/VM_images/" 
 };

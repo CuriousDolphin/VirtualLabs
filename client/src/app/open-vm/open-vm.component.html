@@ -1,0 +1,20 @@
+<div>
+  <mat-card-header
+    div
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+    style="padding-bottom: 16px"
+  >
+    <mat-card-title>
+      {{ data.teamName }} - VIRTUAL MACHINE {{ data.courseAc }} - [ VCPUS:
+      {{ data.countVcpus }}, RAM: {{ data.countRam }} GB, Disk:
+      {{ data.countDisk }} GB ]
+    </mat-card-title>
+    <button mat-raised-button color="warn" (click)="closeVm()">
+      CLOSE
+      <mat-icon matListIcon>close</mat-icon>
+    </button>
+  </mat-card-header>
+
+  <img [src]="data.image" width="100%" height="100%" />
+</div>

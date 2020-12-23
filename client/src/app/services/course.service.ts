@@ -15,16 +15,17 @@ import { Course } from "../models/course.model";
 import { TeamProposal } from "../models/teamProposal.model";
 import { NetErr } from "../models/error.model";
 import { ToastService } from "./toast.service";
-import { Team } from '../models/team.model';
-import { VmInstance } from '../models/vm-instance.model';
-import { VmModel } from '../models/vm-model.model';
+import { Team } from "../models/team.model";
+import { VmInstance } from "../models/vm-instance.model";
+import { VmModel } from "../models/vm-model.model";
 const BASE_PATH = environment.apiUrl;
+const IMG_PATH = environment.imgUrl;
 
 @Injectable({
   providedIn: "root",
 })
 export class CourseService {
-  constructor(private http: HttpClient, private toastService: ToastService) { }
+  constructor(private http: HttpClient, private toastService: ToastService) {}
 
   // TODO MODIFY THIS TO GETALLCOURSE BY TEACHER
   getAllCourses(): Observable<Course[]> {
@@ -106,23 +107,43 @@ export class CourseService {
 
   getTeamsPerCourse(courseName: String): Observable<Team[]> {
     const url = BASE_PATH + "courses/" + courseName + "/teams";
-    return this.http.get(url).pipe(catchError((e) => this.handleError(e)));
-  }
+    return this.http
+      .get(url)
+      .pipe(
+        map((teams: Team[]) =>
+          _.map(teams, (team: Team) => {
+            team.vmInstances.forEach((instance) =>
+              _.set(instance, "image", IMG_PATH + instance.image)
+            );
+            console.log(team);
 
-  getVmInstancesPerCourse(courseName: String): Observable<VmInstance[]> {
-    const url = BASE_PATH + "courses/" + courseName + "/vmInstances";
-    return this.http.get(url).pipe(catchError((e) => this.handleError(e)));
+            return team;
+          })
+        ),
+        tap((vm) => {
+          console.log(vm);
+        })
+      )
+      .pipe(catchError((e) => this.handleError(e)));
   }
 
   getCourseVmModel(courseName: String): Observable<VmModel> {
     const url = BASE_PATH + "courses/" + courseName + "/vmmodel";
-    return this.http.get(url).pipe(catchError((e) => this.handleError(e)));
+    return this.http
+      .get<VmModel>(url)
+      .pipe(
+        map((vm: VmModel) => {
+          vm.image = IMG_PATH + vm.image;
+          return vm;
+        })
+      )
+      .pipe(catchError((e) => this.handleError(e)));
   }
 
   editModel(course: String, newModel: JSON): Observable<VmModel> {
     const url = BASE_PATH + "courses/" + course + "/editvmmodel/";
     return this.http
-      .post<VmModel>(url, newModel)      
+      .post<VmModel>(url, newModel)
       .pipe(catchError((e) => this.handleError(e)));
   }
 

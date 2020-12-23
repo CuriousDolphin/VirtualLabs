@@ -1,22 +1,21 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { Team } from 'src/app/models/team.model';
-import { VmInstance } from 'src/app/models/vm-instance.model';
+import { Component, Input, OnInit, Output, EventEmitter } from "@angular/core";
+import { Team } from "src/app/models/team.model";
+import { VmInstance } from "src/app/models/vm-instance.model";
 import * as _ from "lodash";
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { DialogCreateVmComponent } from './dialog-create-vm/dialog-create-vm.component';
-import { VmModel } from 'src/app/models/vm-model.model';
-import { DialogEditVmComponent } from './dialog-edit-vm/dialog-edit-vm.component';
-import { BehaviorSubject } from 'rxjs';
-import { OpenVmComponent } from './open-vm/open-vm.component';
-import { DialogConfirmDeleteComponent } from './dialog-confirm-delete/dialog-confirm-delete.component';
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { DialogCreateVmComponent } from "./dialog-create-vm/dialog-create-vm.component";
+import { VmModel } from "src/app/models/vm-model.model";
+import { DialogEditVmComponent } from "./dialog-edit-vm/dialog-edit-vm.component";
+import { BehaviorSubject } from "rxjs";
+import { OpenVmComponent } from "../../open-vm/open-vm.component";
+import { DialogConfirmDeleteComponent } from "./dialog-confirm-delete/dialog-confirm-delete.component";
 
 @Component({
-  selector: 'app-vms-student',
-  templateUrl: './vms-student.component.html',
-  styleUrls: ['./vms-student.component.sass']
+  selector: "app-vms-student",
+  templateUrl: "./vms-student.component.html",
+  styleUrls: ["./vms-student.component.sass"],
 })
 export class VmsStudentComponent implements OnInit {
-
   canRun$: BehaviorSubject<boolean> = new BehaviorSubject(true);
   canCreate$: BehaviorSubject<number> = new BehaviorSubject(0);
 
@@ -29,18 +28,23 @@ export class VmsStudentComponent implements OnInit {
   @Input() studentId: String;
   @Input() course: String;
   @Input() courseAc: String;
+
   @Input() set vmInstances(vmInstances: VmInstance[]) {
     if (vmInstances !== null) {
-      this._vmInstances = vmInstances.sort((vm1: VmInstance, vm2: VmInstance) => {
-        if (vm1.id > vm2.id) return 1;
-        else return -1;
-      });
+      this._vmInstances = vmInstances.sort(
+        (vm1: VmInstance, vm2: VmInstance) => {
+          if (vm1.id > vm2.id) return 1;
+          else return -1;
+        }
+      );
       this.hasLoadedVmInstances = true;
+      if (this.hasLoadedVmModel == true) this.computeAvailability();
     }
   }
   @Input() set vmModel(vmModel: VmModel) {
     if (vmModel !== null) {
       this._vmModel = vmModel;
+      if (this.hasLoadedVmInstances == true) this.computeAvailability();
       this.hasLoadedVmModel = true;
     }
   }
@@ -54,56 +58,92 @@ export class VmsStudentComponent implements OnInit {
       }
     }
   }
-  dialogCreateRef: MatDialogRef<DialogCreateVmComponent, any>
-  dialogEditRef: MatDialogRef<DialogEditVmComponent, any>
-  dialogDeleteRef: MatDialogRef<DialogConfirmDeleteComponent, any>
-  openVmDialog: MatDialogRef<OpenVmComponent, any>
+  dialogCreateRef: MatDialogRef<DialogCreateVmComponent, any>;
+  dialogEditRef: MatDialogRef<DialogEditVmComponent, any>;
+  dialogDeleteRef: MatDialogRef<DialogConfirmDeleteComponent, any>;
+  openVmDialog: MatDialogRef<OpenVmComponent, any>;
   hasTeam = false;
   team: Team;
   _vmInstances: VmInstance[];
   _vmModel: VmModel;
   canCreateNumber: number[];
-  vcpusAvailable: String;
-  ramAvailable: String;
-  diskAvailable: String;
+  vcpusAvailable: number;
+  ramAvailable: number;
+  diskAvailable: number;
   hasLoadedVmModel = false;
   hasLoadedVmInstances = false;
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   ngOnChanges(): void {
     if (this._vmModel !== undefined && this._vmInstances !== undefined) {
-      this.canRun$.next(this._vmInstances.filter((vm) => (vm.state === 1)).length < this._vmModel.maxRunningVms);
+      this.canRun$.next(
+        this._vmInstances.filter((vm) => vm.state === 1).length <
+          this._vmModel.maxRunningVms
+      );
       this.canCreate$.next(this._vmModel.maxVms - this._vmInstances.length);
       if (this.canCreate$.getValue() > 1)
         this.canCreateNumber = Array(this.canCreate$.getValue() - 1);
-      else
-        this.canCreateNumber = Array();
-      this.vcpusAvailable = (this._vmModel.maxVcpus - _.sumBy(this._vmInstances, (vm) => { return vm.countVcpus })).toFixed();
-      this.ramAvailable = (this._vmModel.maxRam - _.sumBy(this._vmInstances, (vm) => { return vm.countRam })).toFixed();
-      this.diskAvailable = (this._vmModel.maxDisk - _.sumBy(this._vmInstances, (vm) => { return vm.countDisks })).toFixed();
+      else this.canCreateNumber = Array();
     }
   }
-
-
-
+  computeAvailability() {
+    this.vcpusAvailable =
+      this._vmModel.maxVcpus -
+      _.sumBy(this._vmInstances, (vm) => vm.countVcpus);
+    this.ramAvailable =
+      this._vmModel.maxRam - _.sumBy(this._vmInstances, (vm) => vm.countRam);
+    this.diskAvailable =
+      this._vmModel.maxDisk - _.sumBy(this._vmInstances, (vm) => vm.countDisks);
+  }
   createVmDialog(): void {
     this.dialogCreateRef = this.dialog.open(DialogCreateVmComponent, {
       data: {
-        countVcpus: ((this._vmModel.maxVcpus - _.sumBy(this._vmInstances, (vm) => { return vm.countVcpus })) / (this.canCreateNumber.length + 1)).toFixed(),
-        countRam: ((this._vmModel.maxRam - _.sumBy(this._vmInstances, (vm) => { return vm.countRam })) / (this.canCreateNumber.length + 1)).toFixed(),
-        countDisk: ((this._vmModel.maxDisk - _.sumBy(this._vmInstances, (vm) => { return vm.countDisks })) / (this.canCreateNumber.length + 1)).toFixed(),
+        countVcpus: (
+          (this._vmModel.maxVcpus -
+            _.sumBy(this._vmInstances, (vm) => {
+              return vm.countVcpus;
+            })) /
+          (this.canCreateNumber.length + 1)
+        ).toFixed(),
+        countRam: (
+          (this._vmModel.maxRam -
+            _.sumBy(this._vmInstances, (vm) => {
+              return vm.countRam;
+            })) /
+          (this.canCreateNumber.length + 1)
+        ).toFixed(),
+        countDisk: (
+          (this._vmModel.maxDisk -
+            _.sumBy(this._vmInstances, (vm) => {
+              return vm.countDisks;
+            })) /
+          (this.canCreateNumber.length + 1)
+        ).toFixed(),
         owner: false,
-        maxVcpus: (this._vmModel.maxVcpus - _.sumBy(this._vmInstances, (vm) => { return vm.countVcpus })),
-        maxRam: (this._vmModel.maxRam - _.sumBy(this._vmInstances, (vm) => { return vm.countRam })),
-        maxDisk: (this._vmModel.maxDisk - _.sumBy(this._vmInstances, (vm) => { return vm.countDisks }))
+        maxVcpus:
+          this._vmModel.maxVcpus -
+          _.sumBy(this._vmInstances, (vm) => {
+            return vm.countVcpus;
+          }),
+        maxRam:
+          this._vmModel.maxRam -
+          _.sumBy(this._vmInstances, (vm) => {
+            return vm.countRam;
+          }),
+        maxDisk:
+          this._vmModel.maxDisk -
+          _.sumBy(this._vmInstances, (vm) => {
+            return vm.countDisks;
+          }),
       },
       width: "22%",
     });
-    this.dialogCreateRef.afterClosed().subscribe((newVm) => { this.emitCreateVm(newVm) });
+    this.dialogCreateRef.afterClosed().subscribe((newVm) => {
+      this.emitCreateVm(newVm);
+    });
   }
 
   editVmDialog(vm: VmInstance): void {
@@ -112,20 +152,37 @@ export class VmsStudentComponent implements OnInit {
         countVcpus: vm.countVcpus,
         countRam: vm.countRam,
         countDisk: vm.countDisks,
-        maxVcpus: (vm.countVcpus + this._vmModel.maxVcpus - _.sumBy(this._vmInstances, (vm) => { return vm.countVcpus })),
-        maxRam: (vm.countRam + this._vmModel.maxRam - _.sumBy(this._vmInstances, (vm) => { return vm.countRam })),
-        maxDisk: (vm.countDisks + this._vmModel.maxDisk - _.sumBy(this._vmInstances, (vm) => { return vm.countDisks })),
+        maxVcpus:
+          vm.countVcpus +
+          this._vmModel.maxVcpus -
+          _.sumBy(this._vmInstances, (vm) => {
+            return vm.countVcpus;
+          }),
+        maxRam:
+          vm.countRam +
+          this._vmModel.maxRam -
+          _.sumBy(this._vmInstances, (vm) => {
+            return vm.countRam;
+          }),
+        maxDisk:
+          vm.countDisks +
+          this._vmModel.maxDisk -
+          _.sumBy(this._vmInstances, (vm) => {
+            return vm.countDisks;
+          }),
         id: vm.id,
-        fakeId: this._vmInstances.indexOf(vm)
+        fakeId: this._vmInstances.indexOf(vm),
       },
       width: "22%",
     });
     this.dialogEditRef.afterClosed().subscribe((newVm) => {
       if (newVm !== undefined)
-        if (newVm["countVcpus"] !== vm.countVcpus ||
+        if (
+          newVm["countVcpus"] !== vm.countVcpus ||
           newVm["countRam"] !== vm.countRam ||
-          newVm["countDisks"] !== vm.countDisks)
-          this.emitEditVm(newVm)
+          newVm["countDisks"] !== vm.countDisks
+        )
+          this.emitEditVm(newVm);
     });
   }
 
@@ -137,7 +194,7 @@ export class VmsStudentComponent implements OnInit {
         countDisk: vm.countDisks,
         courseAc: this.courseAc,
         teamName: this.team.name,
-        image: vm.image, //TODO: link
+        image: vm.image,
       },
     });
   }
@@ -146,11 +203,10 @@ export class VmsStudentComponent implements OnInit {
     this.dialogDeleteRef = this.dialog.open(DialogConfirmDeleteComponent, {
       data: { vm: vmInstance },
       width: "18%",
-      height: "17%"
+      height: "17%",
     });
     this.dialogDeleteRef.afterClosed().subscribe((value) => {
-      if (value !== null)
-        this.emitDeleteVm(value);
+      if (value !== null) this.emitDeleteVm(value);
     });
   }
 
@@ -179,19 +235,26 @@ export class VmsStudentComponent implements OnInit {
   }
 
   countRunningVms(vms: VmInstance[]): number {
-    return _.sumBy(vms, (vm) => { return vm.state });
+    return _.sumBy(vms, (vm) => {
+      return vm.state;
+    });
   }
 
   countVcpus(vms: VmInstance[]): number {
-    return _.sumBy(vms, (vm) => { return vm.countVcpus });
+    return _.sumBy(vms, (vm) => {
+      return vm.countVcpus;
+    });
   }
 
   countRam(vms: VmInstance[]): number {
-    return _.sumBy(vms, (vm) => { return vm.countRam });
+    return _.sumBy(vms, (vm) => {
+      return vm.countRam;
+    });
   }
 
   countDisk(vms: VmInstance[]): number {
-    return _.sumBy(vms, (vm) => { return vm.countDisks });
+    return _.sumBy(vms, (vm) => {
+      return vm.countDisks;
+    });
   }
-
 }

@@ -7,6 +7,16 @@
         "pathRewrite": {
             "^/api": ""
         }
+    },
+
+    "/VM_images/*": {
+        "target": "http://localhost:8080/VM_images",
+        "secure": false,
+        "logLevel": "debug",
+        "changeOrigin": true,
+        "pathRewrite": {
+            "^/VM_images": ""
+        }
     }
  
    

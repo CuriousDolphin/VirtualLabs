@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
+import { ComponentFactoryResolver, Injectable } from "@angular/core";
 import { Student } from "../models/student.model";
 import { HttpClient } from "@angular/common/http";
 import {
   Observable,
   of,
 } from "rxjs";
-import { catchError, retry, tap } from "rxjs/operators";
+import { catchError, map, retry, tap } from "rxjs/operators";
 import * as _ from "lodash";
 import { environment } from "src/environments/environment";
 import { ToastService } from "./toast.service";
@@ -15,6 +15,7 @@ import { VmInstance } from "../models/vm-instance.model";
 import { VmModel } from '../models/vm-model.model';
 
 const BASE_PATH = environment.apiUrl;
+const IMG_PATH = environment.imgUrl;
 
 @Injectable({
   providedIn: "root",
@@ -55,6 +56,9 @@ export class StudentService {
     const url = BASE_PATH + "students/" + studentId + "/" + teamName + "/vminstances";
     return this.http
       .get<VmInstance[]>(url)
+      .pipe(
+        map((vms: VmInstance[]) => { return _.map(vms, (vm: VmInstance) => { vm.image = IMG_PATH + vm.image; return vm})})
+      )
       .pipe(catchError((e) => this.handleError(e)));
   }
 
