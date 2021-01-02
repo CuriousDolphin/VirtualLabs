@@ -16,7 +16,8 @@ export class AssignmentPapersnapshotComponent implements OnInit {
   formGroup: FormGroup;
   toReviewControl = new FormControl(true)
   voteControl = new FormControl({value: 1, disabled: this.toReviewControl.value}, [Validators.min(1), Validators.max(30)])
-  solutionControl = new FormControl("")
+  solutionControl = new FormControl("", [Validators.required])
+  solutionPath = ""
 
   constructor(
     private formBuilder: FormBuilder
@@ -46,6 +47,14 @@ export class AssignmentPapersnapshotComponent implements OnInit {
   toggleVote(event: MatCheckboxChange) {
     const control = this.formGroup.get("vote")
     event.checked ? control.disable() : control.enable()
+  }
+
+  changeInput() {
+    this.solutionPath = this.formGroup.get("solution").value
+  }
+
+  onSubmit(): void {
+    console.log(this.formGroup.value)
   }
 
 }

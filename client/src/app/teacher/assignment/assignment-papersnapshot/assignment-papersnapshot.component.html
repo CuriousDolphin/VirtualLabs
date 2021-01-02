@@ -7,23 +7,30 @@
     <mat-card-content>
       <div class="form-container">
         <div fxLayout="row" fxLayoutAlign="start stretch">
-          <form [formGroup]="formGroup">
-            <mat-checkbox 
-            [formControl]="toReviewControl" 
-            (change)="toggleVote($event)"
-            color="primary">To review</mat-checkbox>
+          <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+
+            <mat-checkbox [formControl]="toReviewControl" (change)="toggleVote($event)" color="primary">To review
+            </mat-checkbox>
+
             <mat-form-field appearance="fill">
               <mat-label>Vote</mat-label>
               <input matInput type="number" formControlName="vote" min="1" max="30">
               <mat-error *ngIf="formGroup.controls['vote'].invalid"></mat-error>
               <span matSuffix>/ 30</span>
             </mat-form-field>
-            <label for="input-file-id" class="mat-button mat-primary">Upload solution</label>
-            <input id="input-file-id" style="display: none" type="file" formControlName="solution">
-            <span></span>
+
+            <label for="input-file-id" id="upload-button" class="mat-raised-button mat-primary">Upload solution</label>
+            <input id="input-file-id" accept="image/*" (change)="changeInput()" style="display: none;" type="file" formControlName="solution">
+
           </form>
         </div>
       </div>
+      <p>{{solutionPath}}</p>
+      <button
+      type="submit"
+      [disabled]="!formGroup.valid"
+      mat-raised-button 
+      id=mat-success>Save</button>
     </mat-card-content>
   </mat-card>
 
