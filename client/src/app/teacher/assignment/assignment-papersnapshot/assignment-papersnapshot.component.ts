@@ -18,6 +18,7 @@ export class AssignmentPapersnapshotComponent implements OnInit {
   voteControl = new FormControl({value: 1, disabled: this.toReviewControl.value}, [Validators.min(1), Validators.max(30)])
   solutionControl = new FormControl("", [Validators.required])
   solutionPath = ""
+  imageLink: String = "http://localhost:8080/VM_images/defaultVmImage.png"
 
   constructor(
     private formBuilder: FormBuilder
@@ -29,7 +30,7 @@ export class AssignmentPapersnapshotComponent implements OnInit {
     })
   }
 
-  colsToDisplay = ["content", "submissionDate"]
+  colsToDisplay = ["content", "submissionDate", "solutionImg"]
   dataSource = new MatTableDataSource<PaperSnapshot>()
 
   @Input() set papersnapshotsData(papersnapshots: PaperSnapshot[]) {
@@ -55,6 +56,7 @@ export class AssignmentPapersnapshotComponent implements OnInit {
 
   onSubmit(): void {
     console.log(this.formGroup.value)
+    // qua va scritto il codice per mandare il file al client
   }
 
 }

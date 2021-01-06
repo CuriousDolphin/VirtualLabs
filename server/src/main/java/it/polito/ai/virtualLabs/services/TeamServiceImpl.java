@@ -554,6 +554,18 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    public PaperSnapshotDTO addPaperSnapshotToPaper(Long paperId, PaperSnapshotDTO paperSnapshotDTO) {
+        if(!paperRepository.existsById(paperId)) throw new PaperNotFoundException();
+
+        PaperSnapshot paperSnapshot = modelMapper.map(paperSnapshotDTO, PaperSnapshot.class);
+        Paper paper = paperRepository.findById(paperId).get();
+        paperSnapshot.setPaper(paper);
+
+        paperSnapshotRepository.save(paperSnapshot);
+        return paperSnapshotDTO;
+    }
+
+    @Override
     public List<TeamDTO> getPendingTeamsForStudent(String studentId) {
         if (!studentRepository.existsById(studentId)) throw new StudentNotFoundException();
 

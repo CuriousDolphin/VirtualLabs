@@ -19,7 +19,7 @@
               <span matSuffix>/ 30</span>
             </mat-form-field>
 
-            <label for="input-file-id" id="upload-button" class="mat-raised-button mat-primary">Upload solution</label>
+            <label for="input-file-id" id="upload-button" class="mat-raised-button mat-primary">Upload solution file</label>
             <input id="input-file-id" accept="image/*" (change)="changeInput()" style="display: none;" type="file" formControlName="solution">
 
           </form>
@@ -49,6 +49,11 @@
     <ng-container matColumnDef="submissionDate">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Submission Date</th>
       <td mat-cell *matCellDef="let papersnapshot">{{format(papersnapshot.submissionDate)}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="solutionImg">
+      <th mat-header-cell *matHeaderCellDef>Solution Img</th>
+      <td mat-cell *matCellDef="let papersnapshot"> <img src={{imageLink}} width="160px" height="100px"> </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="colsToDisplay"></tr>

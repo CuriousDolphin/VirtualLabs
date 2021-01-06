@@ -83,6 +83,8 @@ public class CourseController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found");
         }
     }
+
+
     @PatchMapping("/{name}/unEnrollMany")
     List<Boolean> unenrollMany(@RequestBody List<String> studentIds,@PathVariable("name") String courseName){
         try {
@@ -254,6 +256,16 @@ public class CourseController {
         try {
             return teamService.getAllPaperSnapshotsForPaper(paperId);
         }   catch (PaperNotFoundException paperNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Paper not found");
+        }
+    }
+
+    @PostMapping("/assignments/papers/{paperId}/addPaperSnapshot")
+    @ResponseStatus(HttpStatus.CREATED)
+    PaperSnapshotDTO addPaperSnapshot(@PathVariable("paperId") Long paperId, @Valid @RequestBody PaperSnapshotDTO paperSnapshotDTO) {
+        try {
+            return teamService.addPaperSnapshotToPaper(paperId, paperSnapshotDTO);
+        } catch (PaperNotFoundException paperNotFoundException) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Paper not found");
         }
     }
