@@ -4,6 +4,7 @@ import { PaperSnapshot } from 'src/app/models/papersnapshot.model';
 import { formatDate } from '@angular/common'
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { SolutionFormData } from 'src/app/models/formData.model';
 
 
 @Component({
@@ -41,7 +42,7 @@ export class AssignmentPapersnapshotComponent implements OnInit {
       this.dataSource.data = papersnapshots
   }
 
-  @Output() submitSolutionEvent = new EventEmitter();
+  @Output() submitSolutionEvent = new EventEmitter<SolutionFormData>();
 
   format(date) {
     return formatDate(date, 'yyyy-MM-dd hh:mm:ss', 'en', 'GMT')
@@ -77,7 +78,13 @@ export class AssignmentPapersnapshotComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.submitSolutionEvent.emit(this.formGroup.value)
+    let solutionFormData: SolutionFormData
+
+    solutionFormData.toReview = this.formGroup.controls["toReview"].value
+    solutionFormData.vote = solutionFormData.toReview ? null : this.formGroup.controls["vote"].value
+    console.log(this.formGroup.controls["solutionFile"].value)
+
+   // this.submitSolutionEvent.emit(this.formGroup.value)
   }
 
 }
