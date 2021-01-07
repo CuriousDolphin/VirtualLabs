@@ -33,6 +33,7 @@ export class AssignmentComponent implements OnInit {
 
   @Output() assignmentClickedEvent = new EventEmitter<number>()
   @Output() paperClickedEvent = new EventEmitter<number>()
+  @Output() solutionSubmittedEvent = new EventEmitter<Object>()
 
   constructor() { }
 
@@ -52,6 +53,10 @@ export class AssignmentComponent implements OnInit {
   paperClicked(paperId: number) {
     this.paperClickedEvent.emit(paperId)
     this.toShowLevel = this.toShowLevel + 1
+  }
+
+  solutionSubmitted(formData: Object) {
+    this.solutionSubmittedEvent.emit(formData)
   }
 
 }

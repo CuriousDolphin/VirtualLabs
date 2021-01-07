@@ -25,7 +25,8 @@
         </app-assignment-paper>
       </ng-container>
       <ng-container *ngIf="toShowLevel === 2">
-        <app-assignment-papersnapshot [papersnapshotsData]="papersnapshotsData">
+        <app-assignment-papersnapshot [papersnapshotsData]="papersnapshotsData"
+        (submitSolutionEvent)="solutionSubmitted($event)">
         </app-assignment-papersnapshot>
       </ng-container>
     </mat-card-content>

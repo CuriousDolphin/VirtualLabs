@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { PaperSnapshot } from 'src/app/models/papersnapshot.model';
 import { formatDate } from '@angular/common'
@@ -13,10 +13,12 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 })
 export class AssignmentPapersnapshotComponent implements OnInit {
 
+  imageSrc: string;
   formGroup: FormGroup;
   toReviewControl = new FormControl(true)
   voteControl = new FormControl({value: 1, disabled: this.toReviewControl.value}, [Validators.min(1), Validators.max(30)])
-  solutionControl = new FormControl(null, [Validators.required])
+  solutionFileControl = new FormControl(null, [Validators.required])
+  solutionFileSourceControl = new FormControl(null, [Validators.required])
   imageLink: String = "http://localhost:8080/VM_images/defaultVmImage.png"
 
   constructor(
@@ -26,17 +28,20 @@ export class AssignmentPapersnapshotComponent implements OnInit {
     this.formGroup = formBuilder.group({
       toReview: this.toReviewControl,
       vote: this.voteControl,
-      solution: this.solutionControl
+      solutionFile: this.solutionFileControl,
+      solutionFileSource: this.solutionFileSourceControl
     })
   }
 
-  colsToDisplay = ["content", "submissionDate", "solutionImg"]
+  colsToDisplay = [ "submissionDate", "content"]
   dataSource = new MatTableDataSource<PaperSnapshot>()
 
   @Input() set papersnapshotsData(papersnapshots: PaperSnapshot[]) {
     if (papersnapshots != null)
       this.dataSource.data = papersnapshots
   }
+
+  @Output() submitSolutionEvent = new EventEmitter();
 
   format(date) {
     return formatDate(date, 'yyyy-MM-dd hh:mm:ss', 'en', 'GMT')
@@ -58,9 +63,9 @@ export class AssignmentPapersnapshotComponent implements OnInit {
       const [file] = event.target.files
       reader.readAsDataURL(file)
       reader.onload = () => {
-        console.log(reader.result)
+        this.imageSrc = reader.result as string;
         this.formGroup.patchValue({
-          solution: reader.result
+          solutionFileSource: reader.result
         })
         this.changeDetector.markForCheck()
       }
@@ -72,9 +77,7 @@ export class AssignmentPapersnapshotComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log("invio")
-    console.log(this.formGroup.value)
-    // qua va scritto il codice per mandare il file al client
+    this.submitSolutionEvent.emit(this.formGroup.value)
   }
 
 }
