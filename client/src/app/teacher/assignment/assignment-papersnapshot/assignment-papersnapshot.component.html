@@ -2,14 +2,14 @@
 
   <mat-card style="margin-bottom: 22px;">
     <mat-card-header fxLayout="row" fxLayoutAlign="space-between stretch">
-      <mat-card-title>Upload solution</mat-card-title>
+      <mat-card-title>Add solution</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <div class="p-16">
-        <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" style="width: 30%;">
+        <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" style="width: 100%;">
 
           <div fxLayout="column">
-            <div fxLayout="row" fxLayoutAlign="space-between center">
+            <div fxLayout="row" fxLayoutAlign="start center">
               <mat-checkbox [formControl]="toReviewControl" (change)="toggleVote($event)" color="primary">To review
               </mat-checkbox>
 
@@ -27,8 +27,12 @@
                 type="file" formControlName="solutionFile">
             </div>
             <img [src]="imageSrc" *ngIf="imageSrc" style="height: 50px; width:80px; vertical-align: middle;">
+            <div fxLayout="column" fxLayoutAlign="end end">
+              <button mat-button color="accent" type="submit" [disabled]="!formGroup.valid" class="radius-20">
+                <mat-icon> insert_drive_file</mat-icon>Add
+              </button>
+            </div>
           </div>
-          <button type="submit" [disabled]="!formGroup.valid" mat-raised-button id=mat-success>Save</button>
         </form>
       </div>
     </mat-card-content>

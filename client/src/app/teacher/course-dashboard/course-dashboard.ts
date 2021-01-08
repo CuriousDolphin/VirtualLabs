@@ -13,6 +13,7 @@ import { ToastService } from "src/app/services/toast.service";
 import { UtilsService } from "src/app/services/utils.service";
 import { CourseDialogComponent } from "../course-dialog/course-dialog.component";
 import { PaperSnapshot } from "src/app/models/papersnapshot.model";
+import { SolutionFormData } from "src/app/models/formData.model";
 
 @Component({
   selector: "app-course-dashboard",
@@ -235,7 +236,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
       )
   }
 
-  saveSolution(formData: Object) {
+  saveSolution(formData: SolutionFormData) {
     console.log(formData)
   }
 
