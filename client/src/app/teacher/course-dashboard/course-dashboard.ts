@@ -236,8 +236,8 @@ export class CourseDashboard implements OnInit, OnDestroy {
       )
   }
 
-  saveSolution(formData: SolutionFormData) {
-    console.log(formData)
+  saveSolution(formData: SolutionFormData, paperId: number) {
+    console.log(formData, paperId)
   }
 
   ngOnDestroy(): void {

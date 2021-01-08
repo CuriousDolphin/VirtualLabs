@@ -14,14 +14,16 @@ export class AssignmentComponent implements OnInit {
   papersData = []
   papersnapshotsData = []
   toShowLevel: number
+  currentAssignmentId: number
+  currentPaperId: number
 
   @Input() set assignments(assignments: Assignment[]) {
-    if(assignments != null) {
+    if (assignments != null) {
       this.assignmentsData = assignments
     }
   }
   @Input() set papers(papers: Paper[]) {
-    if(papers != null) {
+    if (papers != null) {
       this.papersData = papers
     }
   }
@@ -34,7 +36,7 @@ export class AssignmentComponent implements OnInit {
 
   @Output() assignmentClickedEvent = new EventEmitter<number>()
   @Output() paperClickedEvent = new EventEmitter<number>()
-  @Output() solutionSubmittedEvent = new EventEmitter<SolutionFormData>()
+  @Output() solutionSubmittedEvent = new EventEmitter<{ solutionFormData: SolutionFormData, paperId: Number }>()
 
   constructor() { }
 
@@ -45,19 +47,24 @@ export class AssignmentComponent implements OnInit {
   back() {
     this.toShowLevel = this.toShowLevel - 1
   }
-  
+
   assignmentClicked(assignmentId: number) {
     this.assignmentClickedEvent.emit(assignmentId)
-    this.toShowLevel = this.toShowLevel + 1 
+    this.currentAssignmentId = assignmentId
+    this.toShowLevel = this.toShowLevel + 1
   }
 
   paperClicked(paperId: number) {
     this.paperClickedEvent.emit(paperId)
+    this.currentPaperId = paperId
     this.toShowLevel = this.toShowLevel + 1
   }
 
   solutionSubmitted(formData: SolutionFormData) {
-    this.solutionSubmittedEvent.emit(formData)
+    this.solutionSubmittedEvent.emit({
+      solutionFormData: formData,
+      paperId: this.currentPaperId
+    })
   }
 
 }
