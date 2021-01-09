@@ -25,8 +25,9 @@
               </label>
               <input id="input-file-id" accept="image/*" (change)="onFileChange($event)" style="display: none;"
                 type="file" formControlName="solutionFile">
+
+              <img [src]="imageSrc" *ngIf="imageSrc" style="height: 100px; width:160px; vertical-align: middle;">
             </div>
-            <img [src]="imageSrc" *ngIf="imageSrc" style="height: 50px; width:80px; vertical-align: middle;">
             <div fxLayout="column" fxLayoutAlign="end end">
               <button mat-button color="accent" type="submit" [disabled]="!formGroup.valid" class="radius-20">
                 <mat-icon> insert_drive_file</mat-icon>Add
@@ -46,7 +47,7 @@
     </ng-container>
 
     <ng-container matColumnDef="content">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Content</th>
+      <th mat-header-cell *matHeaderCellDef>Content</th>
       <td mat-cell (click)="openImage()" *matCellDef="let papersnapshot"> <img src={{imageLink}} width="160px"
           height="100px"></td>
     </ng-container>

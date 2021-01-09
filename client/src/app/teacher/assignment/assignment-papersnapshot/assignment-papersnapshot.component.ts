@@ -17,7 +17,7 @@ export class AssignmentPapersnapshotComponent implements OnInit {
   imageSrc: string;
   formGroup: FormGroup;
   toReviewControl = new FormControl(true)
-  voteControl = new FormControl({value: 1, disabled: this.toReviewControl.value}, [Validators.min(1), Validators.max(30)])
+  voteControl = new FormControl({ value: 1, disabled: this.toReviewControl.value }, [Validators.min(1), Validators.max(30)])
   solutionFileControl = new FormControl(null, [Validators.required])
   solutionFileSourceControl = new FormControl(null, [Validators.required])
   imageLink: String = "http://localhost:8080/VM_images/defaultVmImage.png"
@@ -34,7 +34,7 @@ export class AssignmentPapersnapshotComponent implements OnInit {
     })
   }
 
-  colsToDisplay = [ "submissionDate", "content"]
+  colsToDisplay = ["submissionDate", "content"]
   dataSource = new MatTableDataSource<PaperSnapshot>()
 
   @Input() set papersnapshotsData(papersnapshots: PaperSnapshot[]) {
@@ -60,7 +60,7 @@ export class AssignmentPapersnapshotComponent implements OnInit {
 
     let reader = new FileReader();
 
-    if(event.target.files && event.target.files.length) {
+    if (event.target.files && event.target.files.length) {
       const [file] = event.target.files
       reader.readAsDataURL(file)
       reader.onload = () => {
@@ -79,10 +79,13 @@ export class AssignmentPapersnapshotComponent implements OnInit {
 
   onSubmit(): void {
 
+
+    const splittedPath = this.formGroup.controls["solutionFile"].value.split("\\")
+
     const papersnapshot: PaperSnapshot = {
       id: null,
       submissionDate: new Date(),
-      content: this.formGroup.controls["solutionFile"].value
+      content: splittedPath[splittedPath.length - 1]
     }
 
     const solutionFormData: SolutionFormData = {

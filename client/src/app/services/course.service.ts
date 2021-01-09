@@ -158,15 +158,16 @@ export class CourseService {
   addPapersnapshot(paperId: Number, formData: SolutionFormData) {
     const url = BASE_PATH + "courses/" + "assignments/" + "papers/" + paperId + "/papersnapshots" + "/addPapersnapshot"
     return this.http
-    .post(url, formData)
-    .pipe(catchError((e) => this.handleError(e)))
+      .post<String>(url, formData)
+      .pipe(catchError((e) => this.handleError(e)))
   }
 
   private handleError(error) {
+    console.log(error)
     let errorMessage = "";
     if (error.error instanceof ErrorEvent) {
       // client-side error
-      errorMessage = `Error: ${error.error.message}`;
+      errorMessage = `Error: ${error.message}`;
     } else {
       // server-side error
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
@@ -175,7 +176,7 @@ export class CourseService {
 
     // window.alert(errorMessage);
 
-    this.toastService.error(error.error.message, error.error.status.toString());
+    this.toastService.error(error.message, error.status.toString());
     console.log("HTTP ERROR", error);
     return of(null);
   }

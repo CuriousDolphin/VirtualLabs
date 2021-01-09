@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class FormDataDTO {
     @NotNull
-    PaperSnapshotDTO paperSnapshotDTO;
+    PaperSnapshotDTO papersnapshot;
     Integer vote;
     Boolean toReview;
     String imgSource;

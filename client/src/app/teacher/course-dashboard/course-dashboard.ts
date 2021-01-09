@@ -219,7 +219,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
       });
   }
 
-  setCurrentAssignment(assignmentId: number) {
+  getAllPapersForAssignment(assignmentId: number) {
     this.isLoading = true
     this.papers$ = this.courseService
       .getAllPapersForAssignment(assignmentId)
@@ -228,7 +228,8 @@ export class CourseDashboard implements OnInit, OnDestroy {
       )
   }
 
-  setCurrentPaper(paperId: number) {
+  getAllPapersnapshotsForPaper(paperId: number) {
+    console.log(paperId)
     this.isLoading = true
     this.papersnapshots$ = this.courseService
       .getAllPapersnapshotsForPaper(paperId)
@@ -237,13 +238,16 @@ export class CourseDashboard implements OnInit, OnDestroy {
       )
   }
 
-  saveSolution(data: { solutionFormData: SolutionFormData, paperId: Number }) {
+  //TODO: to finish
+  addPapersnapshot(data: { solutionFormData: SolutionFormData, paperId: number }) {
+    const paperId = data.paperId
     if (this.papersnapshotSubscription) this.papersnapshotSubscription.unsubscribe()
     this.isLoading = true
-    console.log(data)
-
+    console.log(data.solutionFormData)
     this.papersnapshotSubscription = this.courseService.addPapersnapshot(data.paperId, data.solutionFormData).subscribe((data) => {
+      console.log(data)
       this.isLoading = false
+      this.getAllPapersnapshotsForPaper(paperId)
     })
   }
 
