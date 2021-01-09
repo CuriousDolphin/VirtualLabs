@@ -1,7 +1,8 @@
+import { PaperSnapshot } from "./papersnapshot.model";
+
 export interface SolutionFormData {
   toReview: boolean,
-  submissionDate: Date,
   vote: number,
-  imgName: string,
-  imgSource: ArrayBuffer
+  imgSource: ArrayBuffer,
+  papersnapshot: PaperSnapshot
 }

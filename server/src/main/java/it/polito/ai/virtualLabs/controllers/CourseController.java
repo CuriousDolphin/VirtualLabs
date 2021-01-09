@@ -260,11 +260,14 @@ public class CourseController {
         }
     }
 
-    @PostMapping("/assignments/papers/{paperId}/addPaperSnapshot")
+    @PostMapping("/assignments/papers/{paperId}/papersnapshots/addPapersnapshot")
     @ResponseStatus(HttpStatus.CREATED)
-    PaperSnapshotDTO addPaperSnapshot(@PathVariable("paperId") Long paperId, @Valid @RequestBody PaperSnapshotDTO paperSnapshotDTO) {
+    String addPaperSnapshot(@PathVariable("paperId") Long paperId, @Valid @RequestBody FormDataDTO formDataDTO) {
+        System.out.println("arrivo");
         try {
-            return teamService.addPaperSnapshotToPaper(paperId, paperSnapshotDTO);
+            System.out.println(formDataDTO.getPaperSnapshotDTO());
+            //return teamService.addPaperSnapshotToPaper(paperId, paperSnapshotDTO);
+            return "upload effettuato con successo";
         } catch (PaperNotFoundException paperNotFoundException) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Paper not found");
         }

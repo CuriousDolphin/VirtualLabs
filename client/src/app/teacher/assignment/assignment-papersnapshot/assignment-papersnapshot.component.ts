@@ -79,12 +79,17 @@ export class AssignmentPapersnapshotComponent implements OnInit {
 
   onSubmit(): void {
 
-    let solutionFormData: SolutionFormData = {
+    const papersnapshot: PaperSnapshot = {
+      id: null,
+      submissionDate: new Date(),
+      content: this.formGroup.controls["solutionFile"].value
+    }
+
+    const solutionFormData: SolutionFormData = {
       toReview: this.formGroup.controls["toReview"].value,
       vote: this.formGroup.controls["vote"].value,
-      submissionDate: new Date(),
-      imgName: this.formGroup.controls["solutionFile"].value,
       imgSource: this.formGroup.controls["solutionFileSource"].value,
+      papersnapshot: papersnapshot
     }
 
     this.submitSolutionEvent.emit(solutionFormData)

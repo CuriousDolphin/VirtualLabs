@@ -36,6 +36,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
   private dialogSubscription: Subscription;
   private papersSubscription: Subscription;
   private uploadSubscription: Subscription;
+  private papersnapshotSubscription: Subscription;
 
   studentsDB$: Observable<Student[]>;
   currentCourse: Course;
@@ -236,8 +237,14 @@ export class CourseDashboard implements OnInit, OnDestroy {
       )
   }
 
-  saveSolution(formData: SolutionFormData, paperId: number) {
-    console.log(formData, paperId)
+  saveSolution(data: { solutionFormData: SolutionFormData, paperId: Number }) {
+    if (this.papersnapshotSubscription) this.papersnapshotSubscription.unsubscribe()
+    this.isLoading = true
+    console.log(data)
+
+    this.papersnapshotSubscription = this.courseService.addPapersnapshot(data.paperId, data.solutionFormData).subscribe((data) => {
+      this.isLoading = false
+    })
   }
 
   ngOnDestroy(): void {

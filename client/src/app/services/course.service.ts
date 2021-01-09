@@ -18,6 +18,7 @@ import { ToastService } from "./toast.service";
 import { Assignment } from '../models/assignment.model';
 import { Paper } from '../models/paper.model';
 import { PaperSnapshot } from "../models/papersnapshot.model";
+import { SolutionFormData } from "../models/formData.model";
 
 const BASE_PATH = environment.apiUrl;
 
@@ -152,6 +153,13 @@ export class CourseService {
     return this.http
       .get<PaperSnapshot[]>(url)
       .pipe(catchError((e) => this.handleError(e)))
+  }
+
+  addPapersnapshot(paperId: Number, formData: SolutionFormData) {
+    const url = BASE_PATH + "courses/" + "assignments/" + "papers/" + paperId + "/papersnapshots" + "/addPapersnapshot"
+    return this.http
+    .post(url, formData)
+    .pipe(catchError((e) => this.handleError(e)))
   }
 
   private handleError(error) {
