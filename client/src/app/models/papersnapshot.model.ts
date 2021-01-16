@@ -1,5 +1,5 @@
 export interface PaperSnapshot {
   id: number,
-  content: string,
+  content: ArrayBuffer,
   submissionDate: Date
 }

@@ -14,12 +14,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -554,12 +552,19 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public PaperSnapshotDTO addPaperSnapshotToPaper(Long paperId, PaperSnapshotDTO paperSnapshotDTO) {
+    public PaperSnapshotDTO addPaperSnapshotToPaper(Long paperId, PaperSnapshotDTO paperSnapshotDTO, boolean toReview, Integer vote) {
         if(!paperRepository.existsById(paperId)) throw new PaperNotFoundException();
+
+        String str = new String(
+                Base64.getDecoder().decode(paperSnapshotDTO.getContent().split(",")[1]),
+                StandardCharsets.UTF_8);
+        byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
+        System.out.println(bytes.length);
 
         PaperSnapshot paperSnapshot = modelMapper.map(paperSnapshotDTO, PaperSnapshot.class);
         Paper paper = paperRepository.findById(paperId).get();
         paperSnapshot.setPaper(paper);
+        paperSnapshot.setContent(bytes);
 
         paperSnapshotRepository.save(paperSnapshot);
         return paperSnapshotDTO;

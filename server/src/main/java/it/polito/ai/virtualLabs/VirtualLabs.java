@@ -171,21 +171,6 @@ public class VirtualLabs {
                 paper1.setAssignment(assignment1);
                 paper4.setAssignment(assignment1);
                 paper5.setAssignment(assignment1);
-                PaperSnapshot paperSnapshot1 = PaperSnapshot.builder()
-                        .content("Soluzione")
-                        .submissionDate(expiryDate)
-                        .build();
-                PaperSnapshot paperSnapshot2 = PaperSnapshot.builder()
-                        .content("Soluzione")
-                        .submissionDate(expiryDate)
-                        .build();
-                PaperSnapshot paperSnapshot3 = PaperSnapshot.builder()
-                        .content("Soluzione")
-                        .submissionDate(expiryDate)
-                        .build();
-                paperSnapshot1.setPaper(paper1);
-                paperSnapshot2.setPaper(paper1);
-                paperSnapshot3.setPaper(paper1);
                 assignment1.setCourse(course1);
                 assignment4.setCourse(course1);
                 assignment5.setCourse(course1);
@@ -352,9 +337,6 @@ public class VirtualLabs {
                 pr.save(paper3);
                 pr.save(paper4);
                 pr.save(paper5);
-                psr.save(paperSnapshot1);
-                psr.save(paperSnapshot2);
-                psr.save(paperSnapshot3);
 
             }
             catch (Exception e) {

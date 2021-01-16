@@ -6,6 +6,7 @@ import it.polito.ai.virtualLabs.dtos.*;
 import it.polito.ai.virtualLabs.exceptions.*;
 import it.polito.ai.virtualLabs.services.NotificationService;
 import it.polito.ai.virtualLabs.services.TeamService;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -14,10 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -264,11 +263,14 @@ public class CourseController {
     @ResponseStatus(HttpStatus.CREATED)
     PaperSnapshotDTO addPaperSnapshot(@PathVariable("paperId") Long paperId, @Valid @RequestBody FormDataDTO formDataDTO) {
         try {
-            System.out.println(formDataDTO.getPapersnapshot());
-            return teamService.addPaperSnapshotToPaper(paperId, formDataDTO.getPapersnapshot());
-        } catch (PaperNotFoundException paperNotFoundException) {
+            return teamService.addPaperSnapshotToPaper(
+                    paperId,
+                    formDataDTO.getPapersnapshot(),
+                    formDataDTO.getToReview(),
+                    formDataDTO.getVote());
+        }
+        catch (PaperNotFoundException paperNotFoundException) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Paper not found");
         }
     }
-
 }

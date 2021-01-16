@@ -17,7 +17,10 @@ public class PaperSnapshot {
     @Id
     @GeneratedValue
     private Long id;
-    private String content;
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "content", columnDefinition = "BLOB")
+    private byte[] content;
     private Timestamp submissionDate;
     @ManyToOne
     @JoinColumn(name = "paper_id")
@@ -34,10 +37,4 @@ public class PaperSnapshot {
             this.paper.addPaperSnapshot(this);
         }
     }
-
-    @Override
-    public String toString() {
-        return this.content +  "_" + this.submissionDate;
-    }
-
 }

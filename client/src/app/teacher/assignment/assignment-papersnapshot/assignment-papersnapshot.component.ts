@@ -14,7 +14,7 @@ import { SolutionFormData } from 'src/app/models/formData.model';
 })
 export class AssignmentPapersnapshotComponent implements OnInit {
 
-  imageSrc: string;
+  imageSrc: ArrayBuffer;
   formGroup: FormGroup;
   toReviewControl = new FormControl(true)
   voteControl = new FormControl({ value: 1, disabled: this.toReviewControl.value }, [Validators.min(1), Validators.max(30)])
@@ -64,7 +64,7 @@ export class AssignmentPapersnapshotComponent implements OnInit {
       const [file] = event.target.files
       reader.readAsDataURL(file)
       reader.onload = () => {
-        this.imageSrc = reader.result as string;
+        this.imageSrc = reader.result as ArrayBuffer;
         this.formGroup.patchValue({
           solutionFileSource: reader.result
         })
@@ -85,13 +85,12 @@ export class AssignmentPapersnapshotComponent implements OnInit {
     const papersnapshot: PaperSnapshot = {
       id: null,
       submissionDate: new Date(),
-      content: splittedPath[splittedPath.length - 1]
+      content: this.formGroup.controls["solutionFileSource"].value
     }
 
     const solutionFormData: SolutionFormData = {
       toReview: this.formGroup.controls["toReview"].value,
       vote: this.formGroup.controls["vote"].value,
-      imgSource: this.formGroup.controls["solutionFileSource"].value,
       papersnapshot: papersnapshot
     }
 
