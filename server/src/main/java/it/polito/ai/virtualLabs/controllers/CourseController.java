@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.io.*;
+import java.sql.SQLException;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;

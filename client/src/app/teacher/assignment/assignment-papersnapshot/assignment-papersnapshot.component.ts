@@ -73,6 +73,12 @@ export class AssignmentPapersnapshotComponent implements OnInit {
     }
   }
 
+  renderImage(base64: string) {
+    let image = new Image()
+    image.src = base64
+    return image
+  }
+
   openImage() {
     console.log("apro Immagine")
   }

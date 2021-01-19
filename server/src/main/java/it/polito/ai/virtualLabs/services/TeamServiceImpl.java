@@ -6,12 +6,14 @@ import it.polito.ai.virtualLabs.dtos.*;
 import it.polito.ai.virtualLabs.entities.*;
 import it.polito.ai.virtualLabs.exceptions.*;
 import it.polito.ai.virtualLabs.repositories.*;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.sql.rowset.serial.SerialBlob;
 import javax.transaction.Transactional;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -545,21 +547,24 @@ public class TeamServiceImpl implements TeamService {
     public List<PaperSnapshotDTO> getAllPaperSnapshotsForPaper(Long paperId) {
         if(!paperRepository.existsById(paperId)) throw new PaperNotFoundException();
 
-        return paperSnapshotRepository.findAllByPaper_Id(paperId)
+        List<PaperSnapshotDTO> paperSnapshotDTOS = paperSnapshotRepository.findAllByPaper_Id(paperId)
                 .stream()
-                .map(paperSnapshot -> modelMapper.map(paperSnapshot, PaperSnapshotDTO.class))
+                .map(paperSnapshot ->  {
+                    PaperSnapshotDTO paperSnapshotDTO = modelMapper.map(paperSnapshot, PaperSnapshotDTO.class);
+                    String base64 = "data:image/png;base64," + Base64.getMimeEncoder().encodeToString(paperSnapshot.getContent());
+                    paperSnapshotDTO.setContent(base64);
+                    return paperSnapshotDTO;
+                })
                 .collect(Collectors.toList());
+
+        return paperSnapshotDTOS;
     }
 
     @Override
     public PaperSnapshotDTO addPaperSnapshotToPaper(Long paperId, PaperSnapshotDTO paperSnapshotDTO, boolean toReview, Integer vote) {
         if(!paperRepository.existsById(paperId)) throw new PaperNotFoundException();
 
-        String str = new String(
-                Base64.getDecoder().decode(paperSnapshotDTO.getContent().split(",")[1]),
-                StandardCharsets.UTF_8);
-        byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
-        System.out.println(bytes.length);
+        byte[] bytes = Base64.getMimeDecoder().decode(paperSnapshotDTO.getContent().split(",")[1]);
 
         PaperSnapshot paperSnapshot = modelMapper.map(paperSnapshotDTO, PaperSnapshot.class);
         Paper paper = paperRepository.findById(paperId).get();

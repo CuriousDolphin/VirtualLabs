@@ -89,8 +89,6 @@ public class VirtualLabs {
                 assignmentRepository.findAll().forEach(assignment -> System.out.println(" - Assignments :" + assignment.toString()));
                 System.out.println("Printing all papers:");
                 paperRepository.findAll().forEach(paper -> System.out.println(" - Paper :" + paper.toString()));
-                System.out.println("Printing all paperSnapshots:");
-                paperSnapshotRepository.findAll().forEach(paperSnapshot -> System.out.println(" - PaperSnapshot :" + paperSnapshot.toString()));
             }
         };
     }

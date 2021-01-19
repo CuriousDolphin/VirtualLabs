@@ -18,8 +18,7 @@ public class PaperSnapshot {
     @GeneratedValue
     private Long id;
     @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(name = "content", columnDefinition = "BLOB")
+    @Column(columnDefinition="MEDIUMBLOB")
     private byte[] content;
     private Timestamp submissionDate;
     @ManyToOne

@@ -48,7 +48,7 @@
 
     <ng-container matColumnDef="content">
       <th mat-header-cell *matHeaderCellDef>Content</th>
-      <td mat-cell (click)="openImage()" *matCellDef="let papersnapshot"> <img src={{imageLink}} width="160px"
+      <td mat-cell (click)="openImage()" *matCellDef="let papersnapshot"> <img src={{renderImage(papersnapshot.content)}} width="160px"
           height="100px"></td>
     </ng-container>
 
