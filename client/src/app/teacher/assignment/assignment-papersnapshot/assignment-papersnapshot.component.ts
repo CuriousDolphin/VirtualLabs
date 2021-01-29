@@ -1,10 +1,11 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, SecurityContext } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { PaperSnapshot } from 'src/app/models/papersnapshot.model';
 import { formatDate } from '@angular/common'
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { SolutionFormData } from 'src/app/models/formData.model';
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 @Component({
@@ -24,7 +25,8 @@ export class AssignmentPapersnapshotComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
+    private domSanitizer: DomSanitizer
   ) {
     this.formGroup = formBuilder.group({
       toReview: this.toReviewControl,
@@ -73,10 +75,8 @@ export class AssignmentPapersnapshotComponent implements OnInit {
     }
   }
 
-  renderImage(base64: string) {
-    let image = new Image()
-    image.src = base64
-    return image
+  renderTrustImage(base64: string) {
+    return this.domSanitizer.bypassSecurityTrustUrl(base64)
   }
 
   openImage() {
