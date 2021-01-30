@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, SecurityContext } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, Inject} from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { PaperSnapshot } from 'src/app/models/papersnapshot.model';
 import { formatDate } from '@angular/common'
@@ -6,6 +6,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { SolutionFormData } from 'src/app/models/formData.model';
 import { DomSanitizer } from '@angular/platform-browser';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 
 @Component({
@@ -21,12 +22,12 @@ export class AssignmentPapersnapshotComponent implements OnInit {
   voteControl = new FormControl({ value: 1, disabled: this.toReviewControl.value }, [Validators.min(1), Validators.max(30)])
   solutionFileControl = new FormControl(null, [Validators.required])
   solutionFileSourceControl = new FormControl(null, [Validators.required])
-  imageLink: String = "http://localhost:8080/VM_images/defaultVmImage.png"
-
+  
   constructor(
     private formBuilder: FormBuilder,
     private changeDetector: ChangeDetectorRef,
-    private domSanitizer: DomSanitizer
+    private domSanitizer: DomSanitizer,
+    public dialog: MatDialog
   ) {
     this.formGroup = formBuilder.group({
       toReview: this.toReviewControl,
@@ -79,8 +80,12 @@ export class AssignmentPapersnapshotComponent implements OnInit {
     return this.domSanitizer.bypassSecurityTrustUrl(base64)
   }
 
-  openImage() {
-    console.log("apro Immagine")
+  openImage(src) {
+    this.dialog.open(ImageDialog, {
+      data: {
+        src: this.renderTrustImage(src)
+      }
+    });
   }
 
   onSubmit(): void {
@@ -103,4 +108,14 @@ export class AssignmentPapersnapshotComponent implements OnInit {
     this.submitSolutionEvent.emit(solutionFormData)
   }
 
+}
+
+@Component({
+  selector: "image-dialog",
+  templateUrl: "image-dialog.html"
+})
+export class ImageDialog {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: object) {
+
+  }
 }
