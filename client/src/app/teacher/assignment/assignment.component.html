@@ -4,7 +4,32 @@
   <mat-card style="margin-bottom:22px">
     <mat-card-header fxLayout="row" fxLayoutAlign="space-between stretch">
       <mat-card-title>
-        Assignments
+        <div fxLayout="row">
+
+          <div fxLayout="row" *ngIf="toShowLevel >= 0">
+            <button mat-button
+              (click)="toShowLevel = 0">
+              Assignments
+            </button>
+          </div>
+
+          <div fxLayout="row" *ngIf="toShowLevel >= 1">
+            <p>></p>
+            <button mat-button
+              (click)="toShowLevel = 1">
+              Papers
+            </button>
+          </div>
+
+          <div fxLayout="row" *ngIf="toShowLevel >= 2">
+            <p>></p>
+            <button mat-button
+              (click)="toShowLevel = 2">
+              PaperSnapshots
+            </button>
+          </div>
+
+        </div>
       </mat-card-title>
     </mat-card-header>
     <mat-card-content>
@@ -26,7 +51,7 @@
       </ng-container>
       <ng-container *ngIf="toShowLevel === 2">
         <app-assignment-papersnapshot [papersnapshotsData]="papersnapshotsData"
-        (submitSolutionEvent)="solutionSubmitted($event)">
+          (submitSolutionEvent)="solutionSubmitted($event)">
         </app-assignment-papersnapshot>
       </ng-container>
     </mat-card-content>
