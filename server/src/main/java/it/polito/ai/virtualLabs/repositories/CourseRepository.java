@@ -16,9 +16,6 @@ public interface CourseRepository extends JpaRepository<Course, String> {
 
     boolean existsCourseByName(String name);
 
-
-
-
     @Query("SELECT s FROM Student s INNER JOIN s.teams t INNER JOIN t.course c WHERE c.name=:courseName")
     List<Student> getStudentsInTeams(String courseName);
 

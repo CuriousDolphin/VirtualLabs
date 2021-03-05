@@ -1,4 +1,5 @@
 import { Student } from "./student.model";
+import { VmInstance } from "./vm-instance.model";
 
 export interface Team {
   id: number;
@@ -9,4 +10,5 @@ export interface Team {
   members_status: any;
   confirmation_token?: string;
   expiry_date?: string;
+  vmInstances: VmInstance[];
 }

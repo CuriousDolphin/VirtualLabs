@@ -2,35 +2,20 @@
 <div [formGroup]="createForm">
     <mat-form-field class="full-width">
         <mat-label>VCPUs number</mat-label>
-        <input matInput type="number" min="1" [max]="data.maxVcpus" formControlName="vcpus"
-            *ngIf="data.maxVcpus !== 0; else noVcpus">
-        <mat-error *ngIf="createForm.controls['vcpus'].invalid"></mat-error>
-        <ng-template #noVcpus>
-            <input matInput type="number" min="0" [max]="0" formControlName="vcpus">
-            <mat-error></mat-error>
-        </ng-template>
+        <input matInput type="number" min="1" [max]="data.maxVcpus" formControlName="vcpus">
+        <mat-error *ngIf="createForm.controls['vcpus'].invalid">Must be between 1 and {{data.maxVcpus}}</mat-error>
         <span matSuffix>/ {{data.maxVcpus}} available</span>
     </mat-form-field>
     <mat-form-field class="full-width">
         <mat-label>RAM dimension</mat-label>
-        <input matInput type="number" min="1" [max]="data.maxRam" formControlName="ram"
-        *ngIf="data.maxRam !== 0; else noRam">
-        <mat-error *ngIf="createForm.controls['ram'].invalid"></mat-error>
-        <ng-template #noRam>
-            <input matInput type="number" min="0" [max]="0" formControlName="ram">
-            <mat-error></mat-error>
-        </ng-template>
+        <input matInput type="number" min="1" [max]="data.maxRam" formControlName="ram">
+        <mat-error *ngIf="createForm.controls['ram'].invalid">Must be between 1 and {{data.maxRam}}</mat-error>
         <span matSuffix>GB / {{data.maxRam}} GB available</span>
     </mat-form-field>
     <mat-form-field class="full-width">
         <mat-label>Disk dimension</mat-label>
-        <input matInput type="number" min="1" [max]="data.maxDisk" formControlName="disk"
-        *ngIf="data.maxDisk !== 0; else noDisk">
-        <mat-error *ngIf="createForm.controls['disk'].invalid"></mat-error>
-        <ng-template #noDisk>
-            <input matInput type="number" min="0" [max]="0" formControlName="disk">
-            <mat-error></mat-error>
-        </ng-template>
+        <input matInput type="number" min="1" [max]="data.maxDisk" formControlName="disk">
+        <mat-error *ngIf="createForm.controls['disk'].invalid">Must be between 1 and {{data.maxDisk}}</mat-error>
         <span matSuffix>GB / {{data.maxDisk}} GB available</span>
     </mat-form-field>
     <mat-checkbox formControlName="owner">Accessible to Every Teammates

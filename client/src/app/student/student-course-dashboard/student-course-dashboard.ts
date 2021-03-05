@@ -12,7 +12,7 @@ import { AuthService } from "src/app/auth/auth.service";
 import { Student } from "src/app/models/student.model";
 import { TeamProposal } from "src/app/models/teamProposal.model";
 import { VmInstance } from 'src/app/models/vm-instance.model';
-import { VmConfiguration } from 'src/app/models/vm-configuration.model';
+import { VmModel } from 'src/app/models/vm-model.model';
 import * as _ from 'lodash';
 
 @Component({
@@ -40,7 +40,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   private createVmSubscription: Subscription;
   private editVmSubscription: Subscription;
   currentCourse: Course;
-  currentVmConfiguration$: Observable<VmConfiguration>;
+  currentVmModel$: Observable<VmModel>;
   currentCourse$: Observable<Course>;
   studentTeams$: Observable<Team[]>;
   studentVmInstances$: Observable<VmInstance[]>;
@@ -101,7 +101,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       tap((teams) => {
         if (_.filter(teams, (t) => t.status === 1).length === 1)
           this.currentActiveTeam$.next(_.filter(teams, (t) => t.status === 1)[0].name);
-        else 
+        else
           this.currentActiveTeam$.next("");
         this.isLoading = false;
       })
@@ -121,25 +121,25 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       tap(() => (this.isLoading = false))
     );
 
-    this.currentVmConfiguration$ = this.currentActiveTeam$.pipe(
+    this.currentVmModel$ = this.currentActiveTeam$.pipe(
       tap(() => (this.isLoading = true)),
-      switchMap((team) => {
+      switchMap((team: String) => {
         if (team !== "") {
-          return this.studentService.getVmConfigurationPerTeam(
+          return this.studentService.getCourseVmModel(
             this.authService.getUserId(),
-            team
+            this.currentActiveTeam$.getValue()
           );
         }
         else {
-          return of<VmConfiguration>();
+          return of<VmModel>();
         }
       }),
-      tap(() => (this.isLoading = false, console.log("Retrieved team's VmConfiguration")))
+      tap(() => (this.isLoading = false, console.log("Retrieved VmModel")))
     )
 
     this.studentVmInstances$ = this.currentActiveTeam$.pipe(
       tap(() => (this.isLoading = true)),
-      switchMap((team) => {
+      switchMap((team: String) => {
         if (team !== "") {
           return this.studentService.getVmInstancesPerTeam(
             this.authService.getUserId(),
@@ -233,7 +233,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
 
   startVm(vm: VmInstance) {
     if (this.startVmSubscription) this.startVmSubscription.unsubscribe();
-    
+
     console.log("start VM requested")
     this.startVmSubscription = this.studentService
       .startVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), vm)

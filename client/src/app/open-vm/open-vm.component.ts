@@ -1,16 +1,15 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DialogCreateVmComponent } from '../dialog-create-vm/dialog-create-vm.component';
+import { DialogCreateVmComponent } from '../student/vms-student/dialog-create-vm/dialog-create-vm.component';
 
 
 export interface DialogData {
   countVcpus: number;
   countRam: number;
   countDisk: number;
-  fakeId: number;
   image: String;
-  course: String;
   courseAc: String;
+  teamName: String;
 }
 
 @Component({
@@ -19,8 +18,6 @@ export interface DialogData {
   styleUrls: ['./open-vm.component.sass']
 })
 export class OpenVmComponent implements OnInit {
-
-  imageLink: String = "http://localhost:8080/VM_images/" + this.data.image;
 
   path: String;
 

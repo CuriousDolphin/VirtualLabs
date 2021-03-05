@@ -14,7 +14,12 @@
     </div>
   </div>
 
-  <button mat-button color="primary" class="ml-1 edit-button" (click)="openUpdateDialog()">
+  <button
+    mat-button
+    color="primary"
+    class="ml-1 edit-button"
+    (click)="openUpdateDialog()"
+  >
     <mat-icon> edit </mat-icon>
   </button>
 </mat-toolbar>
@@ -23,17 +28,27 @@
   <mat-tab label="students">
     <!--only this scroll-->
     <div class="tab-container">
-      
-      <app-students [studentsDB]="studentsDB$ | async" [enrolledStudents]="enrolledStudents$ | async"
-        (addStudent)="enrollStudent($event)" (deleteStudents)="unEnrollStudents($event)"
-        (uploadCsv)="uploadCsv($event)">
+      <app-students
+        [studentsDB]="studentsDB$ | async"
+        [enrolledStudents]="enrolledStudents$ | async"
+        (addStudent)="enrollStudent($event)"
+        (deleteStudents)="unEnrollStudents($event)"
+        (uploadCsv)="uploadCsv($event)"
+      >
       </app-students>
-
     </div>
-
-
   </mat-tab>
-  <mat-tab label="vm"> Content 2 </mat-tab>
+  <mat-tab label="VM">
+    <div class="tab-container">
+      <app-vms-teacher
+        [teams]="courseTeams$ | async"
+        [vmModel]="courseVmModel$ | async"
+        [currentCourse]="currentCourse$ | async"
+        (editModel)="editModel($event)"
+      >
+      </app-vms-teacher>
+    </div>
+  </mat-tab>
   <mat-tab label="assignment">
     <div class="tab-container">
       <app-assignment 

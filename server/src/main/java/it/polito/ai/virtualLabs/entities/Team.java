@@ -25,8 +25,6 @@ public class Team {
     List<Student> members = new ArrayList<>();
     @OneToMany(mappedBy = "team")
     private List<VmInstance> vmInstances;
-    @OneToOne
-    private VmConfiguration vmConfiguration;
     @Id
     @GeneratedValue
     private Long id;

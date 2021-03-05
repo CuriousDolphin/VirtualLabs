@@ -4,9 +4,11 @@ import it.polito.ai.virtualLabs.CourseProposal;
 import it.polito.ai.virtualLabs.TeamProposal;
 import it.polito.ai.virtualLabs.dtos.*;
 import it.polito.ai.virtualLabs.exceptions.*;
+import it.polito.ai.virtualLabs.repositories.VmModelRepository;
 import it.polito.ai.virtualLabs.services.NotificationService;
 import it.polito.ai.virtualLabs.services.TeamService;
 import org.apache.commons.io.IOUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -30,9 +32,14 @@ public class CourseController {
     @Autowired
     TeamService teamService;
 
+    @Autowired
+    ModelMapper modelMapper;
 
     @Autowired
     NotificationService notificationService;
+
+    @Autowired
+    VmModelRepository vmr;
 
     @GetMapping({"", "/"})
     List<CourseDTO> all() {
@@ -274,4 +281,19 @@ public class CourseController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Paper not found");
         }
     }
+    @GetMapping("/{name}/vmInstances")
+    List<VmInstanceDTO> vmInstances(@PathVariable("name") String name) {
+        return teamService.getVmInstancesPerCourse(name);
+    }
+
+    @GetMapping("/{name}/vmmodel")
+    VmModelDTO vmModels(@PathVariable("name") String name) {
+        return teamService.getVmModel(name);
+    }
+
+    @PostMapping({"/{name}/editvmmodel"})
+    VmModelDTO editVmModel(@PathVariable("name") String name, @Valid @RequestBody(required = true) VmModelDTO vmModel) {
+        return teamService.editVmModel(name, vmModel);
+    }
+
 }

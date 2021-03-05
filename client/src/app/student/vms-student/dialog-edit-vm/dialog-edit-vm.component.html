@@ -1,21 +1,21 @@
-<h1 mat-dialog-title>Change Resources of VM {{data.mockId + 1}}</h1>
+<h1 mat-dialog-title>Change Resources of VM</h1>
 <div [formGroup]="editForm">
     <mat-form-field class="full-width">
         <mat-label>VCPUs number</mat-label>
         <input matInput type="number" min="1" [max]="data.maxVcpus" formControlName="vcpus">
-        <mat-error *ngIf="editForm.controls['vcpus'].invalid"></mat-error>
+        <mat-error *ngIf="editForm.controls['vcpus'].invalid">Must be between 1 and {{data.maxVcpus}}</mat-error>
         <span matSuffix>/ {{data.maxVcpus}} available</span>
     </mat-form-field>
     <mat-form-field class="full-width">
         <mat-label>RAM dimension</mat-label>
         <input matInput type="number" min="1" [max]="data.maxRam" formControlName="ram">
-        <mat-error *ngIf="editForm.controls['ram'].invalid"></mat-error>
+        <mat-error *ngIf="editForm.controls['ram'].invalid">Must be between 1 and {{data.maxRam}}</mat-error>
         <span matSuffix>GB / {{data.maxRam}} GB available</span>
     </mat-form-field>
     <mat-form-field class="full-width">
         <mat-label>Disk dimension</mat-label>
         <input matInput type="number" min="1" [max]="data.maxDisk" formControlName="disk">
-        <mat-error *ngIf="editForm.controls['disk'].invalid"></mat-error>
+        <mat-error *ngIf="editForm.controls['disk'].invalid">Must be between 1 and {{data.maxDisk}}</mat-error>
         <span matSuffix>GB / {{data.maxDisk}} GB available</span>
     </mat-form-field>
 </div>

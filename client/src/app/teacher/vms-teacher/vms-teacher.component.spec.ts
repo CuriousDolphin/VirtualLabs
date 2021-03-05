@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { VmsStudentComponent } from './vms-student.component';
+import { VmsTeacherComponent } from './vms-teacher.component';
 
-describe('VmsStudentComponent', () => {
-  let component: VmsStudentComponent;
-  let fixture: ComponentFixture<VmsStudentComponent>;
+describe('VmsTeacherComponent', () => {
+  let component: VmsTeacherComponent;
+  let fixture: ComponentFixture<VmsTeacherComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ VmsStudentComponent ]
+      declarations: [ VmsTeacherComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(VmsStudentComponent);
+    fixture = TestBed.createComponent(VmsTeacherComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

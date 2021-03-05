@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Permanently DELETE this VM?</h1>
+<div mat-dialog-actions class="centerButtons">
+    <button mat-raised-button class="myButton" (click)="onNoClick()">
+        No
+    </button>
+    <button mat-raised-button color="warn" class="myButton" (click)="confirmDelete()">
+        <mat-icon matListIcon>
+            delete</mat-icon>
+        Yes, delete
+    </button>
+</div>

@@ -20,7 +20,6 @@ import { MatSortModule } from "@angular/material/sort";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { StudentsComponent } from "./teacher/students/students.component";
 import { HomeComponent } from "./home/home.component";
-import { VmsComponent } from "./teacher/vms/vms.component";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatDialogModule } from "@angular/material/dialog";
@@ -50,17 +49,19 @@ import { AssignmentPaperComponent } from './teacher/assignment/assignment-paper/
 import { AssignmentPapersnapshotComponent } from './teacher/assignment/assignment-papersnapshot/assignment-papersnapshot.component';
 import { VmsStudentComponent } from './student/vms-student/vms-student.component';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { DialogCreateVmComponent } from './student/vms-student/dialog-create-vm/dialog-create-vm.component';
 import {MatRadioModule} from '@angular/material/radio';
+import { DialogCreateVmComponent } from './student/vms-student/dialog-create-vm/dialog-create-vm.component';
 import { DialogEditVmComponent } from './student/vms-student/dialog-edit-vm/dialog-edit-vm.component';
 import { OpenVmComponent } from './student/vms-student/open-vm/open-vm.component';
+import { VmsTeacherComponent } from "./teacher/vms-teacher/vms-teacher.component";
+import { DialogEditModelComponent } from "./teacher/vms-teacher/dialog-edit-model/dialog-edit-model.component";
+import { DialogConfirmDeleteComponent } from "./student/vms-student/dialog-confirm-delete/dialog-confirm-delete.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     StudentsComponent,
     HomeComponent,
-    VmsComponent,
     PageNotFoundComponent,
     LoginDialogComponent,
     TeacherComponent,
@@ -81,6 +82,9 @@ import { OpenVmComponent } from './student/vms-student/open-vm/open-vm.component
     DialogCreateVmComponent,
     DialogEditVmComponent,
     OpenVmComponent,
+    VmsTeacherComponent,
+    DialogEditModelComponent,
+    DialogConfirmDeleteComponent,
   ],
   imports: [
     BrowserModule,

@@ -7,6 +7,9 @@ import { Assignment } from 'src/app/models/assignment.model';
 import { Course } from "src/app/models/course.model";
 import { Student } from "src/app/models/student.model";
 import { Paper } from "src/app/models/paper.model";
+import { Team } from "src/app/models/team.model";
+import { VmModel } from "src/app/models/vm-model.model";
+import { VmInstance } from "src/app/models/vm-instance.model";
 import { CourseService } from "src/app/services/course.service";
 import { StudentService } from "src/app/services/student.service";
 import { ToastService } from "src/app/services/toast.service";
@@ -37,6 +40,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
   private papersSubscription: Subscription;
   private uploadSubscription: Subscription;
   private papersnapshotSubscription: Subscription;
+  private editModelSubscription: Subscription;
 
   studentsDB$: Observable<Student[]>;
   currentCourse: Course;
@@ -45,6 +49,9 @@ export class CourseDashboard implements OnInit, OnDestroy {
   assignments$: Observable<Assignment[]>
   papers$: Observable<Paper[]>
   papersnapshots$: Observable<PaperSnapshot[]>
+  courseTeams$: Observable<Team[]>;
+  courseVmInstances$: Observable<VmInstance[]>;
+  courseVmModel$: Observable<VmModel>;
   isLoading = false;
   constructor(
     private studentService: StudentService,
@@ -84,6 +91,41 @@ export class CourseDashboard implements OnInit, OnDestroy {
       tap((course) => {
         this.currentCourse = course;
       })
+    );
+
+    this.courseTeams$ = this.currentCourse$.pipe(
+      tap(() => (this.isLoading = true)),
+      switchMap((course: Course) => {
+        return this.courseService.getTeamsPerCourse(course.name);
+      }),
+      tap(
+        () => (
+          (this.isLoading = false), console.log("Retrieved course's teams")
+        )
+      )
+    );
+    /* 
+    this.courseVmInstances$ = this.currentCourse$.pipe(
+      tap(() => (this.isLoading = true)),
+      switchMap((course: Course) => {
+        return this.courseService.getVmInstancesPerCourse(course.name);
+      }),
+      tap(
+        (instances) => (
+          (this.isLoading = false),
+          console.log("Retrieved vmInstances", instances)
+        )
+      )
+    );
+ */
+    this.courseVmModel$ = this.currentCourse$.pipe(
+      tap(() => (this.isLoading = true)),
+      switchMap((course: Course) => {
+        return this.courseService.getCourseVmModel(course.name);
+      }),
+      tap(
+        () => ((this.isLoading = false), console.log("Retrieved courseVmModel"))
+      )
     );
 
     this.enrolledStudents$ = combineLatest([
@@ -251,6 +293,25 @@ export class CourseDashboard implements OnInit, OnDestroy {
     })
   }
 
+  editModel(newModel: JSON) {
+    if (this.editModelSubscription) this.editModelSubscription.unsubscribe();
+
+    console.log("edit MODEL requested");
+    this.editModelSubscription = this.courseService
+      .editModel(this.currentCourse.name, newModel)
+      .subscribe(
+        (data) => {
+          this._reloadCourse$.next(null);
+          this.toastService.success("MODEL edit success! \n");
+        },
+        (error) => {
+          this.toastService.error(
+            "Error edit MODEL, try again later \n" + error
+          );
+        }
+      );
+  }
+
   ngOnDestroy(): void {
     if (this.dialogSubscription) this.dialogSubscription.unsubscribe();
     if (this.courseSubscription) this.courseSubscription.unsubscribe();
@@ -258,5 +319,6 @@ export class CourseDashboard implements OnInit, OnDestroy {
     if (this.papersSubscription) this.papersSubscription.unsubscribe();
     if (this.enrollSubscription) this.enrollSubscription.unsubscribe();
     if (this.unenrollSubscription) this.unenrollSubscription.unsubscribe();
+    if (this.editModelSubscription) this.editModelSubscription.unsubscribe();
   }
 }

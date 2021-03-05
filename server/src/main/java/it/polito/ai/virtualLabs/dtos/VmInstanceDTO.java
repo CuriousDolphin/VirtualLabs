@@ -12,4 +12,5 @@ public class VmInstanceDTO {
     private String owner;
     private String creator;
     private String image;
+    private Long teamId;
 }
