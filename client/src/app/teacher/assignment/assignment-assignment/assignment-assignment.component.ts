@@ -30,7 +30,7 @@ export class AssignmentAssignmentComponent implements OnInit {
   }
 
   format(date) {
-    return formatDate(date, 'yyyy-MM-dd hh:mm:ss', 'en', 'GMT')
+    return formatDate(date, 'EEEE, MMMM d, y, h:mm:ss a', 'en-US', 'GMT+1')
   }
 
   ngOnInit(): void {

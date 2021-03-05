@@ -1,42 +1,61 @@
-<table mat-table [dataSource]="dataSource" class="elevation-z6" matSort>
+<div class="container">
 
-  <ng-container matColumnDef="id">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-    <td mat-cell *matCellDef="let paper">{{paper.id}}</td>
-  </ng-container>
+  <mat-card style="margin-bottom: 22px;">
+    <mat-card-header fxLayout="row" fxLayoutAlign="space-between stretch">
+      <mat-card-title>Filters</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="p-16">
+        <mat-checkbox [(ngModel)]="unread"> Show unread papers</mat-checkbox>
+        <br>
+        <mat-checkbox [(ngModel)]="submitted"> Show submitted papers</mat-checkbox>
+        <br>
+        <mat-checkbox [(ngModel)]="toReview"> Show to review papers</mat-checkbox>
+      </div>
+    </mat-card-content>
+  </mat-card>
 
-  <ng-container matColumnDef="status">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
-    <td mat-cell *matCellDef="let paper">
-      <mat-icon *ngIf="paper.status === null">mark_email_unread</mat-icon>
-    </td>
-  </ng-container>
 
-  <ng-container matColumnDef="vote">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Vote</th>
-    <td mat-cell *matCellDef="let paper">{{paper.vote}}</td>
-  </ng-container>
+  <table mat-table [dataSource]="dataSource" class="elevation-z6" matSort>
 
-  <ng-container matColumnDef="lastUpdateTime">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Last update time</th>
-    <td mat-cell *matCellDef="let paper">{{format(paper.lastUpdateTime)}}</td>
-  </ng-container>
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>Id</th>
+      <td mat-cell *matCellDef="let paper">{{paper.id}}</td>
+    </ng-container>
 
-  <ng-container matColumnDef="studentId">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Student Id</th>
-    <td mat-cell *matCellDef="let paper">{{paper.student.id}}</td>
-  </ng-container>
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <td mat-cell *matCellDef="let paper">
+        <mat-icon *ngIf="paper.status === null">mark_email_unread</mat-icon>
+      </td>
+    </ng-container>
 
-  <ng-container matColumnDef="studentName">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Student Name</th>
-    <td mat-cell *matCellDef="let paper">{{paper.student.name}}</td>
-  </ng-container>
+    <ng-container matColumnDef="vote">
+      <th mat-header-cell *matHeaderCellDef>Vote</th>
+      <td mat-cell *matCellDef="let paper">{{paper.vote}}</td>
+    </ng-container>
 
-  <ng-container matColumnDef="studentLastName">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Student Lastname</th>
-    <td mat-cell *matCellDef="let paper">{{paper.student.lastName}}</td>
-  </ng-container>
+    <ng-container matColumnDef="lastUpdateTime">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Last update time</th>
+      <td mat-cell *matCellDef="let paper">{{format(paper.lastUpdateTime)}}</td>
+    </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="colsToDisplay"></tr>
-  <tr mat-row (click)="clickPaper(row.id)" *matRowDef="let row; columns: colsToDisplay"></tr>
-</table>
+    <ng-container matColumnDef="studentId">
+      <th mat-header-cell *matHeaderCellDef>Student Id</th>
+      <td mat-cell *matCellDef="let paper">{{paper.student.id}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="studentName">
+      <th mat-header-cell *matHeaderCellDef>Student Name</th>
+      <td mat-cell *matCellDef="let paper">{{paper.student.name}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="studentLastName">
+      <th mat-header-cell *matHeaderCellDef>Student Lastname</th>
+      <td mat-cell *matCellDef="let paper">{{paper.student.lastName}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="colsToDisplay"></tr>
+    <tr mat-row (click)="clickPaper(row.id)" *matRowDef="let row; columns: colsToDisplay"></tr>
+  </table>
+</div>
