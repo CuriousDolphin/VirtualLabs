@@ -49,6 +49,18 @@
       </app-vms-teacher>
     </div>
   </mat-tab>
+  <mat-tab label="assignment">
+    <div class="tab-container">
+      <app-assignment 
+      [assignments]="assignments$ | async"
+      [papers]="papers$ | async"
+      [papersnapshots]= "papersnapshots$ | async"
+      (assignmentClickedEvent)="getAllPapersForAssignment($event)"
+      (paperClickedEvent)="getAllPapersnapshotsForPaper($event)"
+      (solutionSubmittedEvent)="addPapersnapshot($event)">
+      </app-assignment>
+    </div>>
+  </mat-tab>
 </mat-tab-group>
 
 <!-- <nav mat-tab-nav-bar class="white-smoke">

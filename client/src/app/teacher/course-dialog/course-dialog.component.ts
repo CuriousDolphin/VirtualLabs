@@ -49,8 +49,6 @@ export class CourseDialogComponent implements OnInit {
 
     console.log(this.courseForm);
 
-
-
   }
 
   ngOnInit(): void {

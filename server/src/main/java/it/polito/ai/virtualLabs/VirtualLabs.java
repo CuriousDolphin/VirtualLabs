@@ -1,5 +1,7 @@
 package it.polito.ai.virtualLabs;
 
+import lombok.extern.java.Log;
+import it.polito.ai.virtualLabs.dtos.CourseDTO;
 import it.polito.ai.virtualLabs.dtos.TeamDTO;
 import it.polito.ai.virtualLabs.entities.*;
 import it.polito.ai.virtualLabs.repositories.*;
@@ -16,9 +18,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
 
+@Log(topic = "VirtualLabs")
 @SpringBootApplication
 public class VirtualLabs {
     @Bean
@@ -36,7 +45,21 @@ public class VirtualLabs {
     }
 
     @Bean
-    CommandLineRunner runner(VmInstanceRepository vmInstanceRepository, TeamRepository teamRepository, UserRepository userRepository, CourseRepository courseRepository, PasswordEncoder passwordEncoder, VmModelRepository vmModelRepository, StudentRepository studentRepository, TeamService teamService, NotificationService notificationService, TokenTeamRepository tokenTeamRepository, TeacherRepository teacherRepository) {
+    CommandLineRunner runner(
+            VmInstanceRepository vmInstanceRepository,
+            TeamRepository teamRepository,
+            UserRepository userRepository,
+            CourseRepository courseRepository,
+            PasswordEncoder passwordEncoder,
+            VmModelRepository vmModelRepository,
+            StudentRepository studentRepository,
+            TeamService teamService,
+            NotificationService notificationService,
+            TokenTeamRepository tokenTeamRepository,
+            TeacherRepository teacherRepository,
+            AssignmentRepository assignmentRepository,
+            PaperRepository paperRepository,
+            PaperSnapshotRepository paperSnapshotRepository) {
         return new CommandLineRunner() {
 
             @Override
@@ -61,7 +84,21 @@ public class VirtualLabs {
                             .build());
                 }
 
-                generateMockData(teamRepository, vmInstanceRepository, courseRepository, vmModelRepository, userRepository, passwordEncoder, studentRepository, teamService, notificationService, tokenTeamRepository, teacherRepository);
+                generateMockData(
+                        teamRepository,
+                        vmInstanceRepository,
+                        courseRepository,
+                        vmModelRepository,
+                        userRepository,
+                        passwordEncoder,
+                        studentRepository,
+                        teamService,
+                        notificationService,
+                        tokenTeamRepository,
+                        teacherRepository,
+                        assignmentRepository,
+                        paperRepository,
+                        paperSnapshotRepository);
 
                 System.out.println("Printing all users:");
                 userRepository.findAll().forEach(v ->  System.out.println(" - User: " + v.toString()));
@@ -75,14 +112,37 @@ public class VirtualLabs {
     }
 
     /* generates mock data (3 courses, admin, 2 students, team, teacher) */
-    public void generateMockData(TeamRepository tr, VmInstanceRepository ir, CourseRepository cr, VmModelRepository vmr, UserRepository ur, PasswordEncoder passwordEncoder, StudentRepository sr, TeamService teamService, NotificationService notificationService, TokenTeamRepository ttr, TeacherRepository tcr) {
+    public void generateMockData(
+            TeamRepository tr,
+            VmInstanceRepository ir,
+            CourseRepository cr,
+            VmModelRepository vmr,
+            UserRepository ur,
+            PasswordEncoder passwordEncoder,
+            StudentRepository sr,
+            TeamService teamService,
+            NotificationService notificationService,
+            TokenTeamRepository ttr,
+            TeacherRepository tcr,
+            AssignmentRepository ar,
+            PaperRepository pr,
+            PaperSnapshotRepository psr) {
         if(cr.findByNameIgnoreCase("Programmazione di Sistema").isEmpty()) {
             try {
+
+                /* Set time for the assignment releaseDate and expirtyDate */
+                Calendar calendar = Calendar.getInstance();
+                Timestamp releaseDate = new Timestamp(System.currentTimeMillis());
+                calendar.setTimeInMillis(releaseDate.getTime());
+                calendar.add(Calendar.DAY_OF_WEEK, 6);
+                Timestamp expiryDate = new Timestamp(calendar.getTime().getTime());
+
                 //Course: PDS
                 Course newCourse1 = Course.builder()
                         .name("Programmazione di Sistema")
                         .acronym("PDS")
                         .enabled(true)
+                        .assignments(new ArrayList<>())
                         .min(2)
                         .max(4)
                         .build();
@@ -96,12 +156,54 @@ public class VirtualLabs {
                         .maxRam(6*8)
                         .maxDisk(6*500)
                         .build();
+                Paper paper1 = Paper.builder()
+                        .status(null)
+                        .vote(0)
+                        .lastUpdateTime(releaseDate)
+                        .paperSnapshots(new ArrayList<>())
+                        .build();
+                Paper paper4 = Paper.builder()
+                        .status(null)
+                        .vote(0)
+                        .lastUpdateTime(releaseDate)
+                        .build();
+                Paper paper5 = Paper.builder()
+                        .status(null)
+                        .vote(0)
+                        .lastUpdateTime(releaseDate)
+                        .build();
+                Assignment assignment1 = Assignment.builder()
+                        .releaseDate(releaseDate)
+                        .expiryDate(expiryDate)
+                        .papers(new ArrayList<>())
+                        .content("Laboratorio 1")
+                        .build();
+                Assignment assignment4 = Assignment.builder()
+                        .releaseDate(releaseDate)
+                        .expiryDate(expiryDate)
+                        .papers(new ArrayList<>())
+                        .content("Laboratorio 2")
+                        .build();
+                Assignment assignment5 = Assignment.builder()
+                        .releaseDate(releaseDate)
+                        .expiryDate(expiryDate)
+                        .papers(new ArrayList<>())
+                        .content("Laboratorio 3")
+                        .build();
+                paper1.setAssignment(assignment1);
+                paper4.setAssignment(assignment1);
+                paper5.setAssignment(assignment1);
+                assignment1.setCourse(newCourse1);
+                assignment4.setCourse(newCourse1);
+                assignment5.setCourse(newCourse1);
                 vmr.save(newVmModel);
+
                 //Course: ML
                 Course newCourse2 = Course.builder()
                         .name("Machine Learning")
                         .acronym("ML")
                         .enabled(true)
+                        .assignments(new ArrayList<>())
                         .min(3)
                         .max(6)
                         .build();
@@ -115,12 +217,27 @@ public class VirtualLabs {
                         .maxRam(6*8)
                         .maxDisk(6*500)
                         .build();
+                Paper paper2 = Paper.builder()
+                        .status(null)
+                        .vote(0)
+                        .lastUpdateTime(releaseDate)
+                        .build();
+                Assignment assignment2 = Assignment.builder()
+                        .releaseDate(releaseDate)
+                        .expiryDate(expiryDate)
+                        .papers(new ArrayList<>())
+                        .content("Laboratorio 1")
+                        .build();
+                paper2.setAssignment(assignment2);
+                assignment2.setCourse(newCourse2);
                 vmr.save(newVmModel);
+
                 //Course: AI
                 Course newCourse3 = Course.builder()
                         .name("Applicazioni Internet")
                         .acronym("AI")
                         .enabled(false)
+                        .assignments(new ArrayList<>())
                         .min(5)
                         .max(10)
                         .build();
@@ -174,29 +291,37 @@ public class VirtualLabs {
                         .roles(Arrays.asList("ROLE_STUDENT"))
                         .build()
                 );
-                Student newStudent = Student.builder()
+
+                Student student1 = Student.builder()
                         .id("s123456")
                         .email("s123456@studenti.polito.it")
                         .lastName("Rossi")
                         .name("Mario")
+                        .papers(new ArrayList<>())
                         .build();
-                sr.save(newStudent);
+                paper1.setStudent(student1);
+                paper5.setStudent(student1);
+
                 //User-Student: s234567 (Giacomo Bianchi)
                 ur.save(User.builder()
                         .id("s234567")
+                        .enabled(true)
                         .username("s234567@studenti.polito.it")
                         .password(passwordEncoder.encode("pwd"))
                         .roles(Arrays.asList("ROLE_STUDENT"))
                         .enabled(true)
                         .build()
                 );
-                sr.save(Student.builder()
+                 Student student3 = Student.builder()
                         .id("s234567")
                         .email("s234567@studenti.polito.it")
                         .lastName("Bianchi")
                         .name("Giacomo")
-                        .build());
+                        .build();
                 //enroll studenti in pds
+                cr.save(newCourse1);
+                sr.save(student1);
+                sr.save(student3);
                 teamService.enrollAll(new ArrayList<String>(Arrays.asList("s123456", "s234567")), "Programmazione di Sistema");
                 //crea team
                 TeamDTO teamDTO = teamService.proposeTeam("Programmazione di Sistema", "TheDreamTeam", new ArrayList<String>(Arrays.asList("s234567")), "s123456", 1);
@@ -207,19 +332,21 @@ public class VirtualLabs {
                 //User-Student: s345678 (Dario Verdi)
                 ur.save(User.builder()
                         .id("s345678")
+                        .enabled(true)
                         .username("s345678@studenti.polito.it")
                         .password(passwordEncoder.encode("pwd"))
                         .roles(Arrays.asList("ROLE_STUDENT"))
                         .enabled(true)
                         .build()
                 );
-                newStudent = Student.builder()
+                Student student2 = Student.builder()
                         .id("s345678")
                         .email("s345678@studenti.polito.it")
                         .lastName("Dario")
                         .name("Verdi")
+                        .papers(new ArrayList<>())
                         .build();
-                sr.save(newStudent);
+                sr.save(student2);
                 //insert VmInstance
                 ir.save(VmInstance.builder()
                         .team(tr.getByName("TheDreamTeam"))
@@ -232,6 +359,15 @@ public class VirtualLabs {
                         .creator(tr.getByName("TheDreamTeam").getOwner().getId())
                         .image(vmr.getByCourse(tr.getByName("TheDreamTeam").getCourse()).getImage())
                         .build());
+
+                ar.save(assignment1);
+                ar.save(assignment2);
+                ar.save(assignment4);
+                ar.save(assignment5);
+                pr.save(paper1);
+                pr.save(paper2);
+                pr.save(paper4);
+                pr.save(paper5);
             } catch (Exception e) {
                 System.out.println("Exception insert mock data: " + e.getMessage());
             } finally {

@@ -23,7 +23,7 @@ public class Student {
     @ManyToMany(mappedBy = "members")
     List<Team> teams= new ArrayList<>();
     @OneToMany(mappedBy = "student")
-    List<Paper> papers;
+    List<Paper> papers = new ArrayList<>();
     @Id
    // @Setter(AccessLevel.NONE)
    // @Getter(AccessLevel.NONE)
@@ -37,7 +37,6 @@ public class Student {
         return this.id+"_"+this.name+"_"+this.lastName;
     }
 
-
     public void addCourse(Course course){
         if(!this.courses.contains(course)) this.courses.add(course);
         if(!course.getStudents().contains(this)) course.addStudent(this);
@@ -50,8 +49,6 @@ public class Student {
 
     }
 
-
-
     public void addTeam(Team t){
         if(!this.teams.contains(t)) this.teams.add(t);
         if(!t.getMembers().contains(this))  t.addMembers(this);
@@ -60,6 +57,16 @@ public class Student {
     public void removeTeam(Team t){
         this.teams.remove(t);
         if(t.getMembers().contains(this))  t.removeMembers(this);
+    }
+
+    public void addPaper(Paper paper) {
+        if(!papers.contains(paper)) papers.add(paper);
+        if(!paper.getStudent().equals(this))paper.setStudent(this);
+    }
+    
+    public void removePaper(Paper paper) {
+        if(papers.contains(paper)) papers.remove(paper);
+        if(paper.getStudent().equals(this)) paper.setStudent(null);
     }
 
     public void setId(String id){

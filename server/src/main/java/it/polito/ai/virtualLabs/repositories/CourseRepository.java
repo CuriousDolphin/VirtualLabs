@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CourseRepository extends JpaRepository<Course,String> {
+public interface CourseRepository extends JpaRepository<Course, String> {
 
     Optional<Course> findByNameIgnoreCase(String name);
 

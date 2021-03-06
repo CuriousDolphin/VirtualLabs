@@ -6,20 +6,20 @@ import it.polito.ai.virtualLabs.dtos.*;
 import it.polito.ai.virtualLabs.entities.*;
 import it.polito.ai.virtualLabs.exceptions.*;
 import it.polito.ai.virtualLabs.repositories.*;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.sql.rowset.serial.SerialBlob;
 import javax.transaction.Transactional;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,7 +37,20 @@ public class TeamServiceImpl implements TeamService {
     TokenTeamRepository tokenRepository;
 
     @Autowired
+    PaperRepository paperRepository;
+
+    @Autowired
+    PaperSnapshotRepository paperSnapshotRepository;
+
+    @Autowired
+    AssignmentRepository assignmentRepository;
+    /*
+    @Autowired
+    VmConfigurationRepository vmConfigurationRepository;
+    */
+    @Autowired
     VmModelRepository vmModelRepository;
+
 
     @Autowired
     ModelMapper modelMapper;
@@ -494,7 +507,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public List<StudentDTO> getAvailableStudents(String courseName) {
-        if (!courseRepository.findByNameIgnoreCase(courseName).isPresent()) throw new CourseNotFoundException();
+        if (courseRepository.findByNameIgnoreCase(courseName).isEmpty()) throw new CourseNotFoundException();
 
 
         return courseRepository.getStudentsNotInTeams(courseName)
@@ -502,6 +515,64 @@ public class TeamServiceImpl implements TeamService {
                 .map(student -> modelMapper.map(student, StudentDTO.class))
                 .collect(Collectors.toList());
 
+    }
+
+    @Override
+    public AssignmentDTO getAssignment(Long assignmentId) {
+        if(assignmentRepository.findById(assignmentId).isEmpty()) throw new AssignmentNotFoundException();
+        return modelMapper
+                .map(assignmentRepository.findById(assignmentId).get(), AssignmentDTO.class);
+    }
+
+    @Override
+    public List<AssignmentDTO> getAllAssignmentsForCourse(String courseName) {
+        if (courseRepository.findByNameIgnoreCase(courseName).isEmpty()) throw new CourseNotFoundException();
+        return assignmentRepository.findAllByCourse_Name(courseName)
+                .stream()
+                .map(assignment -> modelMapper.map(assignment, AssignmentDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PaperDTO> getAllPapersForAssignment(Long assignmentId) {
+        if(assignmentRepository.findById(assignmentId).isEmpty()) throw new AssignmentNotFoundException();
+
+        return paperRepository.findAllByAssignment_Id(assignmentId)
+                .stream()
+                .map(paper -> modelMapper.map(paper, PaperDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PaperSnapshotDTO> getAllPaperSnapshotsForPaper(Long paperId) {
+        if(!paperRepository.existsById(paperId)) throw new PaperNotFoundException();
+
+        List<PaperSnapshotDTO> paperSnapshotDTOS = paperSnapshotRepository.findAllByPaper_Id(paperId)
+                .stream()
+                .map(paperSnapshot ->  {
+                    PaperSnapshotDTO paperSnapshotDTO = modelMapper.map(paperSnapshot, PaperSnapshotDTO.class);
+                    String base64 = "data:image/png;base64," + Base64.getMimeEncoder().encodeToString(paperSnapshot.getContent());
+                    paperSnapshotDTO.setContent(base64);
+                    return paperSnapshotDTO;
+                })
+                .collect(Collectors.toList());
+
+        return paperSnapshotDTOS;
+    }
+
+    @Override
+    public PaperSnapshotDTO addPaperSnapshotToPaper(Long paperId, PaperSnapshotDTO paperSnapshotDTO, boolean toReview, Integer vote) {
+        if(!paperRepository.existsById(paperId)) throw new PaperNotFoundException();
+
+        byte[] bytes = Base64.getMimeDecoder().decode(paperSnapshotDTO.getContent().split(",")[1]);
+
+        PaperSnapshot paperSnapshot = modelMapper.map(paperSnapshotDTO, PaperSnapshot.class);
+        Paper paper = paperRepository.findById(paperId).get();
+        paperSnapshot.setPaper(paper);
+        paperSnapshot.setContent(bytes);
+
+        paperSnapshotRepository.save(paperSnapshot);
+        return paperSnapshotDTO;
     }
 
     @Override
@@ -516,8 +587,6 @@ public class TeamServiceImpl implements TeamService {
                 tmp.add(modelMapper.map(teamToken.getTeam(), TeamDTO.class))
         );
         return tmp;
-
-
     }
 
 

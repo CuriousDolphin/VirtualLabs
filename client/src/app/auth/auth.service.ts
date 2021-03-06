@@ -55,6 +55,7 @@ export class AuthService {
     );
   }
   getUserId(): string {
+    console.log(this.currentUserSubject$.value.userId)
     return this.currentUserSubject$.value.userId;
   }
 

@@ -3,8 +3,10 @@ import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BehaviorSubject, combineLatest, Observable, Subscription } from "rxjs";
 import { switchMap, tap, map } from "rxjs/operators";
+import { Assignment } from 'src/app/models/assignment.model';
 import { Course } from "src/app/models/course.model";
 import { Student } from "src/app/models/student.model";
+import { Paper } from "src/app/models/paper.model";
 import { Team } from "src/app/models/team.model";
 import { VmModel } from "src/app/models/vm-model.model";
 import { VmInstance } from "src/app/models/vm-instance.model";
@@ -13,6 +15,8 @@ import { StudentService } from "src/app/services/student.service";
 import { ToastService } from "src/app/services/toast.service";
 import { UtilsService } from "src/app/services/utils.service";
 import { CourseDialogComponent } from "../course-dialog/course-dialog.component";
+import { PaperSnapshot } from "src/app/models/papersnapshot.model";
+import { SolutionFormData } from "src/app/models/formData.model";
 
 @Component({
   selector: "app-course-dashboard",
@@ -21,24 +25,30 @@ import { CourseDialogComponent } from "../course-dialog/course-dialog.component"
 })
 export class CourseDashboard implements OnInit, OnDestroy {
   currentPath = "";
-  private _currentCourseName$: BehaviorSubject<string> = new BehaviorSubject(
-    null
-  );
+  private _currentCourseName$: BehaviorSubject<string> = new BehaviorSubject(null);
   private _reloadStudents$: BehaviorSubject<void> = new BehaviorSubject(null);
   private _reloadCourse$: BehaviorSubject<void> = new BehaviorSubject(null);
+  private _reloadAssignments$: BehaviorSubject<void> = new BehaviorSubject(null);
+  private _reloadPapers$: BehaviorSubject<void> = new BehaviorSubject(null);
+  private _reloadPapersnapshots: BehaviorSubject<void> = new BehaviorSubject(null);
 
   private courseSubscription: Subscription;
   private routeSubscription: Subscription;
   private enrollSubscription: Subscription;
   private unenrollSubscription: Subscription;
   private dialogSubscription: Subscription;
+  private papersSubscription: Subscription;
   private uploadSubscription: Subscription;
+  private papersnapshotSubscription: Subscription;
   private editModelSubscription: Subscription;
 
   studentsDB$: Observable<Student[]>;
   currentCourse: Course;
   currentCourse$: Observable<Course>;
   enrolledStudents$: Observable<Student[]>;
+  assignments$: Observable<Assignment[]>
+  papers$: Observable<Paper[]>
+  papersnapshots$: Observable<PaperSnapshot[]>
   courseTeams$: Observable<Team[]>;
   courseVmInstances$: Observable<VmInstance[]>;
   courseVmModel$: Observable<VmModel>;
@@ -51,7 +61,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private toastService: ToastService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     console.log("dashboard on init");
@@ -127,6 +137,19 @@ export class CourseDashboard implements OnInit, OnDestroy {
         if (course && course.name)
           return this.studentService.getEnrolledStudents(course.name);
       }),
+      tap(() => (this.isLoading = false))
+    );
+
+    this.assignments$ = combineLatest([
+      this.currentCourse$,
+      this._reloadAssignments$
+    ]).pipe(
+      tap(() => (this.isLoading = true)),
+      switchMap(([course, reload]) => {
+        if (course && course.name)
+          return this.courseService.getAllAssignments(course.name);
+      }
+      ),
       tap(() => (this.isLoading = false))
     );
   }
@@ -238,6 +261,38 @@ export class CourseDashboard implements OnInit, OnDestroy {
       });
   }
 
+  getAllPapersForAssignment(assignmentId: number) {
+    this.isLoading = true
+    this.papers$ = this.courseService
+      .getAllPapersForAssignment(assignmentId)
+      .pipe(
+        tap(() => this.isLoading = false)
+      )
+  }
+
+  getAllPapersnapshotsForPaper(paperId: number) {
+    console.log(paperId)
+    this.isLoading = true
+    this.papersnapshots$ = this.courseService
+      .getAllPapersnapshotsForPaper(paperId)
+      .pipe(
+        tap(() => this.isLoading = false)
+      )
+  }
+
+  //TODO: to finish
+  addPapersnapshot(data: { solutionFormData: SolutionFormData, paperId: number }) {
+    const paperId = data.paperId
+    if (this.papersnapshotSubscription) this.papersnapshotSubscription.unsubscribe()
+    this.isLoading = true
+    console.log(data.solutionFormData)
+    this.papersnapshotSubscription = this.courseService.addPapersnapshot(data.paperId, data.solutionFormData).subscribe((data) => {
+      console.log(data)
+      this.isLoading = false
+      this.getAllPapersnapshotsForPaper(paperId)
+    })
+  }
+
   editModel(newModel: JSON) {
     if (this.editModelSubscription) this.editModelSubscription.unsubscribe();
 
@@ -261,6 +316,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
     if (this.dialogSubscription) this.dialogSubscription.unsubscribe();
     if (this.courseSubscription) this.courseSubscription.unsubscribe();
     if (this.routeSubscription) this.routeSubscription.unsubscribe();
+    if (this.papersSubscription) this.papersSubscription.unsubscribe();
     if (this.enrollSubscription) this.enrollSubscription.unsubscribe();
     if (this.unenrollSubscription) this.unenrollSubscription.unsubscribe();
     if (this.editModelSubscription) this.editModelSubscription.unsubscribe();
