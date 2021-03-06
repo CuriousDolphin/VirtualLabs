@@ -2,6 +2,12 @@
   <mat-spinner></mat-spinner>
 </div>
 <mat-toolbar *ngIf="currentCourse$ | async" style="color: rgb(32 32 32 / 87%)">
+  
+  <button color="primary"
+      mat-icon-button
+      class="mr-1"
+      (click)="toggleForMenuClick()"
+    > <mat-icon>menu</mat-icon></button>
   <span>{{currentCourse?.name}}</span>
   <div class="subtitle">{{currentCourse?.acronym}}</div>
 
