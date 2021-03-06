@@ -310,6 +310,10 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
         }
       );
   }
+  toggleForMenuClick() {
+    this.utilsService.toggleMenu();
+    // this.sidenav.opened = !this.sidenav.opened;
+  }
 
   _reloadTeams() {
     this._reloadTeams$.next();

@@ -15,6 +15,7 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from "rxjs";
 import { map, skip, switchMap, tap } from "rxjs/operators";
 import { AuthService } from '../auth/auth.service';
 import { Course } from "../models/course.model";
+import { User } from "../models/user.model";
 import { CourseService } from "../services/course.service";
 import { ToastService } from "../services/toast.service";
 import { UtilsService } from "../services/utils.service";
@@ -30,7 +31,9 @@ export class TeacherComponent implements OnInit, OnDestroy {
   private _reloadSubject$: BehaviorSubject<void> = new BehaviorSubject(null);
   courses$: Observable<Course[]>;
   dialogSubscription: Subscription;
+  userSubscription: Subscription;
   isLoading = false;
+  user: User = null;
   routeSubscription: Subscription;
   reloadCourseFromServiceSubscription: Subscription;
 
@@ -43,9 +46,26 @@ export class TeacherComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private route: ActivatedRoute,
     private authService: AuthService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
+    this.userSubscription = this.authService.currentUser$.subscribe(
+      (user: User) => {
+        console.log("user subscription ", user);
+        if (user != null) {
+         
+          this.user = user;
+
+   
+        } else {
+          this.user = null;
+        }
+      }
+    );
+
+
+    
     this.routeSubscription = this.route.url.subscribe((params: Params) => {
       console.log("teacher url");
     });
@@ -89,5 +109,10 @@ export class TeacherComponent implements OnInit, OnDestroy {
           this._reloadSubject$.next(null);
         }
       });
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(["home"]);
   }
 }

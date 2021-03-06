@@ -1,19 +1,38 @@
 <mat-sidenav-container class="absolute-container" autosize="true">
   <mat-sidenav mode="side" position="start" opened [fixedInViewport]="false">
-    <mat-toolbar color="primary"> <h3>Courses</h3></mat-toolbar>
-    <div class="container ">
+
+    <div style="height:16px"></div>
+    <div class="ml-1"  fxLayout="column" fxLayoutAlign="center center" style="color:white">
+      <mat-icon style="height: 60px;width: 60px; font-size: 60px;">account_circle</mat-icon>
+      <span class="mat-body-strong mat-body-2" >{{ user?.sub }} <button mat-icon-button class="right" (click)="logout()"> <mat-icon style="font-size: 22px;">exit_to_app</mat-icon>  </button></span>
+      
+    </div>
+    <mat-divider></mat-divider>
+    <div class="ml-1" style="color: white; margin-top: 16px;"  fxLayout="row" fxLayoutAlign="space-between stretch">
+      <span class="mat-h2 .mat-title" style="margin: 0">Courses</span>
+    </div>
+    <div class="container">
       <div class="loader" *ngIf="isLoading">
         <mat-spinner></mat-spinner>
       </div>
       <mat-nav-list class="my-list">
         <div *ngFor="let course of courses$ | async">
-          <mat-list-item [routerLink]="[course.name]" [state]="course" [routerLinkActive]="['active']">
-            {{ course.name }}
-          </mat-list-item>
-          <mat-divider> </mat-divider>
+          <mat-list-item
+            [routerLink]="[course.name]"
+            [state]="course"
+            [routerLinkActive]="['active']"
+            class="white"
+           
+          >
+            <span class="mat-body-strong mat-body-2 ">{{
+              course.name
+            }}</span></mat-list-item
+          >
+          
         </div>
       </mat-nav-list>
     </div>
+    
   </mat-sidenav>
   <mat-sidenav-content>
     <router-outlet></router-outlet>

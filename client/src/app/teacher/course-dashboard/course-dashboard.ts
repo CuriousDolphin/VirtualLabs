@@ -94,6 +94,8 @@ export class CourseDashboard implements OnInit, OnDestroy {
         )
       )
     );
+
+    
     /* 
     this.courseVmInstances$ = this.currentCourse$.pipe(
       tap(() => (this.isLoading = true)),
@@ -130,6 +132,13 @@ export class CourseDashboard implements OnInit, OnDestroy {
       tap(() => (this.isLoading = false))
     );
   }
+
+  toggleForMenuClick() {
+    this.utilsService.toggleMenu();
+    // this.sidenav.opened = !this.sidenav.opened;
+  }
+
+
   uploadCsv(file: File) {
     console.log(file);
     const reader = new FileReader();
