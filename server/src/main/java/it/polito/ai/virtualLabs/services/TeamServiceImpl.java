@@ -44,8 +44,10 @@ public class TeamServiceImpl implements TeamService {
 
     @Autowired
     AssignmentRepository assignmentRepository;
+    /*
     @Autowired
     VmConfigurationRepository vmConfigurationRepository;
+    */
     @Autowired
     VmModelRepository vmModelRepository;
 

@@ -2,7 +2,7 @@ package it.polito.ai.virtualLabs.controllers;
 
 import it.polito.ai.virtualLabs.dtos.*;
 import it.polito.ai.virtualLabs.entities.PaperSnapshot;
-import it.polito.ai.virtualLabs.entities.VmConfiguration;
+//import it.polito.ai.virtualLabs.entities.VmConfiguration;
 import it.polito.ai.virtualLabs.dtos.CourseDTO;
 import it.polito.ai.virtualLabs.dtos.StudentDTO;
 import it.polito.ai.virtualLabs.dtos.VmModelDTO;

@@ -45,7 +45,21 @@ public class VirtualLabs {
     }
 
     @Bean
-    CommandLineRunner runner(VmInstanceRepository vmInstanceRepository, TeamRepository teamRepository, UserRepository userRepository, CourseRepository courseRepository, PasswordEncoder passwordEncoder, VmModelRepository vmModelRepository, StudentRepository studentRepository, TeamService teamService, NotificationService notificationService, TokenTeamRepository tokenTeamRepository, TeacherRepository teacherRepository) {
+    CommandLineRunner runner(
+            VmInstanceRepository vmInstanceRepository,
+            TeamRepository teamRepository,
+            UserRepository userRepository,
+            CourseRepository courseRepository,
+            PasswordEncoder passwordEncoder,
+            VmModelRepository vmModelRepository,
+            StudentRepository studentRepository,
+            TeamService teamService,
+            NotificationService notificationService,
+            TokenTeamRepository tokenTeamRepository,
+            TeacherRepository teacherRepository,
+            AssignmentRepository assignmentRepository,
+            PaperRepository paperRepository,
+            PaperSnapshotRepository paperSnapshotRepository) {
         return new CommandLineRunner() {
 
             @Override
@@ -70,7 +84,21 @@ public class VirtualLabs {
                             .build());
                 }
 
-                generateMockData(teamRepository, vmInstanceRepository, courseRepository, vmModelRepository, userRepository, passwordEncoder, studentRepository, teamService, notificationService, tokenTeamRepository, teacherRepository);
+                generateMockData(
+                        teamRepository,
+                        vmInstanceRepository,
+                        courseRepository,
+                        vmModelRepository,
+                        userRepository,
+                        passwordEncoder,
+                        studentRepository,
+                        teamService,
+                        notificationService,
+                        tokenTeamRepository,
+                        teacherRepository,
+                        assignmentRepository,
+                        paperRepository,
+                        paperSnapshotRepository);
 
                 System.out.println("Printing all users:");
                 userRepository.findAll().forEach(v ->  System.out.println(" - User: " + v.toString()));
@@ -84,7 +112,21 @@ public class VirtualLabs {
     }
 
     /* generates mock data (3 courses, admin, 2 students, team, teacher) */
-    public void generateMockData(TeamRepository tr, VmInstanceRepository ir, CourseRepository cr, VmModelRepository vmr, UserRepository ur, PasswordEncoder passwordEncoder, StudentRepository sr, TeamService teamService, NotificationService notificationService, TokenTeamRepository ttr, TeacherRepository tcr) {
+    public void generateMockData(
+            TeamRepository tr,
+            VmInstanceRepository ir,
+            CourseRepository cr,
+            VmModelRepository vmr,
+            UserRepository ur,
+            PasswordEncoder passwordEncoder,
+            StudentRepository sr,
+            TeamService teamService,
+            NotificationService notificationService,
+            TokenTeamRepository ttr,
+            TeacherRepository tcr,
+            AssignmentRepository ar,
+            PaperRepository pr,
+            PaperSnapshotRepository psr) {
         if(cr.findByNameIgnoreCase("Programmazione di Sistema").isEmpty()) {
             try {
 
@@ -151,9 +193,10 @@ public class VirtualLabs {
                 paper1.setAssignment(assignment1);
                 paper4.setAssignment(assignment1);
                 paper5.setAssignment(assignment1);
-                assignment1.setCourse(course1);
-                assignment4.setCourse(course1);
-                assignment5.setCourse(course1);
+                assignment1.setCourse(newCourse1);
+                assignment4.setCourse(newCourse1);
+                assignment5.setCourse(newCourse1);
+                vmr.save(newVmModel);
 
                 //Course: ML
                 Course newCourse2 = Course.builder()
@@ -186,7 +229,8 @@ public class VirtualLabs {
                         .content("Laboratorio 1")
                         .build();
                 paper2.setAssignment(assignment2);
-                assignment2.setCourse(course2);
+                assignment2.setCourse(newCourse2);
+                vmr.save(newVmModel);
 
                 //Course: AI
                 Course newCourse3 = Course.builder()
@@ -274,9 +318,8 @@ public class VirtualLabs {
                         .lastName("Bianchi")
                         .name("Giacomo")
                         .build();
-
                 //enroll studenti in pds
-                cr.save(course1);
+                cr.save(newCourse1);
                 sr.save(student1);
                 sr.save(student3);
                 teamService.enrollAll(new ArrayList<String>(Arrays.asList("s123456", "s234567")), "Programmazione di Sistema");
@@ -303,7 +346,7 @@ public class VirtualLabs {
                         .name("Verdi")
                         .papers(new ArrayList<>())
                         .build();
-                sr.save(newStudent);
+                sr.save(student2);
                 //insert VmInstance
                 ir.save(VmInstance.builder()
                         .team(tr.getByName("TheDreamTeam"))
@@ -316,6 +359,15 @@ public class VirtualLabs {
                         .creator(tr.getByName("TheDreamTeam").getOwner().getId())
                         .image(vmr.getByCourse(tr.getByName("TheDreamTeam").getCourse()).getImage())
                         .build());
+
+                ar.save(assignment1);
+                ar.save(assignment2);
+                ar.save(assignment4);
+                ar.save(assignment5);
+                pr.save(paper1);
+                pr.save(paper2);
+                pr.save(paper4);
+                pr.save(paper5);
             } catch (Exception e) {
                 System.out.println("Exception insert mock data: " + e.getMessage());
             } finally {

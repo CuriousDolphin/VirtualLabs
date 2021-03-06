@@ -52,7 +52,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import {MatRadioModule} from '@angular/material/radio';
 import { DialogCreateVmComponent } from './student/vms-student/dialog-create-vm/dialog-create-vm.component';
 import { DialogEditVmComponent } from './student/vms-student/dialog-edit-vm/dialog-edit-vm.component';
-import { OpenVmComponent } from './student/vms-student/open-vm/open-vm.component';
+//import { OpenVmComponent } from './student/vms-student/open-vm/open-vm.component';
 import { VmsTeacherComponent } from "./teacher/vms-teacher/vms-teacher.component";
 import { DialogEditModelComponent } from "./teacher/vms-teacher/dialog-edit-model/dialog-edit-model.component";
 import { DialogConfirmDeleteComponent } from "./student/vms-student/dialog-confirm-delete/dialog-confirm-delete.component";
@@ -81,7 +81,7 @@ import { DialogConfirmDeleteComponent } from "./student/vms-student/dialog-confi
     VmsStudentComponent,
     DialogCreateVmComponent,
     DialogEditVmComponent,
-    OpenVmComponent,
+    //OpenVmComponent,
     VmsTeacherComponent,
     DialogEditModelComponent,
     DialogConfirmDeleteComponent,
