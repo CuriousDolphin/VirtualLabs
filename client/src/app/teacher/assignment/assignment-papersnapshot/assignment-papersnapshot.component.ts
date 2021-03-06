@@ -115,7 +115,7 @@ export class AssignmentPapersnapshotComponent implements OnInit {
   templateUrl: "image-dialog.html"
 })
 export class ImageDialog {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: object) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
 
   }
 }

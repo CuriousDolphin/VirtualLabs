@@ -56,6 +56,7 @@ import { DialogEditVmComponent } from './student/vms-student/dialog-edit-vm/dial
 import { VmsTeacherComponent } from "./teacher/vms-teacher/vms-teacher.component";
 import { DialogEditModelComponent } from "./teacher/vms-teacher/dialog-edit-model/dialog-edit-model.component";
 import { DialogConfirmDeleteComponent } from "./student/vms-student/dialog-confirm-delete/dialog-confirm-delete.component";
+import { OpenVmComponent } from "./open-vm/open-vm.component";
 
 @NgModule({
   declarations: [
@@ -81,7 +82,7 @@ import { DialogConfirmDeleteComponent } from "./student/vms-student/dialog-confi
     VmsStudentComponent,
     DialogCreateVmComponent,
     DialogEditVmComponent,
-    //OpenVmComponent,
+    OpenVmComponent,
     VmsTeacherComponent,
     DialogEditModelComponent,
     DialogConfirmDeleteComponent,
@@ -126,6 +127,6 @@ import { DialogConfirmDeleteComponent } from "./student/vms-student/dialog-confi
     },
   ],
   bootstrap: [AppComponent],
-  entryComponents: [LoginDialogComponent, RegisterDialogComponent],
+  entryComponents: [LoginDialogComponent, RegisterDialogComponent,OpenVmComponent,DialogEditModelComponent,DialogConfirmDeleteComponent],
 })
 export class AppModule {}
