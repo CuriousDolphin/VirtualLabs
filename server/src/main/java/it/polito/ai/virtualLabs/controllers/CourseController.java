@@ -7,6 +7,7 @@ import it.polito.ai.virtualLabs.exceptions.*;
 import it.polito.ai.virtualLabs.repositories.VmModelRepository;
 import it.polito.ai.virtualLabs.services.NotificationService;
 import it.polito.ai.virtualLabs.services.TeamService;
+import org.apache.commons.io.IOUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,10 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
+import java.sql.SQLException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -90,6 +90,8 @@ public class CourseController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found");
         }
     }
+
+
     @PatchMapping("/{name}/unEnrollMany")
     List<Boolean> unenrollMany(@RequestBody List<String> studentIds,@PathVariable("name") String courseName){
         try {
@@ -178,8 +180,6 @@ public class CourseController {
     List<TeamDTO> getStudentCourseTeam(@PathVariable("name") String name,@PathVariable("idStudent") String idStudent) {
         try{
             return teamService.getTeamsForStudentCourse(idStudent,name);
-
-
         }catch (CourseNotFoundException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
         }
@@ -222,6 +222,23 @@ public class CourseController {
         }
     }
 
+    @GetMapping("/assignments/{id}")
+    AssignmentDTO getAssignment(@PathVariable("id") Long assignmentId) {
+        try {
+            return teamService.getAssignment(assignmentId);
+        } catch (AssignmentNotFoundException assignmentNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Assignment not found");
+        }
+    }
+    @GetMapping("/{name}/assignments")
+    List<AssignmentDTO> getAllAssignmentsForCourse(@PathVariable("name") String courseName) {
+        try {
+            return teamService.getAllAssignmentsForCourse(courseName);
+        } catch (CourseNotFoundException courseNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
+        }
+    }
+
     @PatchMapping("/{name}")
     CourseDTO updateCourse(@RequestBody @Valid CourseProposal body, @PathVariable("name") String courseName) {
         try {
@@ -232,8 +249,38 @@ public class CourseController {
         }
     }
 
-    /* VMs */
+    @GetMapping("/assignments/{id}/papers")
+    List<PaperDTO> getAllPapersForAssignment(@PathVariable("id") Long assignmentId) {
+        try {
+            return teamService.getAllPapersForAssignment(assignmentId);
+        } catch (AssignmentNotFoundException assignmentNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Assignment not found");
+        }
+    }
 
+    @GetMapping("/assignments/papers/{id}/papersnapshots")
+    List<PaperSnapshotDTO> getAllPaperSnapshotForPaper(@PathVariable("id") Long paperId) {
+        try {
+            return teamService.getAllPaperSnapshotsForPaper(paperId);
+        }   catch (PaperNotFoundException paperNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Paper not found");
+        }
+    }
+
+    @PostMapping("/assignments/papers/{paperId}/papersnapshots/addPapersnapshot")
+    @ResponseStatus(HttpStatus.CREATED)
+    PaperSnapshotDTO addPaperSnapshot(@PathVariable("paperId") Long paperId, @Valid @RequestBody FormDataDTO formDataDTO) {
+        try {
+            return teamService.addPaperSnapshotToPaper(
+                    paperId,
+                    formDataDTO.getPapersnapshot(),
+                    formDataDTO.getToReview(),
+                    formDataDTO.getVote());
+        }
+        catch (PaperNotFoundException paperNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Paper not found");
+        }
+    }
     @GetMapping("/{name}/vmInstances")
     List<VmInstanceDTO> vmInstances(@PathVariable("name") String name) {
         return teamService.getVmInstancesPerCourse(name);

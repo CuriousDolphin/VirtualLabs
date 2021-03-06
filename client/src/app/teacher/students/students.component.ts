@@ -16,7 +16,7 @@ import { FormControl } from "@angular/forms";
 import * as _ from "lodash";
 import { MatSort } from "@angular/material/sort";
 import { MatPaginator } from "@angular/material/paginator";
-//import { MAT_CHECKBOX_CLICK_ACTION } from "@angular/material/checkbox";
+import { MAT_CHECKBOX_DEFAULT_OPTIONS } from "@angular/material/checkbox";
 
 @Component({
   selector: "app-students",

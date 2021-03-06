@@ -15,9 +15,13 @@ import { Course } from "../models/course.model";
 import { TeamProposal } from "../models/teamProposal.model";
 import { NetErr } from "../models/error.model";
 import { ToastService } from "./toast.service";
-import { Team } from "../models/team.model";
-import { VmInstance } from "../models/vm-instance.model";
+import { SolutionFormData } from "../models/formData.model";
+import { PaperSnapshot } from "../models/papersnapshot.model";
+import { Paper } from '../models/paper.model';
+import { Assignment } from '../models/assignment.model';
 import { VmModel } from "../models/vm-model.model";
+import { VmInstance } from "../models/vm-instance.model";
+import { Team } from "../models/team.model";
 const BASE_PATH = environment.apiUrl;
 const IMG_PATH = environment.imgUrl;
 
@@ -25,7 +29,7 @@ const IMG_PATH = environment.imgUrl;
   providedIn: "root",
 })
 export class CourseService {
-  constructor(private http: HttpClient, private toastService: ToastService) {}
+  constructor(private http: HttpClient, private toastService: ToastService) { }
 
   // TODO MODIFY THIS TO GETALLCOURSE BY TEACHER
   getAllCourses(): Observable<Course[]> {
@@ -35,12 +39,12 @@ export class CourseService {
       .pipe(catchError((e) => this.handleError(e)));
   }
 
-getCoursesByTeacher(userId: String): Observable<Course[]> {
-  const url = BASE_PATH + "courses/teacher/" + userId;
-  return this.http
-    .get<Course[]>(url)
-    .pipe(catchError((e) => this.handleError(e)));
-}
+  getCoursesByTeacher(userId: String): Observable<Course[]> {
+    const url = BASE_PATH + "courses/teacher/" + userId;
+    return this.http
+      .get<Course[]>(url)
+      .pipe(catchError((e) => this.handleError(e)));
+  }
 
   getCourse(name: string): Observable<Course> {
     const url = BASE_PATH + "courses/" + name;
@@ -59,7 +63,7 @@ getCoursesByTeacher(userId: String): Observable<Course[]> {
       userId
     };
     return this.http.patch(url, body)
-    .pipe(catchError((e) => this.handleError(e)));
+      .pipe(catchError((e) => this.handleError(e)));
   }
 
   addCourse(course: Course, userId: String) {
@@ -69,7 +73,7 @@ getCoursesByTeacher(userId: String): Observable<Course[]> {
       userId
     };
     return this.http.post(url, body)
-    .pipe(catchError((e) => this.handleError(e)));
+      .pipe(catchError((e) => this.handleError(e)));
     //return this.http
     //  .post<Course>(url, course)
     //  .pipe(catchError((e) => this.handleError(e)));
@@ -125,6 +129,42 @@ getCoursesByTeacher(userId: String): Observable<Course[]> {
     return this.http.get(url).pipe(catchError((e) => this.handleError(e)));
   }
 
+  getAllAssignments(courseName: string): Observable<Assignment[]> {
+    const url = BASE_PATH + "courses/" + courseName + "/assignments";
+    return this.http
+      .get<Assignment[]>(url)
+      .pipe(catchError((e) => this.handleError(e)));
+  }
+
+  getAssignment(assignmentId: number): Observable<Assignment> {
+    const url = BASE_PATH + "courses/" + "assignments/" + assignmentId;
+    return this.http
+      .get<Assignment>(url)
+      .pipe(catchError((e) => this.handleError(e)))
+  }
+
+
+  getAllPapersForAssignment(assignmentId: number): Observable<Paper[]> {
+    const url = BASE_PATH + "courses/" + "assignments/" + assignmentId + "/papers";
+    return this.http
+      .get<Paper[]>(url)
+      .pipe(catchError((e) => this.handleError(e)))
+  }
+
+  getAllPapersnapshotsForPaper(paperId: number): Observable<PaperSnapshot[]> {
+    const url = BASE_PATH + "courses/" + "assignments/" + "papers/" + paperId + "/papersnapshots"
+    return this.http
+      .get<PaperSnapshot[]>(url)
+      .pipe(catchError((e) => this.handleError(e)))
+  }
+
+  addPapersnapshot(paperId: Number, formData: SolutionFormData) {
+    const url = BASE_PATH + "courses/" + "assignments/" + "papers/" + paperId + "/papersnapshots" + "/addPapersnapshot"
+    return this.http
+      .post<String>(url, formData)
+      .pipe(catchError((e) => this.handleError(e)))
+  }
+
   getTeamsPerCourse(courseName: String): Observable<Team[]> {
     const url = BASE_PATH + "courses/" + courseName + "/teams";
     return this.http
@@ -168,10 +208,11 @@ getCoursesByTeacher(userId: String): Observable<Course[]> {
   }
 
   private handleError(error) {
+    console.log(error)
     let errorMessage = "";
     if (error.error instanceof ErrorEvent) {
       // client-side error
-      errorMessage = `Error: ${error.error.message}`;
+      errorMessage = `Error: ${error.message}`;
     } else {
       // server-side error
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
@@ -180,7 +221,7 @@ getCoursesByTeacher(userId: String): Observable<Course[]> {
 
     // window.alert(errorMessage);
 
-    this.toastService.error(error.error.message, error.error.status.toString());
+    this.toastService.error(error.message, error.status.toString());
     console.log("HTTP ERROR", error);
     return of(null);
   }

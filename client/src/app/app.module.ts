@@ -41,14 +41,18 @@ import { RegisterDialogComponent } from "./auth/register-dialog/register-dialog.
 import { TeamsComponent } from "./student/teams/teams.component";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { StudentLandingPageComponent } from "./student/student-landing-page/student-landing-page.component";
-import { TeacherLandingPageComponent } from "./teacher/teacher-landing-page/teacher-landing-page.component";
 import { MatMenuModule } from "@angular/material/menu";
-import { VmsStudentComponent } from "./student/vms-student/vms-student.component";
-import { MatGridListModule } from "@angular/material/grid-list";
-import { DialogCreateVmComponent } from "./student/vms-student/dialog-create-vm/dialog-create-vm.component";
-import { MatRadioModule } from "@angular/material/radio";
-import { DialogEditVmComponent } from "./student/vms-student/dialog-edit-vm/dialog-edit-vm.component";
-import { OpenVmComponent } from "./open-vm/open-vm.component";
+import { TeacherLandingPageComponent } from './teacher/teacher-landing-page/teacher-landing-page.component';
+import { AssignmentComponent } from './teacher/assignment/assignment.component';
+import { AssignmentAssignmentComponent } from './teacher/assignment/assignment-assignment/assignment-assignment.component';
+import { AssignmentPaperComponent } from './teacher/assignment/assignment-paper/assignment-paper.component';
+import { AssignmentPapersnapshotComponent } from './teacher/assignment/assignment-papersnapshot/assignment-papersnapshot.component';
+import { VmsStudentComponent } from './student/vms-student/vms-student.component';
+import { MatGridListModule } from '@angular/material/grid-list';
+import {MatRadioModule} from '@angular/material/radio';
+import { DialogCreateVmComponent } from './student/vms-student/dialog-create-vm/dialog-create-vm.component';
+import { DialogEditVmComponent } from './student/vms-student/dialog-edit-vm/dialog-edit-vm.component';
+//import { OpenVmComponent } from './student/vms-student/open-vm/open-vm.component';
 import { VmsTeacherComponent } from "./teacher/vms-teacher/vms-teacher.component";
 import { DialogEditModelComponent } from "./teacher/vms-teacher/dialog-edit-model/dialog-edit-model.component";
 import { DialogConfirmDeleteComponent } from "./student/vms-student/dialog-confirm-delete/dialog-confirm-delete.component";
@@ -70,10 +74,14 @@ import { DialogConfirmDeleteComponent } from "./student/vms-student/dialog-confi
     TeamsComponent,
     StudentLandingPageComponent,
     TeacherLandingPageComponent,
+    AssignmentComponent,
+    AssignmentAssignmentComponent,
+    AssignmentPaperComponent,
+    AssignmentPapersnapshotComponent,
     VmsStudentComponent,
     DialogCreateVmComponent,
     DialogEditVmComponent,
-    OpenVmComponent,
+    //OpenVmComponent,
     VmsTeacherComponent,
     DialogEditModelComponent,
     DialogConfirmDeleteComponent,

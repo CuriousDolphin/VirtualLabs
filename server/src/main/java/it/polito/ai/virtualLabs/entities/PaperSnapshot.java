@@ -1,21 +1,39 @@
 package it.polito.ai.virtualLabs.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import org.hibernate.mapping.Join;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PaperSnapshot {
     @Id
     @GeneratedValue
-    Long id;
-    String content;
-    Timestamp submissionDate;
+    private Long id;
+    @Lob
+    @Column(columnDefinition="MEDIUMBLOB")
+    private byte[] content;
+    private Timestamp submissionDate;
     @ManyToOne
     @JoinColumn(name = "paper_id")
-    Paper paper;
+    private Paper paper;
 
+    public void setPaper(Paper paper) {
+        if (paper == null) {
+            if (this.paper != null) {
+                this.paper.removePaperSnapshot(this);
+            }
+            this.paper = null;
+        } else {
+            this.paper = paper;
+            this.paper.addPaperSnapshot(this);
+        }
+    }
 }

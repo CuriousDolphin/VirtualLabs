@@ -31,9 +31,9 @@ public class Course {
     @ManyToMany(mappedBy = "courses")
     private List<Student> students = new ArrayList<>();
     @OneToMany(mappedBy = "course")
-    private List<Team> teams;
+    private List<Team> teams = new ArrayList<>();
     @OneToMany(mappedBy = "course")
-    private List<Assignment> assignments;
+    private List<Assignment> assignments = new ArrayList<>();
     @ManyToMany(mappedBy = "courses")
     private List<Teacher> teachers = new ArrayList<>();
 
@@ -58,6 +58,15 @@ public class Course {
 
     }
 
+    public void addAssignment(Assignment assignment) {
+        if(!assignment.getCourse().equals(this)) assignment.setCourse(this);
+        if(!assignments.contains(assignment)) assignments.add(assignment);
+    }
+
+    public void removeAssignment(Assignment assignment) {
+        if(assignment.getCourse().equals(this)) assignment.setCourse(null);
+        if(assignments.contains(assignment)) assignments.remove(assignment);
+    }
     public void addTeacher(Teacher t){
         if(!this.teachers.contains(t))  this.teachers.add(t);
         if(!t.getCourses().contains(this))  t.addCourse(this);

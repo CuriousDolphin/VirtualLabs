@@ -2,6 +2,7 @@ package it.polito.ai.virtualLabs.dtos;
 
 import lombok.Data;
 
+import java.io.InputStream;
 import java.sql.Timestamp;
 
 @Data
