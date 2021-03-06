@@ -4,36 +4,24 @@
   class="tbar"
   [ngClass]="{ 'mat-elevation-z4': isLogged }"
 >
-  <button
-    *ngIf="isLogged"
-    mat-icon-button
-    class="mr-1"
-    (click)="toggleForMenuClick()"
-  >
-    <mat-icon>menu</mat-icon>
+<div #showLogin>
+  <button mat-button class="right" (click)="goToLogin()">
+    Login
+    <mat-icon class="ml-1">account_circle</mat-icon>
   </button>
-  <span *ngIf="isLogged"><h1>Virtual Labs</h1></span>
+  <button mat-button class="left" (click)="goToRegister()"> 
+    Signin
+    <mat-icon class="ml-1">how_to_reg</mat-icon>
+  </button>
+    
+</div>
+ 
+
   <span class="fill-remaining-space"></span>
 
-  <div *ngIf="!isLogged; then showLogin else showLogout">
-  </div>
-  <ng-template #showLogin>
-    <button mat-button class="right" (click)="goToLogin()">
-      Login
-      <mat-icon class="ml-1">account_circle</mat-icon>
-    </button>
-    <button mat-button class="left" (click)="goToRegister()"> 
-      Signin
-      <mat-icon class="ml-1">how_to_reg</mat-icon>
-    </button>
-      
-  </ng-template>
-  <ng-template #showLogout>
-    <button mat-button class="right" (click)="logout()">
-      {{ user?.sub }}
-      <mat-icon class="ml-1">exit_to_app</mat-icon>
-    </button>
-  </ng-template>
+
+ 
+ 
 </mat-toolbar>
   <h1 class="my-title">Ai2020 VirtualLabs Project</h1>
 </div>
