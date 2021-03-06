@@ -1,14 +1,13 @@
 <mat-sidenav-container class="absolute-container" autosize="true">
   <mat-sidenav mode="side" position="start" opened [fixedInViewport]="false">
-    <mat-toolbar color="primary">Personal courses</mat-toolbar>
-    <div class="container p-16">
+    <mat-toolbar color="primary"> <h3>Courses</h3></mat-toolbar>
+    <div class="container ">
       <div class="loader" *ngIf="isLoading">
         <mat-spinner></mat-spinner>
       </div>
       <mat-nav-list class="my-list">
         <div *ngFor="let course of courses$ | async">
-          <mat-divider> </mat-divider>
-          <mat-list-item [routerLink]="[course.name]" [state]="course">
+          <mat-list-item [routerLink]="[course.name]" [state]="course" [routerLinkActive]="['active']">
             {{ course.name }}
           </mat-list-item>
           <mat-divider> </mat-divider>

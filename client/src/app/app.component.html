@@ -12,7 +12,7 @@
     >
       <mat-icon>menu</mat-icon>
     </button>
-    <span *ngIf="isLogged">Virtual Labs</span>
+    <span *ngIf="isLogged"><h1>Virtual Labs</h1></span>
     <span class="fill-remaining-space"></span>
 
     <div *ngIf="!isLogged; then showLogin else showLogout">
