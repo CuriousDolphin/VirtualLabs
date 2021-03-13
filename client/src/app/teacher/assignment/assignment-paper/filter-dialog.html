@@ -1,0 +1,9 @@
+<mat-dialog-content>
+    <mat-checkbox [(ngModel)]="data.unreaded" (change)="emitChangeFilters()">Unreaded</mat-checkbox>
+    <br>
+    <mat-checkbox [(ngModel)]="data.readed" (change)="emitChangeFilters()">Readed</mat-checkbox>
+    <br>
+    <mat-checkbox [(ngModel)]="data.submitted" (change)="emitChangeFilters()">Submitted</mat-checkbox>
+    <br>
+    <mat-checkbox [(ngModel)]="data.reviewed" (change)="emitChangeFilters()">Reviewed</mat-checkbox>
+</mat-dialog-content>

@@ -6,15 +6,13 @@
     </mat-card-header>
     <mat-card-content>
       <div class="p-16">
-        <mat-checkbox [(ngModel)]="unread"> Show unread papers</mat-checkbox>
-        <br>
-        <mat-checkbox [(ngModel)]="submitted"> Show submitted papers</mat-checkbox>
-        <br>
-        <mat-checkbox [(ngModel)]="toReview"> Show to review papers</mat-checkbox>
+        <mat-checkbox [(ngModel)]="unreaded" (change)="applyFilter()">Unreaded</mat-checkbox>
+        <mat-checkbox [(ngModel)]="readed" (change)="applyFilter()">Readed</mat-checkbox>
+        <mat-checkbox [(ngModel)]="submitted" (change)="applyFilter()">Submitted</mat-checkbox>
+        <mat-checkbox [(ngModel)]="reviewed" (change)="applyFilter()">Reviewed</mat-checkbox>
       </div>
     </mat-card-content>
   </mat-card>
-
 
   <table mat-table [dataSource]="dataSource" class="elevation-z6" matSort>
 
@@ -24,9 +22,12 @@
     </ng-container>
 
     <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <th mat-header-cell *matHeaderCellDef>Status
+        <mat-icon [ngStyle]="{'color':'#69F0AE'}" #filterIcon class="filterIcon" (click)="openFilterDialog()">filter_alt
+        </mat-icon>
+      </th>
       <td mat-cell *matCellDef="let paper">
-        <mat-icon *ngIf="paper.status === null">mark_email_unread</mat-icon>
+        <mat-icon *ngIf="paper.status === 'null'">mark_email_unread</mat-icon>
       </td>
     </ng-container>
 

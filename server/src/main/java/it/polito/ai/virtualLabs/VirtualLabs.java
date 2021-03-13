@@ -157,18 +157,18 @@ public class VirtualLabs {
                         .maxDisk(6*500)
                         .build();
                 Paper paper1 = Paper.builder()
-                        .status(null)
+                        .status("null")
                         .vote(0)
                         .lastUpdateTime(releaseDate)
                         .paperSnapshots(new ArrayList<>())
                         .build();
                 Paper paper4 = Paper.builder()
-                        .status(null)
+                        .status("null")
                         .vote(0)
                         .lastUpdateTime(releaseDate)
                         .build();
                 Paper paper5 = Paper.builder()
-                        .status(null)
+                        .status("null")
                         .vote(0)
                         .lastUpdateTime(releaseDate)
                         .build();
@@ -218,7 +218,7 @@ public class VirtualLabs {
                         .maxDisk(6*500)
                         .build();
                 Paper paper2 = Paper.builder()
-                        .status(null)
+                        .status("null")
                         .vote(0)
                         .lastUpdateTime(releaseDate)
                         .build();

@@ -45,7 +45,7 @@ import { MatMenuModule } from "@angular/material/menu";
 import { TeacherLandingPageComponent } from './teacher/teacher-landing-page/teacher-landing-page.component';
 import { AssignmentComponent } from './teacher/assignment/assignment.component';
 import { AssignmentAssignmentComponent } from './teacher/assignment/assignment-assignment/assignment-assignment.component';
-import { AssignmentPaperComponent } from './teacher/assignment/assignment-paper/assignment-paper.component';
+import { AssignmentPaperComponent, FilterDialog } from './teacher/assignment/assignment-paper/assignment-paper.component';
 import { AssignmentPapersnapshotComponent } from './teacher/assignment/assignment-papersnapshot/assignment-papersnapshot.component';
 import { VmsStudentComponent } from './student/vms-student/vms-student.component';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -59,6 +59,7 @@ import { DialogConfirmDeleteComponent } from "./student/vms-student/dialog-confi
 
 @NgModule({
   declarations: [
+    FilterDialog,
     AppComponent,
     StudentsComponent,
     HomeComponent,
@@ -116,7 +117,7 @@ import { DialogConfirmDeleteComponent } from "./student/vms-student/dialog-confi
     MatExpansionModule,
     MatMenuModule,
     MatGridListModule,
-    MatRadioModule,
+    MatRadioModule
   ],
   providers: [
     {
