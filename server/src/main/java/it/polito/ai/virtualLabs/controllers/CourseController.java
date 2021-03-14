@@ -7,7 +7,6 @@ import it.polito.ai.virtualLabs.exceptions.*;
 import it.polito.ai.virtualLabs.repositories.VmModelRepository;
 import it.polito.ai.virtualLabs.services.NotificationService;
 import it.polito.ai.virtualLabs.services.TeamService;
-import org.apache.commons.io.IOUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,8 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.io.*;
-import java.sql.SQLException;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -267,15 +264,27 @@ public class CourseController {
         }
     }
 
+    @PostMapping("{courseName}/assignments/addAssignment")
+    @ResponseStatus(HttpStatus.CREATED)
+    AssignmentDTO addAssignmentToCourse(@PathVariable("courseName") String courseName, @Valid @RequestBody AssignmentDTO assignmentDTO) {
+        try {
+            return teamService.addAssignmentToCourse(
+                    courseName,
+                    assignmentDTO);
+        } catch (CourseNotFoundException courseNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
+        }
+    }
+
     @PostMapping("/assignments/papers/{paperId}/papersnapshots/addPapersnapshot")
     @ResponseStatus(HttpStatus.CREATED)
-    PaperSnapshotDTO addPaperSnapshot(@PathVariable("paperId") Long paperId, @Valid @RequestBody FormDataDTO formDataDTO) {
+    PaperSnapshotDTO addPaperSnapshot(@PathVariable("paperId") Long paperId, @Valid @RequestBody FormPaperSnapshotDataDTO formPaperSnapshotDataDTO) {
         try {
             return teamService.addPaperSnapshotToPaper(
                     paperId,
-                    formDataDTO.getPapersnapshot(),
-                    formDataDTO.getToReview(),
-                    formDataDTO.getVote());
+                    formPaperSnapshotDataDTO.getPapersnapshot(),
+                    formPaperSnapshotDataDTO.getToReview(),
+                    formPaperSnapshotDataDTO.getVote());
         }
         catch (PaperNotFoundException paperNotFoundException) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Paper not found");

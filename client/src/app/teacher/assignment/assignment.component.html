@@ -42,7 +42,8 @@
       </ng-container>
       <ng-container *ngIf="toShowLevel === 0">
         <app-assignment-assignment [assignmentsData]="assignmentsData"
-          (clickAssignmentEvent)="assignmentClicked($event)">
+          (clickAssignmentEvent)="assignmentClicked($event)"
+          (submitAssignmentEvent)="assignmentSubmitted($event)">
         </app-assignment-assignment>
       </ng-container>
       <ng-container *ngIf="toShowLevel === 1">

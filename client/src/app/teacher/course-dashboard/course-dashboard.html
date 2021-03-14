@@ -57,7 +57,8 @@
       [papersnapshots]= "papersnapshots$ | async"
       (assignmentClickedEvent)="getAllPapersForAssignment($event)"
       (paperClickedEvent)="getAllPapersnapshotsForPaper($event)"
-      (solutionSubmittedEvent)="addPapersnapshot($event)">
+      (solutionSubmittedEvent)="addPapersnapshot($event)"
+      (assignmentSubmittedEvent)="addAssignment($event)">
       </app-assignment>
     </div>>
   </mat-tab>

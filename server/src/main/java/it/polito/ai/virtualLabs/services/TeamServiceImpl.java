@@ -19,6 +19,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -519,9 +520,14 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public AssignmentDTO getAssignment(Long assignmentId) {
-        if(assignmentRepository.findById(assignmentId).isEmpty()) throw new AssignmentNotFoundException();
-        return modelMapper
-                .map(assignmentRepository.findById(assignmentId).get(), AssignmentDTO.class);
+        Optional<Assignment> assignment = assignmentRepository.findById(assignmentId);
+        if(!assignment.isPresent()) throw new AssignmentNotFoundException();
+
+        AssignmentDTO assignmentDTO = modelMapper.map(assignment.get(), AssignmentDTO.class);
+        String base64 = "data:image/png;base64," + Base64.getMimeEncoder().encodeToString(assignment.get().getContent());
+        assignmentDTO.setContent(base64);
+
+        return assignmentDTO;
     }
 
     @Override
@@ -529,7 +535,12 @@ public class TeamServiceImpl implements TeamService {
         if (courseRepository.findByNameIgnoreCase(courseName).isEmpty()) throw new CourseNotFoundException();
         return assignmentRepository.findAllByCourse_Name(courseName)
                 .stream()
-                .map(assignment -> modelMapper.map(assignment, AssignmentDTO.class))
+                .map(assignment -> {
+                    AssignmentDTO assignmentDTO = modelMapper.map(assignment, AssignmentDTO.class);
+                    String base64 = "data:image/png;base64," + Base64.getMimeEncoder().encodeToString(assignment.getContent());
+                    assignmentDTO.setContent(base64);
+                    return assignmentDTO;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -558,6 +569,39 @@ public class TeamServiceImpl implements TeamService {
                 .collect(Collectors.toList());
 
         return paperSnapshotDTOS;
+    }
+
+    @Override
+    public AssignmentDTO addAssignmentToCourse(String courseName, AssignmentDTO assignmentDTO) {
+
+        Optional<Course> course = courseRepository.findByNameIgnoreCase(courseName);
+        if(!course.isPresent()) throw new CourseNotFoundException();
+
+        /* Create assignment */
+        byte[] bytes = Base64.getMimeDecoder().decode(assignmentDTO.getContent().split(",")[1]);
+        Assignment assignment = modelMapper.map(assignmentDTO, Assignment.class);
+        assignment.setContent(bytes);
+        assignment.setCourse(course.get());
+
+        /* save */
+        assignmentRepository.save(assignment);
+
+        System.out.println("ciao");
+
+        /* Create papers for every student in course */
+        course.get().getStudents().forEach(student -> {
+           Paper paper = Paper.builder()
+                   .vote(null)
+                   .lastUpdateTime(assignment.getReleaseDate())
+                   .status("null")
+                   .build();
+           paper.setAssignment(assignment);
+           paper.setStudent(student);
+
+           paperRepository.save(paper);
+        });
+
+        return assignmentDTO;
     }
 
     @Override

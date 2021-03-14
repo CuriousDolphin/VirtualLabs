@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.io.Reader;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -95,6 +96,9 @@ public interface TeamService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     List<PaperSnapshotDTO> getAllPaperSnapshotsForPaper(Long paperId);
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
+    AssignmentDTO addAssignmentToCourse(String courseName, AssignmentDTO assignmentDTO);
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     PaperSnapshotDTO addPaperSnapshotToPaper(Long paperId, PaperSnapshotDTO paperSnapshotDTO, boolean toReview, Integer vote);

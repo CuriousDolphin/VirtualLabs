@@ -15,7 +15,7 @@ import { Course } from "../models/course.model";
 import { TeamProposal } from "../models/teamProposal.model";
 import { NetErr } from "../models/error.model";
 import { ToastService } from "./toast.service";
-import { SolutionFormData } from "../models/formData.model";
+import { SolutionFormData } from "../models/formPaperSnapshotData.model";
 import { PaperSnapshot } from "../models/papersnapshot.model";
 import { Paper } from '../models/paper.model';
 import { Assignment } from '../models/assignment.model';
@@ -162,6 +162,13 @@ export class CourseService {
     const url = BASE_PATH + "courses/" + "assignments/" + "papers/" + paperId + "/papersnapshots" + "/addPapersnapshot"
     return this.http
       .post<String>(url, formData)
+      .pipe(catchError((e) => this.handleError(e)))
+  }
+
+  addAssignmentToCourse(courseName: string, assignment: Assignment) {
+    const url = BASE_PATH + "courses/" + courseName + "/assignments" + "/addAssignment"
+    return this.http
+      .post<String>(url, assignment)
       .pipe(catchError((e) => this.handleError(e)))
   }
 

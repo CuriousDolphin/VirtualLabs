@@ -95,10 +95,7 @@ public class VirtualLabs {
                         teamService,
                         notificationService,
                         tokenTeamRepository,
-                        teacherRepository,
-                        assignmentRepository,
-                        paperRepository,
-                        paperSnapshotRepository);
+                        teacherRepository);
 
                 System.out.println("Printing all users:");
                 userRepository.findAll().forEach(v ->  System.out.println(" - User: " + v.toString()));
@@ -123,19 +120,9 @@ public class VirtualLabs {
             TeamService teamService,
             NotificationService notificationService,
             TokenTeamRepository ttr,
-            TeacherRepository tcr,
-            AssignmentRepository ar,
-            PaperRepository pr,
-            PaperSnapshotRepository psr) {
+            TeacherRepository tcr) {
         if(cr.findByNameIgnoreCase("Programmazione di Sistema").isEmpty()) {
             try {
-
-                /* Set time for the assignment releaseDate and expirtyDate */
-                Calendar calendar = Calendar.getInstance();
-                Timestamp releaseDate = new Timestamp(System.currentTimeMillis());
-                calendar.setTimeInMillis(releaseDate.getTime());
-                calendar.add(Calendar.DAY_OF_WEEK, 6);
-                Timestamp expiryDate = new Timestamp(calendar.getTime().getTime());
 
                 //Course: PDS
                 Course newCourse1 = Course.builder()
@@ -156,46 +143,6 @@ public class VirtualLabs {
                         .maxRam(6*8)
                         .maxDisk(6*500)
                         .build();
-                Paper paper1 = Paper.builder()
-                        .status("null")
-                        .vote(0)
-                        .lastUpdateTime(releaseDate)
-                        .paperSnapshots(new ArrayList<>())
-                        .build();
-                Paper paper4 = Paper.builder()
-                        .status("null")
-                        .vote(0)
-                        .lastUpdateTime(releaseDate)
-                        .build();
-                Paper paper5 = Paper.builder()
-                        .status("null")
-                        .vote(0)
-                        .lastUpdateTime(releaseDate)
-                        .build();
-                Assignment assignment1 = Assignment.builder()
-                        .releaseDate(releaseDate)
-                        .expiryDate(expiryDate)
-                        .papers(new ArrayList<>())
-                        .content("Laboratorio 1")
-                        .build();
-                Assignment assignment4 = Assignment.builder()
-                        .releaseDate(releaseDate)
-                        .expiryDate(expiryDate)
-                        .papers(new ArrayList<>())
-                        .content("Laboratorio 2")
-                        .build();
-                Assignment assignment5 = Assignment.builder()
-                        .releaseDate(releaseDate)
-                        .expiryDate(expiryDate)
-                        .papers(new ArrayList<>())
-                        .content("Laboratorio 3")
-                        .build();
-                paper1.setAssignment(assignment1);
-                paper4.setAssignment(assignment1);
-                paper5.setAssignment(assignment1);
-                assignment1.setCourse(newCourse1);
-                assignment4.setCourse(newCourse1);
-                assignment5.setCourse(newCourse1);
                 vmr.save(newVmModel);
 
                 //Course: ML
@@ -217,19 +164,6 @@ public class VirtualLabs {
                         .maxRam(6*8)
                         .maxDisk(6*500)
                         .build();
-                Paper paper2 = Paper.builder()
-                        .status("null")
-                        .vote(0)
-                        .lastUpdateTime(releaseDate)
-                        .build();
-                Assignment assignment2 = Assignment.builder()
-                        .releaseDate(releaseDate)
-                        .expiryDate(expiryDate)
-                        .papers(new ArrayList<>())
-                        .content("Laboratorio 1")
-                        .build();
-                paper2.setAssignment(assignment2);
-                assignment2.setCourse(newCourse2);
                 vmr.save(newVmModel);
 
                 //Course: AI
@@ -299,8 +233,6 @@ public class VirtualLabs {
                         .name("Mario")
                         .papers(new ArrayList<>())
                         .build();
-                paper1.setStudent(student1);
-                paper5.setStudent(student1);
 
                 //User-Student: s234567 (Giacomo Bianchi)
                 ur.save(User.builder()
@@ -359,15 +291,6 @@ public class VirtualLabs {
                         .creator(tr.getByName("TheDreamTeam").getOwner().getId())
                         .image(vmr.getByCourse(tr.getByName("TheDreamTeam").getCourse()).getImage())
                         .build());
-
-                ar.save(assignment1);
-                ar.save(assignment2);
-                ar.save(assignment4);
-                ar.save(assignment5);
-                pr.save(paper1);
-                pr.save(paper2);
-                pr.save(paper4);
-                pr.save(paper5);
             } catch (Exception e) {
                 System.out.println("Exception insert mock data: " + e.getMessage());
             } finally {

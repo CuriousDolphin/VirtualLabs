@@ -49,13 +49,17 @@ import { AssignmentPaperComponent, FilterDialog } from './teacher/assignment/ass
 import { AssignmentPapersnapshotComponent } from './teacher/assignment/assignment-papersnapshot/assignment-papersnapshot.component';
 import { VmsStudentComponent } from './student/vms-student/vms-student.component';
 import { MatGridListModule } from '@angular/material/grid-list';
-import {MatRadioModule} from '@angular/material/radio';
+import { MatRadioModule } from '@angular/material/radio';
 import { DialogCreateVmComponent } from './student/vms-student/dialog-create-vm/dialog-create-vm.component';
 import { DialogEditVmComponent } from './student/vms-student/dialog-edit-vm/dialog-edit-vm.component';
 //import { OpenVmComponent } from './student/vms-student/open-vm/open-vm.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { VmsTeacherComponent } from "./teacher/vms-teacher/vms-teacher.component";
 import { DialogEditModelComponent } from "./teacher/vms-teacher/dialog-edit-model/dialog-edit-model.component";
 import { DialogConfirmDeleteComponent } from "./student/vms-student/dialog-confirm-delete/dialog-confirm-delete.component";
+import { MatNativeDateModule } from '@angular/material/core';
+import { StudentAssignmentComponent } from './student/student-assignment/student-assignment.component';
+import { StudentAssignmentAssignmentComponent } from './student/student-assignment/student-assignment-assignment/student-assignment-assignment.component';
 
 @NgModule({
   declarations: [
@@ -86,6 +90,8 @@ import { DialogConfirmDeleteComponent } from "./student/vms-student/dialog-confi
     VmsTeacherComponent,
     DialogEditModelComponent,
     DialogConfirmDeleteComponent,
+    StudentAssignmentComponent,
+    StudentAssignmentAssignmentComponent,
   ],
   imports: [
     BrowserModule,
@@ -117,7 +123,9 @@ import { DialogConfirmDeleteComponent } from "./student/vms-student/dialog-confi
     MatExpansionModule,
     MatMenuModule,
     MatGridListModule,
-    MatRadioModule
+    MatRadioModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [
     {
