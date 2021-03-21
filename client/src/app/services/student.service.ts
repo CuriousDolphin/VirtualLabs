@@ -15,7 +15,7 @@ import { VmInstance } from "../models/vm-instance.model";
 import { VmModel } from '../models/vm-model.model';
 
 const BASE_PATH = environment.apiUrl;
-const IMG_PATH = environment.imgUrl;
+const IMG_PATH = 'assets/VM_images/';
 
 @Injectable({
   providedIn: "root",
