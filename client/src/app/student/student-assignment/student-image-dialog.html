@@ -1,0 +1,10 @@
+<mat-dialog-content class="mat-typography">
+  <img [src]="data.src" width="960px" height="600px">
+</mat-dialog-content>
+<ng-container *ngIf="data.status === 'null'">
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close>Cancel</button>
+    <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+    <button mat-button (click)="onConfirmClick()">Confirm read</button>
+  </mat-dialog-actions>
+</ng-container>

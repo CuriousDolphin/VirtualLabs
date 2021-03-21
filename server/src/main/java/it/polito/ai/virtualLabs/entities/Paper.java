@@ -16,7 +16,7 @@ public class Paper {
     @Id
     @GeneratedValue
     private Long id;
-    private Integer status;
+    private String status;
     private Integer vote;
     private Timestamp lastUpdateTime;
     @ManyToOne

@@ -4,7 +4,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 @Data
-public class FormDataDTO {
+public class FormPaperSnapshotDataDTO {
     @NotNull
     PaperSnapshotDTO papersnapshot;
     Integer vote;

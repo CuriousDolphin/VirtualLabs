@@ -13,6 +13,9 @@ import { Course } from "../models/course.model";
 import { Team } from "../models/team.model";
 import { VmInstance } from "../models/vm-instance.model";
 import { VmModel } from '../models/vm-model.model';
+import { Assignment } from "../models/assignment.model";
+import { Paper } from "../models/paper.model";
+import { StudentAssignment } from "../models/studentAssignment.model";
 
 const BASE_PATH = environment.apiUrl;
 const IMG_PATH = 'assets/VM_images/';
@@ -21,7 +24,7 @@ const IMG_PATH = 'assets/VM_images/';
   providedIn: "root",
 })
 export class StudentService {
-  constructor(private http: HttpClient, private toastService: ToastService) {}
+  constructor(private http: HttpClient, private toastService: ToastService) { }
 
   getEnrolledStudents(courseName: string): Observable<Student[]> {
     const url = BASE_PATH + "courses/" + courseName + "/enrolled";
@@ -35,11 +38,26 @@ export class StudentService {
       .get<Student[]>(url)
       .pipe(catchError((e) => this.handleError(e)));
   }
+
   getCoursesByStudentId(studentId: string): Observable<Course[]> {
     const url = BASE_PATH + "students/" + studentId + "/courses";
     return this.http
       .get<Course[]>(url)
       .pipe(catchError((e) => this.handleError(e)));
+  }
+
+  getAllAssignmentsForCourseAndForStudent(courseName: string, studentId: string): Observable<StudentAssignment[]> {
+    const url = BASE_PATH + "students/" + studentId + "/course/" + courseName + "/assignments";
+    return this.http
+      .get<StudentAssignment[]>(url)
+      .pipe(catchError((e) => this.handleError(e)));
+  }
+
+  getAllPapersForCourseAndForStudent(courseName: string, studentId: string): Observable<Paper[]> {
+    const url = BASE_PATH + "students/" + studentId + "/course" + courseName + "/papers"
+    return this.http
+      .get<Paper[]>(url)
+      .pipe(catchError((e) => this.handleError(e)))
   }
 
   getTeamsByStudentIdCourseName(
@@ -57,7 +75,7 @@ export class StudentService {
     return this.http
       .get<VmInstance[]>(url)
       .pipe(
-        map((vms: VmInstance[]) => { return _.map(vms, (vm: VmInstance) => { vm.image = IMG_PATH + vm.image; return vm})})
+        map((vms: VmInstance[]) => { return _.map(vms, (vm: VmInstance) => { vm.image = IMG_PATH + vm.image; return vm }) })
       )
       .pipe(catchError((e) => this.handleError(e)));
   }
@@ -72,21 +90,21 @@ export class StudentService {
   deleteVm(studentId: String, teamName: String, vm: VmInstance): Observable<VmInstance[]> {
     const url = BASE_PATH + "students/" + studentId + "/" + teamName + "/deletevminstance/" + vm.id;
     return this.http
-      .get<VmInstance[]>(url)      
+      .get<VmInstance[]>(url)
       .pipe(catchError((e) => this.handleError(e)));
   }
 
   startVm(studentId: String, teamName: String, vm: VmInstance): Observable<VmInstance[]> {
     const url = BASE_PATH + "students/" + studentId + "/" + teamName + "/startvminstance/" + vm.id;
     return this.http
-      .get<VmInstance[]>(url)      
+      .get<VmInstance[]>(url)
       .pipe(catchError((e) => this.handleError(e)));
   }
 
   stopVm(studentId: String, teamName: String, vm: VmInstance): Observable<VmInstance[]> {
     const url = BASE_PATH + "students/" + studentId + "/" + teamName + "/stopvminstance/" + vm.id;
     return this.http
-      .get<VmInstance[]>(url)      
+      .get<VmInstance[]>(url)
       .pipe(catchError((e) => this.handleError(e)));
   }
 
@@ -97,7 +115,7 @@ export class StudentService {
     jsonToString = jsonToString.replace('false', <string>studentId);
     newVm = JSON.parse(<string>jsonToString)
     return this.http
-      .post<VmInstance[]>(url, newVm)      
+      .post<VmInstance[]>(url, newVm)
       .pipe(catchError((e) => this.handleError(e)));
   }
 
@@ -108,8 +126,15 @@ export class StudentService {
     jsonToString = jsonToString.replace('false', <string>studentId);
     newVm = JSON.parse(<string>jsonToString)
     return this.http
-      .post<VmInstance[]>(url, newVm)      
+      .post<VmInstance[]>(url, newVm)
       .pipe(catchError((e) => this.handleError(e)));
+  }
+
+  updatePaperStatus(studentId: String, assignmentId: number, status: String) {
+    const url = BASE_PATH + "students/" + studentId + "/assignment/" + assignmentId + "/updatePaperStatus"
+    return this.http
+      .put<Paper>(url, status)
+      .pipe(catchError((e) => this.handleError(e)))
   }
 
   private handleError(error) {

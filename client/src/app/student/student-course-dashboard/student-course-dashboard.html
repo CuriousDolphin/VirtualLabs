@@ -20,12 +20,7 @@
     </div>
   </div>
 
-  <button
-    mat-button
-    color="primary"
-    class="ml-1 edit-button"
-    (click)="reloadData()"
-  >
+  <button mat-button color="primary" class="ml-1 edit-button" (click)="reloadData()">
     <mat-icon> refresh </mat-icon>
   </button>
 </mat-toolbar>
@@ -34,35 +29,24 @@
   <mat-tab label="Teams">
     <!--only this scroll-->
     <div class="tab-container">
-      <app-teams
-        [studentId]="studentId"
-        [currentCourse]="currentCourse.name"
-        [teams]="studentTeams$ | async"
-        [studentsNotInTeams]="studentsNotInTeams$ | async"
-        (createTeam)="createTeam($event)"
-        (confirmTeam)="confirmTeam($event)"
-        (rejectTeam)="rejectTeam($event)"
-      ></app-teams>
+      <app-teams [studentId]="studentId" [currentCourse]="currentCourse.name" [teams]="studentTeams$ | async"
+        [studentsNotInTeams]="studentsNotInTeams$ | async" (createTeam)="createTeam($event)"
+        (confirmTeam)="confirmTeam($event)" (rejectTeam)="rejectTeam($event)"></app-teams>
     </div>
   </mat-tab>
   <mat-tab label="VM">
     <div class="tab-container">
-      <app-vms-student
-        [studentId]="studentId"
-        [course]="currentCourse.name"
-        [courseAc]="currentCourse.acronym"
-        [vmInstances]="studentVmInstances$ | async"
-        [teams]="studentTeams$ | async"
-        [vmModel]="currentVmModel$ | async"
-        (deleteVm)="deleteVm($event)"
-        (startVm)="startVm($event)"
-        (stopVm)="stopVm($event)"
-        (createVm)="createVm($event)"
-        (editVm)="editVm($event)"
-      ></app-vms-student>
+      <app-vms-student [studentId]="studentId" [course]="currentCourse.name" [courseAc]="currentCourse.acronym"
+        [vmInstances]="studentVmInstances$ | async" [teams]="studentTeams$ | async" [vmModel]="currentVmModel$ | async"
+        (deleteVm)="deleteVm($event)" (startVm)="startVm($event)" (stopVm)="stopVm($event)"
+        (createVm)="createVm($event)" (editVm)="editVm($event)"></app-vms-student>
     </div>
   </mat-tab>
-  <mat-tab label="Assignment"> Content 2 </mat-tab>
+  <mat-tab label="Assignment">
+    <app-student-assignment
+    [studentAssignments]="studentAssignments$ | async"
+    (updatePaperStatusEvent)="updatePaperStatusByAssignmentAndStudent($event)"></app-student-assignment>
+  </mat-tab>
 </mat-tab-group>
 
 <ng-template #courseNotEnabled>

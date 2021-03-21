@@ -16,7 +16,7 @@ import { ToastService } from "src/app/services/toast.service";
 import { UtilsService } from "src/app/services/utils.service";
 import { CourseDialogComponent } from "../course-dialog/course-dialog.component";
 import { PaperSnapshot } from "src/app/models/papersnapshot.model";
-import { SolutionFormData } from "src/app/models/formData.model";
+import { SolutionFormData } from "src/app/models/formPaperSnapshotData.model";
 
 @Component({
   selector: "app-course-dashboard",
@@ -39,6 +39,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
   private dialogSubscription: Subscription;
   private papersSubscription: Subscription;
   private uploadSubscription: Subscription;
+  private assignmentSubscription: Subscription;
   private papersnapshotSubscription: Subscription;
   private editModelSubscription: Subscription;
 
@@ -119,7 +120,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
         )
       )
     );
- */
+    */
     this.courseVmModel$ = this.currentCourse$.pipe(
       tap(() => (this.isLoading = true)),
       switchMap((course: Course) => {
@@ -299,6 +300,18 @@ export class CourseDashboard implements OnInit, OnDestroy {
       console.log(data)
       this.isLoading = false
       this.getAllPapersnapshotsForPaper(paperId)
+    })
+  }
+
+  addAssignment(assignment) {
+ 
+    if(this.assignmentSubscription) this.assignmentSubscription.unsubscribe()
+
+    this.isLoading = true
+    this.assignmentSubscription = this.courseService.addAssignmentToCourse(this.currentCourse.name, assignment).subscribe((data) => {
+      console.log(data)
+      this.isLoading = false
+      this._reloadAssignments$.next()
     })
   }
 

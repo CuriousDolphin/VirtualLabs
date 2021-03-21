@@ -45,21 +45,26 @@ import { MatMenuModule } from "@angular/material/menu";
 import { TeacherLandingPageComponent } from './teacher/teacher-landing-page/teacher-landing-page.component';
 import { AssignmentComponent } from './teacher/assignment/assignment.component';
 import { AssignmentAssignmentComponent } from './teacher/assignment/assignment-assignment/assignment-assignment.component';
-import { AssignmentPaperComponent } from './teacher/assignment/assignment-paper/assignment-paper.component';
+import { AssignmentPaperComponent, FilterDialog } from './teacher/assignment/assignment-paper/assignment-paper.component';
 import { AssignmentPapersnapshotComponent } from './teacher/assignment/assignment-papersnapshot/assignment-papersnapshot.component';
 import { VmsStudentComponent } from './student/vms-student/vms-student.component';
 import { MatGridListModule } from '@angular/material/grid-list';
-import {MatRadioModule} from '@angular/material/radio';
+import { MatRadioModule } from '@angular/material/radio';
 import { DialogCreateVmComponent } from './student/vms-student/dialog-create-vm/dialog-create-vm.component';
 import { DialogEditVmComponent } from './student/vms-student/dialog-edit-vm/dialog-edit-vm.component';
 //import { OpenVmComponent } from './student/vms-student/open-vm/open-vm.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { VmsTeacherComponent } from "./teacher/vms-teacher/vms-teacher.component";
 import { DialogEditModelComponent } from "./teacher/vms-teacher/dialog-edit-model/dialog-edit-model.component";
 import { DialogConfirmDeleteComponent } from "./student/vms-student/dialog-confirm-delete/dialog-confirm-delete.component";
+import { MatNativeDateModule } from '@angular/material/core';
+import { StudentAssignmentComponent } from './student/student-assignment/student-assignment.component';
+import { StudentAssignmentAssignmentComponent, StudentImageDialog } from './student/student-assignment/student-assignment-assignment/student-assignment-assignment.component';
 import { OpenVmComponent } from "./open-vm/open-vm.component";
 
 @NgModule({
   declarations: [
+    FilterDialog,
     AppComponent,
     StudentsComponent,
     HomeComponent,
@@ -86,6 +91,9 @@ import { OpenVmComponent } from "./open-vm/open-vm.component";
     VmsTeacherComponent,
     DialogEditModelComponent,
     DialogConfirmDeleteComponent,
+    StudentAssignmentComponent,
+    StudentAssignmentAssignmentComponent,
+    StudentImageDialog
   ],
   imports: [
     BrowserModule,
@@ -118,6 +126,8 @@ import { OpenVmComponent } from "./open-vm/open-vm.component";
     MatMenuModule,
     MatGridListModule,
     MatRadioModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [
     {

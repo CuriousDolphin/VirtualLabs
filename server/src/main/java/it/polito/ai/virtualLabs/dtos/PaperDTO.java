@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @Data
 public class PaperDTO {
     Long id;
-    Integer status;
+    String status;
     Integer vote;
     Timestamp lastUpdateTime;
     @NotNull

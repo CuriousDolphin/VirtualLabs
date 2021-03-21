@@ -26,7 +26,7 @@
               <input id="input-file-id" accept="image/*" (change)="onFileChange($event)" style="display: none;"
                 type="file" formControlName="solutionFile">
 
-              <img [src]="imageSrc" *ngIf="imageSrc" style="height: 100px; width:160px; vertical-align: middle;">
+              <img [src]="imageSrc" *ngIf="imageSrc" style="height: 200px; width:320px; vertical-align: middle;">
             </div>
             <div fxLayout="column" fxLayoutAlign="end end">
               <button mat-button color="accent" type="submit" [disabled]="!formGroup.valid" class="radius-20">

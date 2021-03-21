@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Assignment } from 'src/app/models/assignment.model';
-import { SolutionFormData } from 'src/app/models/formData.model';
+import { SolutionFormData } from 'src/app/models/formPaperSnapshotData.model';
 import { Paper } from 'src/app/models/paper.model';
 import { PaperSnapshot } from 'src/app/models/papersnapshot.model';
 
@@ -37,6 +37,7 @@ export class AssignmentComponent implements OnInit {
   @Output() assignmentClickedEvent = new EventEmitter<number>()
   @Output() paperClickedEvent = new EventEmitter<number>()
   @Output() solutionSubmittedEvent = new EventEmitter<{ solutionFormData: SolutionFormData, paperId: Number }>()
+  @Output() assignmentSubmittedEvent = new EventEmitter<Assignment>()
 
   constructor() { }
 
@@ -52,6 +53,10 @@ export class AssignmentComponent implements OnInit {
     this.assignmentClickedEvent.emit(assignmentId)
     this.currentAssignmentId = assignmentId
     this.toShowLevel = this.toShowLevel + 1
+  }
+
+  assignmentSubmitted(assignment: Assignment) {
+    this.assignmentSubmittedEvent.emit(assignment)
   }
 
   paperClicked(paperId: number) {

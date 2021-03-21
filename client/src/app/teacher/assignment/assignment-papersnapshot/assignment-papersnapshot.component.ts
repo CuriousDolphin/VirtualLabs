@@ -4,7 +4,7 @@ import { PaperSnapshot } from 'src/app/models/papersnapshot.model';
 import { formatDate } from '@angular/common'
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { SolutionFormData } from 'src/app/models/formData.model';
+import { SolutionFormData } from 'src/app/models/formPaperSnapshotData.model';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
@@ -90,8 +90,7 @@ export class AssignmentPapersnapshotComponent implements OnInit {
 
   onSubmit(): void {
 
-
-    const splittedPath = this.formGroup.controls["solutionFile"].value.split("\\")
+    //const splittedPath = this.formGroup.controls["solutionFile"].value.split("\\")
 
     const papersnapshot: PaperSnapshot = {
       id: null,
@@ -112,7 +111,7 @@ export class AssignmentPapersnapshotComponent implements OnInit {
 
 @Component({
   selector: "image-dialog",
-  templateUrl: "image-dialog.html"
+  templateUrl: "../image-dialog.html"
 })
 export class ImageDialog {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {

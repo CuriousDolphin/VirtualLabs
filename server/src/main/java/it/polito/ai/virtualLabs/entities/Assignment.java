@@ -21,7 +21,9 @@ public class Assignment {
     private Long id;
     private Timestamp releaseDate;
     private Timestamp expiryDate;
-    private String content;
+    @Lob
+    @Column(columnDefinition="MEDIUMBLOB")
+    private byte[] content;
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
