@@ -634,8 +634,6 @@ public class TeamServiceImpl implements TeamService {
         /* save */
         assignmentRepository.save(assignment);
 
-        System.out.println("ciao");
-
         /* Create papers for every student in course */
         course.get().getStudents().forEach(student -> {
             Paper paper = Paper.builder()

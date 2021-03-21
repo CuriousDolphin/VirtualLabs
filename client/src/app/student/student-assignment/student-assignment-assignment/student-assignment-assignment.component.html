@@ -7,7 +7,7 @@
 
   <ng-container matColumnDef="content">
     <th mat-header-cell *matHeaderCellDef>Content</th>
-    <td mat-cell (click)="openImage(assignment.content, assignment.id, assignment.status);$event.stopPropagation()" *matCellDef="let assignment">
+    <td mat-cell (click)="openImage(assignment.content, assignment.id, assignment.status); $event.stopPropagation()" *matCellDef="let assignment">
       <div class="image-container">
         <mat-icon *ngIf="assignment.status === 'null'" [ngStyle]="{'color':'red'}" id="new-icon" aria-hidden="false" aria-label="New Assignment">fiber_new
         </mat-icon>
