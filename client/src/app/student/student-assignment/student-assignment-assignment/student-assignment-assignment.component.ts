@@ -68,7 +68,7 @@ export class StudentAssignmentAssignmentComponent implements OnInit {
   templateUrl: "../student-image-dialog.html"
 })
 export class StudentImageDialog {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: object) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
 
   }
 

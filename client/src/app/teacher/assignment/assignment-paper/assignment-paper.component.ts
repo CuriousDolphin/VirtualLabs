@@ -135,7 +135,7 @@ export class AssignmentPaperComponent implements OnInit {
   templateUrl: "filter-dialog.html"
 })
 export class FilterDialog {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: object) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
 
   }
 
