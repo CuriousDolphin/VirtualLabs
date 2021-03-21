@@ -29,7 +29,7 @@
   <mat-tab label="Teams">
     <!--only this scroll-->
     <div class="tab-container">
-      <app-teams [studentId]="studentId" [currentCourse]="currentCourse.name" [teams]="studentTeams$ | async"
+      <app-teams [studentId]="studentId" [currentCourse]="currentCourse" [teams]="studentTeams$ | async"
         [studentsNotInTeams]="studentsNotInTeams$ | async" (createTeam)="createTeam($event)"
         (confirmTeam)="confirmTeam($event)" (rejectTeam)="rejectTeam($event)"></app-teams>
     </div>

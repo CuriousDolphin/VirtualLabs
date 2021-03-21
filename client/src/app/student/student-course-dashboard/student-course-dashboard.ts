@@ -192,10 +192,13 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       .proposeTeam(this.currentCourse.name, proposal)
       .subscribe(
         (data) => {
-          this.toastService.success(
-            "Team propose success ! Team members will be notified."
-          );
-          this._reloadTeams();
+          if(data){
+            this.toastService.success(
+              "Team propose success ! Team members will be notified."
+            );
+            this._reloadTeams();
+          }
+          
         },
         (error) => {
           this.toastService.error("Error in team propose, try again later");
