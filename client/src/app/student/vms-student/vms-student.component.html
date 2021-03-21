@@ -191,15 +191,36 @@
                 _vmInstances.length + 1
               }}</mat-grid-tile>
               <mat-grid-tile colspan="20"></mat-grid-tile>
-              <mat-grid-tile colspan="10">
-                up to {{ vcpusAvailable }}
-              </mat-grid-tile>
-              <mat-grid-tile colspan="10">
-                up to {{ ramAvailable }} GB
-              </mat-grid-tile>
-              <mat-grid-tile colspan="10">
-                up to {{ diskAvailable }} GB
-              </mat-grid-tile>
+              <div *ngIf="vcpusAvailable != 0; else zeroVcpu">
+                <mat-grid-tile colspan="10">
+                  {{ vcpusAvailable }} available
+                </mat-grid-tile>
+              </div> 
+              <ng-template #zeroVcpu>
+                <mat-grid-tile colspan="10" style="color: red">
+                  {{ vcpusAvailable }} available
+                </mat-grid-tile>
+              </ng-template>
+              <div *ngIf='ramAvailable != 0; else zeroRam'>
+                <mat-grid-tile colspan="10">
+                  {{ ramAvailable }} GB available
+                </mat-grid-tile>
+              </div>
+              <ng-template #zeroRam>
+                <mat-grid-tile colspan="10" style=" color: red">
+                  {{ ramAvailable }} GB available
+                </mat-grid-tile>
+              </ng-template>
+              <div *ngIf='diskAvailable != 0; else zeroDisk'>
+                <mat-grid-tile colspan="10">
+                  {{ diskAvailable }} GB available
+                </mat-grid-tile>
+              </div>
+              <ng-template #zeroDisk>
+                <mat-grid-tile colspan="10" style="color: red">
+                  {{ diskAvailable }} GB available
+                </mat-grid-tile>
+              </ng-template>
               <mat-grid-tile colspan="10"></mat-grid-tile>
               <mat-grid-tile colspan="36">
                 <button
