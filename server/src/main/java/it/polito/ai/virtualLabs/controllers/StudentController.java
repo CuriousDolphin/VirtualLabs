@@ -1,12 +1,12 @@
 package it.polito.ai.virtualLabs.controllers;
 
 import it.polito.ai.virtualLabs.dtos.*;
-import it.polito.ai.virtualLabs.entities.PaperSnapshot;
-//import it.polito.ai.virtualLabs.entities.VmConfiguration;
 import it.polito.ai.virtualLabs.dtos.CourseDTO;
 import it.polito.ai.virtualLabs.dtos.StudentDTO;
 import it.polito.ai.virtualLabs.dtos.VmModelDTO;
 import it.polito.ai.virtualLabs.dtos.VmInstanceDTO;
+import it.polito.ai.virtualLabs.exceptions.AssignmentNotFoundException;
+import it.polito.ai.virtualLabs.exceptions.CourseNotFoundException;
 import it.polito.ai.virtualLabs.exceptions.StudentNotFoundException;
 import it.polito.ai.virtualLabs.services.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +55,40 @@ public class StudentController {
         }catch(StudentNotFoundException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, id);
         }
+    }
 
+    @GetMapping("/{id}/course/{courseName}/assignments")
+    List<StudentAssignmentDTO> getAllAssignmentsForCourseAndForStudent(@PathVariable("courseName") String courseName, @PathVariable("id") String studentId) {
+        try{
+            return teamService.getAllAssignmentsForCourseAndForStudent(courseName, studentId);
+        } catch (CourseNotFoundException courseNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, courseName);
+        } catch (StudentNotFoundException studentNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, studentId);
+        }
+    }
+
+    @PutMapping("/{id}/assignment/{assignmentId}/updatePaperStatus")
+    PaperDTO updatePaperStatus(@PathVariable("id") String studentId, @PathVariable("assignmentId") Long assignmentId, @RequestBody String status) {
+        try {
+            return teamService.updatePaperStatus(assignmentId, studentId, status);
+        } catch (AssignmentNotFoundException assignmentNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, assignmentId.toString());
+        } catch (StudentNotFoundException studentNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, studentId);
+        }
+    }
+
+
+    @GetMapping("/{id}/course/{courseName}/papers")
+    List<PaperDTO> getAllPapersForCourseAndForStudent(@PathVariable("courseName") String courseName, @PathVariable("id") String studentId) {
+        try {
+            return teamService.getAllPaperForCourseAndForStudent(courseName, studentId);
+        } catch (CourseNotFoundException courseNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, courseName);
+        } catch (StudentNotFoundException studentNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, studentId);
+        }
     }
 
     @PostMapping({"", "/"})

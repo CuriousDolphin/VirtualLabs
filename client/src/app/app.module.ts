@@ -59,7 +59,7 @@ import { DialogEditModelComponent } from "./teacher/vms-teacher/dialog-edit-mode
 import { DialogConfirmDeleteComponent } from "./student/vms-student/dialog-confirm-delete/dialog-confirm-delete.component";
 import { MatNativeDateModule } from '@angular/material/core';
 import { StudentAssignmentComponent } from './student/student-assignment/student-assignment.component';
-import { StudentAssignmentAssignmentComponent } from './student/student-assignment/student-assignment-assignment/student-assignment-assignment.component';
+import { StudentAssignmentAssignmentComponent, StudentImageDialog } from './student/student-assignment/student-assignment-assignment/student-assignment-assignment.component';
 
 @NgModule({
   declarations: [
@@ -92,6 +92,7 @@ import { StudentAssignmentAssignmentComponent } from './student/student-assignme
     DialogConfirmDeleteComponent,
     StudentAssignmentComponent,
     StudentAssignmentAssignmentComponent,
+    StudentImageDialog
   ],
   imports: [
     BrowserModule,

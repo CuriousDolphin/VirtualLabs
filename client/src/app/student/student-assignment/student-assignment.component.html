@@ -1,1 +1,17 @@
-<p>student-assignment works!</p>
+<mat-divider> </mat-divider>
+
+<div class="container">
+  <mat-card style="margin-bottom:22px">
+    <mat-card-header fxLayout="row" fxLayoutAlign="space-between stretch">
+      <mat-card-title>
+        Assignments
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <app-student-assignment-assignment
+      [assignmentsData]="assignmentsData"
+      (confirmReadClickedEvent)="updatePaperStatus($event)">
+      </app-student-assignment-assignment>
+    </mat-card-content>
+  </mat-card>
+</div>

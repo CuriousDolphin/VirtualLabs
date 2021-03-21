@@ -118,7 +118,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
         )
       )
     );
- */
+    */
     this.courseVmModel$ = this.currentCourse$.pipe(
       tap(() => (this.isLoading = true)),
       switchMap((course: Course) => {

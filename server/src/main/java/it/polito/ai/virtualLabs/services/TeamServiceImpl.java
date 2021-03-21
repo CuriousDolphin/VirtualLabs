@@ -71,20 +71,20 @@ public class TeamServiceImpl implements TeamService {
             if (course.getName() != null && !course.getName().equals("")) {
                 Course newCourse = modelMapper.map(course, Course.class);
                 Optional<Teacher> optTeacher = teacherRepository.findById(userId);
-                if(optTeacher.isPresent())
+                if (optTeacher.isPresent())
                     newCourse.addTeacher(optTeacher.get());
                 else
                     return false;
-                if(!optTeacher.get().getId().equals("admin"))
+                if (!optTeacher.get().getId().equals("admin"))
                     newCourse.addTeacher(teacherRepository.getOne("admin"));
                 VmModel newVmModel = VmModel.builder()
                         .image("defaultVmImage.png")
                         .course(newCourse)
                         .maxVms(6)
                         .maxRunningVms(3)
-                        .maxVcpus(6*5)
-                        .maxRam(6*8)
-                        .maxDisk(6*500)
+                        .maxVcpus(6 * 5)
+                        .maxRam(6 * 8)
+                        .maxDisk(6 * 500)
                         .build();
                 vmModelRepository.save(newVmModel);
                 courseRepository.save(newCourse);
@@ -101,9 +101,9 @@ public class TeamServiceImpl implements TeamService {
 
         Course c = courseRepository.findByNameIgnoreCase(courseName).get();
         Optional<Teacher> optTeacher = teacherRepository.findById(userId);
-        if(!optTeacher.isPresent())
+        if (!optTeacher.isPresent())
             throw new CourseNotFoundException();
-        if(!c.getTeachers().contains(optTeacher.get()))
+        if (!c.getTeachers().contains(optTeacher.get()))
             throw new CourseNotFoundException();
         c.setAcronym(course.getAcronym());
         c.setEnabled(course.isEnabled());
@@ -521,7 +521,7 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public AssignmentDTO getAssignment(Long assignmentId) {
         Optional<Assignment> assignment = assignmentRepository.findById(assignmentId);
-        if(!assignment.isPresent()) throw new AssignmentNotFoundException();
+        if (!assignment.isPresent()) throw new AssignmentNotFoundException();
 
         AssignmentDTO assignmentDTO = modelMapper.map(assignment.get(), AssignmentDTO.class);
         String base64 = "data:image/png;base64," + Base64.getMimeEncoder().encodeToString(assignment.get().getContent());
@@ -545,8 +545,40 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    public List<StudentAssignmentDTO> getAllAssignmentsForCourseAndForStudent(String courseName, String studentId) {
+        Optional<Course> course = courseRepository.findByNameIgnoreCase(courseName);
+        Optional<Student> student = studentRepository.findByIdIgnoreCase(studentId);
+        if (course.isEmpty()) throw new CourseNotFoundException();
+        if (student.isEmpty()) throw new StudentNotFoundException();
+
+        return paperRepository.findAllByAssignment_Course_NameAndStudent_Id(courseName, studentId)
+                .stream()
+                .map(paper -> {
+                    StudentAssignmentDTO studentAssignmentDTO = modelMapper.map(paper.getAssignment(), StudentAssignmentDTO.class);
+                    String base64 = "data:image/png;base64," + Base64.getMimeEncoder().encodeToString(paper.getAssignment().getContent());
+                    studentAssignmentDTO.setContent(base64);
+                    studentAssignmentDTO.setStatus(paper.getStatus());
+                    return studentAssignmentDTO;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PaperDTO> getAllPaperForCourseAndForStudent(String courseName, String studentId) {
+        Optional<Course> course = courseRepository.findByNameIgnoreCase(courseName);
+        Optional<Student> student = studentRepository.findByIdIgnoreCase(studentId);
+        if (course.isEmpty()) throw new CourseNotFoundException();
+        if (student.isEmpty()) throw new StudentNotFoundException();
+
+        return paperRepository.findAllByAssignment_Course_NameAndStudent_Id(courseName, studentId)
+                .stream()
+                .map(paper -> modelMapper.map(paper, PaperDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<PaperDTO> getAllPapersForAssignment(Long assignmentId) {
-        if(assignmentRepository.findById(assignmentId).isEmpty()) throw new AssignmentNotFoundException();
+        if (assignmentRepository.findById(assignmentId).isEmpty()) throw new AssignmentNotFoundException();
 
         return paperRepository.findAllByAssignment_Id(assignmentId)
                 .stream()
@@ -556,11 +588,11 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public List<PaperSnapshotDTO> getAllPaperSnapshotsForPaper(Long paperId) {
-        if(!paperRepository.existsById(paperId)) throw new PaperNotFoundException();
+        if (!paperRepository.existsById(paperId)) throw new PaperNotFoundException();
 
         List<PaperSnapshotDTO> paperSnapshotDTOS = paperSnapshotRepository.findAllByPaper_Id(paperId)
                 .stream()
-                .map(paperSnapshot ->  {
+                .map(paperSnapshot -> {
                     PaperSnapshotDTO paperSnapshotDTO = modelMapper.map(paperSnapshot, PaperSnapshotDTO.class);
                     String base64 = "data:image/png;base64," + Base64.getMimeEncoder().encodeToString(paperSnapshot.getContent());
                     paperSnapshotDTO.setContent(base64);
@@ -572,10 +604,26 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    public PaperDTO updatePaperStatus(Long assignmentId, String studentId, String status) {
+        Optional<Assignment> assignment = assignmentRepository.findById(assignmentId);
+        Optional<Student> student = studentRepository.findById(studentId);
+        if(assignment.isEmpty()) throw new AssignmentNotFoundException();
+        if(student.isEmpty()) throw new StudentNotFoundException();
+
+        Paper paper = paperRepository.findByAssignment_IdAndStudent_Id(assignmentId, studentId);
+        paper.setStatus(status);
+        paperRepository.save(paper);
+
+        System.out.println("Update paper:" + paper.toString());
+
+        return modelMapper.map(paper, PaperDTO.class);
+    }
+
+    @Override
     public AssignmentDTO addAssignmentToCourse(String courseName, AssignmentDTO assignmentDTO) {
 
         Optional<Course> course = courseRepository.findByNameIgnoreCase(courseName);
-        if(!course.isPresent()) throw new CourseNotFoundException();
+        if (!course.isPresent()) throw new CourseNotFoundException();
 
         /* Create assignment */
         byte[] bytes = Base64.getMimeDecoder().decode(assignmentDTO.getContent().split(",")[1]);
@@ -590,15 +638,15 @@ public class TeamServiceImpl implements TeamService {
 
         /* Create papers for every student in course */
         course.get().getStudents().forEach(student -> {
-           Paper paper = Paper.builder()
-                   .vote(null)
-                   .lastUpdateTime(assignment.getReleaseDate())
-                   .status("null")
-                   .build();
-           paper.setAssignment(assignment);
-           paper.setStudent(student);
+            Paper paper = Paper.builder()
+                    .vote(null)
+                    .lastUpdateTime(assignment.getReleaseDate())
+                    .status("null")
+                    .build();
+            paper.setAssignment(assignment);
+            paper.setStudent(student);
 
-           paperRepository.save(paper);
+            paperRepository.save(paper);
         });
 
         return assignmentDTO;
@@ -606,7 +654,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public PaperSnapshotDTO addPaperSnapshotToPaper(Long paperId, PaperSnapshotDTO paperSnapshotDTO, boolean toReview, Integer vote) {
-        if(!paperRepository.existsById(paperId)) throw new PaperNotFoundException();
+        if (!paperRepository.existsById(paperId)) throw new PaperNotFoundException();
 
         byte[] bytes = Base64.getMimeDecoder().decode(paperSnapshotDTO.getContent().split(",")[1]);
 
@@ -673,7 +721,7 @@ public class TeamServiceImpl implements TeamService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "MaxVmsInstances");
         if (vmInstance.getCountDisks() > vmModelRepository.getByCourse(teamRepository.getByName(team).getCourse()).getMaxDisk() || vmInstance.getCountDisks() < 1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountDisks");
-        if (vmInstance.getCountRam() > vmModelRepository.getByCourse(teamRepository.getByName(team).getCourse()).getMaxRam() || vmInstance.getCountRam()< 1)
+        if (vmInstance.getCountRam() > vmModelRepository.getByCourse(teamRepository.getByName(team).getCourse()).getMaxRam() || vmInstance.getCountRam() < 1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountRam");
         if (vmInstance.getCountVcpus() > vmModelRepository.getByCourse(teamRepository.getByName(team).getCourse()).getMaxVcpus() || vmInstance.getCountVcpus() < 1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CountVcpus");
@@ -775,18 +823,19 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public List<CourseDTO> getAllTeacherCourses(String userId)
-    {
+    public List<CourseDTO> getAllTeacherCourses(String userId) {
         return courseRepository.findAllByTeacher(userId)
                 .stream()
                 .map(course -> modelMapper.map(course, CourseDTO.class))
                 .collect(Collectors.toList());
     }
+
     @Override
     public VmModelDTO getVmModel(String courseName) {
-       if(courseRepository.findByNameIgnoreCase(courseName).isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND,courseName);
+        if (courseRepository.findByNameIgnoreCase(courseName).isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, courseName);
 
-       return modelMapper.map(vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(courseName).get()), VmModelDTO.class);
+        return modelMapper.map(vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(courseName).get()), VmModelDTO.class);
     }
 
     @Override
@@ -801,7 +850,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public List<VmInstanceDTO> getVmInstancesPerCourse(String course) {
-        if(courseRepository.findByNameIgnoreCase(course).isEmpty())
+        if (courseRepository.findByNameIgnoreCase(course).isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, course);
 
         return vmInstanceRepository.getVmInstancesByCourse(courseRepository.findByNameIgnoreCase(course).get()).stream()
@@ -814,51 +863,51 @@ public class TeamServiceImpl implements TeamService {
         if (courseRepository.findByNameIgnoreCase(course).isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, course);
 
-        if(vmModel.getMaxVms() != vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxVms()){
-            if(vmModel.getMaxVms() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxVms())
+        if (vmModel.getMaxVms() != vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxVms()) {
+            if (vmModel.getMaxVms() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxVms())
                 vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxVms(vmModel.getMaxVms());
             else {
-                if(vmInstanceRepository.getMaxVmsPerTeam() > vmModel.getMaxVms())
+                if (vmInstanceRepository.getMaxVmsPerTeam() > vmModel.getMaxVms())
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "maxVms");
                 vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxVms(vmModel.getMaxVms());
             }
         }
 
-        if(vmModel.getMaxRunningVms() != vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxRunningVms()){
-            if(vmModel.getMaxRunningVms() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxRunningVms())
+        if (vmModel.getMaxRunningVms() != vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxRunningVms()) {
+            if (vmModel.getMaxRunningVms() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxRunningVms())
                 vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxRunningVms(vmModel.getMaxRunningVms());
             else {
-                if(vmInstanceRepository.getMaxVmsRunningPerTeam() > vmModel.getMaxRunningVms())
+                if (vmInstanceRepository.getMaxVmsRunningPerTeam() > vmModel.getMaxRunningVms())
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "maxRunningVms");
                 vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxRunningVms(vmModel.getMaxRunningVms());
             }
         }
 
-        if(vmModel.getMaxVcpus() != vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxVcpus()){
-            if(vmModel.getMaxVcpus() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxVcpus())
+        if (vmModel.getMaxVcpus() != vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxVcpus()) {
+            if (vmModel.getMaxVcpus() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxVcpus())
                 vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxVcpus(vmModel.getMaxVcpus());
             else {
-                if(vmInstanceRepository.getMaxVcpusPerTeam() > vmModel.getMaxVcpus())
+                if (vmInstanceRepository.getMaxVcpusPerTeam() > vmModel.getMaxVcpus())
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "maxVcpus");
                 vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxVcpus(vmModel.getMaxVcpus());
             }
         }
 
-        if(vmModel.getMaxRam() != vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxRam()){
-            if(vmModel.getMaxRam() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxRam())
+        if (vmModel.getMaxRam() != vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxRam()) {
+            if (vmModel.getMaxRam() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxRam())
                 vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxRam(vmModel.getMaxRam());
             else {
-                if(vmInstanceRepository.getMaxRamPerTeam() > vmModel.getMaxRam())
+                if (vmInstanceRepository.getMaxRamPerTeam() > vmModel.getMaxRam())
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "maxRam");
                 vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxRam(vmModel.getMaxRam());
             }
         }
 
-        if(vmModel.getMaxDisk() != vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxDisk()){
-            if(vmModel.getMaxDisk() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxDisk())
+        if (vmModel.getMaxDisk() != vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxDisk()) {
+            if (vmModel.getMaxDisk() > vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).getMaxDisk())
                 vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxDisk(vmModel.getMaxDisk());
             else {
-                if(vmInstanceRepository.getMaxDiskPerTeam() > vmModel.getMaxDisk())
+                if (vmInstanceRepository.getMaxDiskPerTeam() > vmModel.getMaxDisk())
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "maxDisk");
                 vmModelRepository.getByCourse(courseRepository.findByNameIgnoreCase(course).get()).setMaxDisk(vmModel.getMaxDisk());
             }

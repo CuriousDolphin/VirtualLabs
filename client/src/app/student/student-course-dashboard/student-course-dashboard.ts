@@ -14,6 +14,9 @@ import { TeamProposal } from "src/app/models/teamProposal.model";
 import { VmInstance } from 'src/app/models/vm-instance.model';
 import { VmModel } from 'src/app/models/vm-model.model';
 import * as _ from 'lodash';
+import { Assignment } from "src/app/models/assignment.model";
+import { Paper } from "src/app/models/paper.model";
+import { StudentAssignment } from "src/app/models/studentAssignment.model";
 
 @Component({
   selector: "app-course-dashboard",
@@ -27,6 +30,8 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   );
   private _reloadCourse$: BehaviorSubject<void> = new BehaviorSubject(null);
   private _reloadTeams$: BehaviorSubject<void> = new BehaviorSubject(null);
+  private _reloadAssignments$: BehaviorSubject<void> = new BehaviorSubject(null);
+  private _reloadPapers$: BehaviorSubject<void> = new BehaviorSubject(null);
   private currentActiveTeam$: BehaviorSubject<String> = new BehaviorSubject("");
 
   private createTeamSubscription: Subscription;
@@ -39,10 +44,13 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   private stopVmSubscription: Subscription;
   private createVmSubscription: Subscription;
   private editVmSubscription: Subscription;
+  private updatePaperSubscription: Subscription;
   currentCourse: Course;
   currentVmModel$: Observable<VmModel>;
   currentCourse$: Observable<Course>;
   studentTeams$: Observable<Team[]>;
+  studentAssignments$: Observable<StudentAssignment[]>;
+  studentPapers$: Observable<Paper[]>;
   studentVmInstances$: Observable<VmInstance[]>;
   studentsNotInTeams$: Observable<Student[]>;
   studentId: String;
@@ -121,6 +129,29 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       tap(() => (this.isLoading = false))
     );
 
+    //TODO: to finish
+    this.studentAssignments$ = combineLatest([
+      this._currentCourseName$,
+      this._reloadAssignments$
+    ]).pipe(
+      tap(() => (this.isLoading = true)),
+      switchMap(([courseName, reload]) => {
+        return this.studentService.getAllAssignmentsForCourseAndForStudent(courseName, this.studentId as string);
+      }),
+      tap(() => (this.isLoading = false))
+    )
+
+    this.studentPapers$ = combineLatest([
+      this._currentCourseName$,
+      this._reloadPapers$
+    ]).pipe(
+      tap(() => (this.isLoading = true)),
+      switchMap(([courseName, reload]) => {
+        return this.studentService.getAllPapersForCourseAndForStudent(courseName, this.studentId as string);
+      }),
+      tap(() => (this.isLoading = false))
+    )
+
     this.currentVmModel$ = this.currentActiveTeam$.pipe(
       tap(() => (this.isLoading = true)),
       switchMap((team: String) => {
@@ -152,7 +183,6 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       }),
       tap(() => (this.isLoading = false, console.log("Retrieved team's VmInstances")))
     )
-
   }
 
   createTeam(proposal: TeamProposal) {
@@ -173,6 +203,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
         }
       );
   }
+
   confirmTeam(team: Team) {
     if (this.confirmTeamSubscription)
       this.confirmTeamSubscription.unsubscribe();
@@ -192,6 +223,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
         }
       );
   }
+
   rejectTeam(team: Team) {
     if (this.rejectTeamSubscription) this.rejectTeamSubscription.unsubscribe();
 
@@ -311,9 +343,31 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       );
   }
 
+  updatePaperStatusByAssignmentAndStudent(data: { assignmentId: number, status: String }) {
+    if (this.updatePaperSubscription) this.updatePaperSubscription.unsubscribe()
+
+    this.updatePaperSubscription = this.studentService
+      .updatePaperStatus(this.authService.getUserId(), data.assignmentId, data.status)
+      .subscribe(
+        (data) => {
+          this.toastService.success("Paper update success! \n");
+          this._reloadAssignments()
+        },
+        (error) => {
+          this.toastService.error("Error paper udpate! \n");
+          this._reloadAssignments()
+        }
+      )
+  }
+
+  _reloadAssignments() {
+    this._reloadAssignments$.next()
+  }
+
   _reloadTeams() {
     this._reloadTeams$.next();
   }
+
   reloadData() {
     this._reloadCourse$.next();
     this._reloadTeams$.next();

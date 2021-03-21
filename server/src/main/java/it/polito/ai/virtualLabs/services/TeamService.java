@@ -1,6 +1,7 @@
 package it.polito.ai.virtualLabs.services;
 
 import it.polito.ai.virtualLabs.dtos.*;
+import it.polito.ai.virtualLabs.entities.Paper;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -90,6 +91,15 @@ public interface TeamService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     List<AssignmentDTO> getAllAssignmentsForCourse(String courseName);
+
+    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or hasRole('ROLE_STUDENT')")
+    List<StudentAssignmentDTO> getAllAssignmentsForCourseAndForStudent(String courseName, String studentId);
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or hasRole('ROLE_STUDENT')")
+    PaperDTO updatePaperStatus(Long assignmentId, String studentId, String status);
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or hasRole('ROLE_STUDENT')")
+    List<PaperDTO> getAllPaperForCourseAndForStudent(String courseName, String studentId);
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     List<PaperDTO> getAllPapersForAssignment(Long assignmentId);
