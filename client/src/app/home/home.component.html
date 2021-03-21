@@ -1,3 +1,26 @@
 <div class="absolute-container" autosize="true">
+  <mat-toolbar
+  color="primary"
+  class="tbar"
+>
+<div #showLogin>
+  <button mat-button class="right" (click)="goToLogin()">
+    Login
+    <mat-icon class="ml-1">account_circle</mat-icon>
+  </button>
+  <button mat-button class="left" (click)="goToRegister()"> 
+    Signin
+    <mat-icon class="ml-1">how_to_reg</mat-icon>
+  </button>
+    
+</div>
+ 
+
+  <span class="fill-remaining-space"></span>
+
+
+ 
+ 
+</mat-toolbar>
   <h1 class="my-title">Ai2020 VirtualLabs Project</h1>
 </div>

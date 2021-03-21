@@ -2,21 +2,11 @@
 
 <div class="container">
   <mat-card style="margin-bottom: 22px">
-    <mat-card-header fxLayout="row" fxLayoutAlign="space-between stretch">
-      <mat-card-title>Add Students</mat-card-title>
+    <mat-card-header fxLayout="row" fxLayoutAlign="start center">
+      <mat-card-title>Enroll</mat-card-title>
       <!-- upload file -->
       <div>
-        <button
-          (click)="uploader.click()"
-          mat-flat-button
-          class="radius-20"
-          matTooltip="Enroll students from csv,
-        if students do not exist, they will be added automatically"
-          style="background-color: transparent"
-        >
-          <mat-icon color="primary"> note_add </mat-icon>
-          csv
-        </button>
+        
         <input
           hidden
           #uploader
@@ -64,9 +54,31 @@
     </mat-card-content>
     <mat-card-actions
       fxLayout="row"
-      fxLayoutAlign="end center"
+      fxLayoutAlign="start center"
       class="button-area"
     >
+    <button
+          (click)="uploader.click()"
+          mat-flat-button
+          class="radius-20"
+          matTooltip="Enroll students from csv,
+        if students do not exist, they will be added automatically"
+          style="background-color: transparent "
+        >
+          <mat-icon color="primary"> note_add </mat-icon>
+          csv
+        </button>
+      
+      <button
+        mat-button
+        color="accent"
+        [disabled]="!studentToAdd"
+        (click)="addStudentToTable()"
+        class="radius-20"
+      >
+        <mat-icon> person_add </mat-icon>
+        Enroll
+      </button>
       <div
         fxLayout="row"
         fxLayoutAlign="space-between center"
@@ -77,22 +89,13 @@
           studentToAdd.email
         }})
       </div>
-      <button
-        mat-button
-        color="accent"
-        [disabled]="!studentToAdd"
-        (click)="addStudentToTable()"
-        class="radius-20"
-      >
-        <mat-icon> person_add </mat-icon>
-        Add
-      </button>
+      
     </mat-card-actions>
   </mat-card>
 
   <mat-card>
     <mat-card-header>
-      <mat-card-title>Enrolled students</mat-card-title>
+      <mat-card-title>Enrolled</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <table mat-table [dataSource]="dataSource" class="elevation-z6" matSort>
@@ -159,7 +162,7 @@
     <mat-card-actions
       class="button-area"
       fxLayout="row"
-      fxLayoutAlign="end center"
+      fxLayoutAlign="start center"
     >
       <button
         color="accent"

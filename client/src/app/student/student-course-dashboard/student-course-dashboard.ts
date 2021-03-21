@@ -342,6 +342,10 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
         }
       );
   }
+  toggleForMenuClick() {
+    this.utilsService.toggleMenu();
+    // this.sidenav.opened = !this.sidenav.opened;
+  }
 
   updatePaperStatusByAssignmentAndStudent(data: { assignmentId: number, status: String }) {
     if (this.updatePaperSubscription) this.updatePaperSubscription.unsubscribe()

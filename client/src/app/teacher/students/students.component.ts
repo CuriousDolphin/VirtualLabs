@@ -22,14 +22,15 @@ import { MAT_CHECKBOX_DEFAULT_OPTIONS } from "@angular/material/checkbox";
   selector: "app-students",
   templateUrl: "./students.component.html",
   styleUrls: ["./students.component.sass"],
-  providers: [{ provide: MAT_CHECKBOX_DEFAULT_OPTIONS, useValue: "check" }],
+  //providers: [{ provide: MAT_CHECKBOX_CLICK_ACTION, useValue: "check" }],
 })
 export class StudentsComponent implements OnInit {
   dataSource = new MatTableDataSource<Student>();
   @Input() set enrolledStudents(students: Student[]) {
     if (students != null) {
       console.log("set enrolled students", students);
-
+      this.myControl.setValue("");
+      this.studentToAdd=null;
       this.selectedStudents.clear();
       this.dataSource.data = students;
     }

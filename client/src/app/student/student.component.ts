@@ -18,6 +18,7 @@ import { ToastService } from "../services/toast.service";
 import { UtilsService } from "../services/utils.service";
 import { StudentService } from "../services/student.service";
 import { AuthService } from "../auth/auth.service";
+import { User } from "../models/user.model";
 
 @Component({
   selector: "app-student",
@@ -30,6 +31,8 @@ export class StudentComponent implements OnInit {
   courses$: Observable<Course[]>;
   dialogSubscription: Subscription;
   isLoading = false;
+  userSubscription: Subscription;
+  user: User = null;
   routeSubscription: Subscription;
   reloadCourseFromServiceSubscription: Subscription;
   studentId: string;
@@ -38,11 +41,26 @@ export class StudentComponent implements OnInit {
     private utilsService: UtilsService,
     public dialog: MatDialog,
     private toastService: ToastService,
+    private router: Router,
     private studentService: StudentService,
     private authService: AuthService
   ) {}
 
   ngOnInit(): void {
+    this.userSubscription = this.authService.currentUser$.subscribe(
+      (user: User) => {
+        console.log("user subscription ", user);
+        if (user != null) {
+         
+          this.user = user;
+
+   
+        } else {
+          this.user = null;
+        }
+      }
+    );
+
     // reload courses from service need when an other component modify course and request reload to service
     this.reloadCourseFromServiceSubscription = this.utilsService.reloadCurses$
       .pipe(skip(1))
@@ -70,4 +88,9 @@ export class StudentComponent implements OnInit {
       this.reloadCourseFromServiceSubscription.unsubscribe();
     if (this.menuSubscription) this.menuSubscription.unsubscribe();
   }
+  logout() {
+    this.authService.logout();
+    this.router.navigate(["home"]);
+  }
 }
+

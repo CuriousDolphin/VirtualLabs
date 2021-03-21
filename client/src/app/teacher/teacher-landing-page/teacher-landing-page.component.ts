@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { UtilsService } from 'src/app/services/utils.service';
 
 @Component({
   selector: 'app-teacher-landing-page',
   templateUrl: './teacher-landing-page.component.html',
   styleUrls: ['./teacher-landing-page.component.sass']
 })
-export class TeacherLandingPageComponent implements OnInit {
+export class TeacherLandingPageComponent  {
 
-  constructor() { }
+  constructor(private utilsService: UtilsService,) { }
 
-  ngOnInit(): void {
+  toggleForMenuClick() {
+    this.utilsService.toggleMenu();
   }
 
 }

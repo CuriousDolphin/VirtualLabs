@@ -60,6 +60,7 @@ import { DialogConfirmDeleteComponent } from "./student/vms-student/dialog-confi
 import { MatNativeDateModule } from '@angular/material/core';
 import { StudentAssignmentComponent } from './student/student-assignment/student-assignment.component';
 import { StudentAssignmentAssignmentComponent, StudentImageDialog } from './student/student-assignment/student-assignment-assignment/student-assignment-assignment.component';
+import { OpenVmComponent } from "./open-vm/open-vm.component";
 
 @NgModule({
   declarations: [
@@ -86,7 +87,7 @@ import { StudentAssignmentAssignmentComponent, StudentImageDialog } from './stud
     VmsStudentComponent,
     DialogCreateVmComponent,
     DialogEditVmComponent,
-    //OpenVmComponent,
+    OpenVmComponent,
     VmsTeacherComponent,
     DialogEditModelComponent,
     DialogConfirmDeleteComponent,
@@ -136,6 +137,6 @@ import { StudentAssignmentAssignmentComponent, StudentImageDialog } from './stud
     },
   ],
   bootstrap: [AppComponent],
-  entryComponents: [LoginDialogComponent, RegisterDialogComponent],
+  entryComponents: [LoginDialogComponent, RegisterDialogComponent,OpenVmComponent,DialogEditModelComponent,DialogConfirmDeleteComponent],
 })
 export class AppModule {}
