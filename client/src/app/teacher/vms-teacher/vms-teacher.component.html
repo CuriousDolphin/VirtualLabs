@@ -1,56 +1,83 @@
+<div style="padding:22px">
+
 <ng-container *ngIf="hasLoadedVmModel && hasLoadedTeams">
-  <mat-card class="mat-elevation-z3">
-    <mat-card-title>
-      Virtual Machine MODEL accessible to each team:
-    </mat-card-title>
-    <mat-card-content>
-      <mat-grid-list cols="100" rowHeight="2rem">
-        <mat-grid-tile colspan="20" rowspan="2">
-          Maximum VMs allowed
-        </mat-grid-tile>
-        <mat-grid-tile colspan="20" rowspan="2">
-          Maximum VMs running simultaneously
-        </mat-grid-tile>
-        <mat-grid-tile colspan="30" rowspan="1">
-          Maximum resources allowed (sum of VMs)
-        </mat-grid-tile>
-        <mat-grid-tile colspan="10" rowspan="4">
-          <button
-            mat-raised-button
+  <mat-card  >
+    <mat-card-header fxLayout="row" fxLayoutAlign="space-between stretch" style="margin-bottom: 12px;">
+      <mat-card-title fxLayout="row" fxLayoutAlign="space-between stretch" >
+        VM MODEL 
+  
+      </mat-card-title>
+      <button
+            mat-icon-button
             color="primary"
             (click)="openEditModel(_vmModel)"
           >
             <mat-icon matListIcon> create</mat-icon>
-            EDIT MODEL
           </button>
-        </mat-grid-tile>
-        <mat-grid-tile colspan="20" rowspan="1">
-          VM image preview
-        </mat-grid-tile>
-        <mat-grid-tile colspan="10" rowspan="1"> VCPUs </mat-grid-tile>
-        <mat-grid-tile colspan="10" rowspan="1"> RAM </mat-grid-tile>
-        <mat-grid-tile colspan="10" rowspan="1"> Disk </mat-grid-tile>
-        <mat-grid-tile colspan="20" rowspan="3">
-          <img [src]="_vmModel.image" style="height: 100px; width: 200px" />
-        </mat-grid-tile>
-        <mat-grid-tile colspan="20" rowspan="2">
-          {{ _vmModel.maxVms }} VMs
-        </mat-grid-tile>
-        <mat-grid-tile colspan="20" rowspan="2">
-          {{ _vmModel.maxRunningVms }} VMs
-        </mat-grid-tile>
-        <mat-grid-tile colspan="10" rowspan="2">
-          {{ _vmModel.maxVcpus }}
-        </mat-grid-tile>
-        <mat-grid-tile colspan="10" rowspan="2">
-          {{ _vmModel.maxRam }} GB
-        </mat-grid-tile>
-        <mat-grid-tile colspan="10" rowspan="2">
-          {{ _vmModel.maxDisk }} GB
-        </mat-grid-tile>
-      </mat-grid-list>
+    </mat-card-header>
+    
+    <mat-card-content >
+      <div fxLayout="row" class="font_size_16" fxLayoutAlign="center stretch"  >
+        <div fxFlex="20" fxLayout="column" fxLayoutAlign="center center" >
+        <div>
+          <span class="mat-body-strong mat-body-2 prop">
+            Vm Allowed:
+          </span>
+          <span class="mat-small mat-caption" >
+            {{ _vmModel.maxVms }} 
+          </span>
+        </div>
+
+        <div>
+          <span class="mat-body-strong mat-body-2 prop">
+            Vm Running simultaneously (max):
+          </span>
+          <span class="mat-small mat-caption" >
+            {{ _vmModel.maxRunningVms }} 
+          </span>
+        </div>
+
+        <div>
+          <span class="mat-body-strong mat-body-2 prop">
+            VCPU (max):
+          </span>
+          <span class="mat-small mat-caption" >
+            {{ _vmModel.maxVcpus }} 
+          </span>
+        </div>
+
+        <div>
+          <span class="mat-body-strong mat-body-2 prop">
+           Ram (max):
+          </span>
+          <span class="mat-small mat-caption" >
+            {{ _vmModel.maxRam }} GB
+          </span>
+        </div>
+
+        <div>
+          <span class="mat-body-strong mat-body-2 prop">
+           Disk (max):
+          </span>
+          <span class="mat-small mat-caption" >
+            {{ _vmModel.maxDisk }} GB
+          </span>
+        </div>
+
+
+
+        </div>
+        <div >
+          <img fxFlex [src]="_vmModel.image" class="vm_img" >
+        </div>
+      </div>
+
     </mat-card-content>
+ 
   </mat-card>
+
+  <div style="height: 22px;"></div>
+
   <mat-card class="mat-elevation-z3">
     <mat-card-title> Student Teams: </mat-card-title>
     <div *ngFor="let team of _teams">
@@ -205,4 +232,8 @@
       </mat-card>
     </div>
   </mat-card>
+
+ 
 </ng-container>
+
+</div>
