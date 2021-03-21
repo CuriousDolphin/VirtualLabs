@@ -30,7 +30,7 @@
 </mat-toolbar>
 
 <mat-tab-group>
-  <mat-tab label="students">
+  <mat-tab label="Students">
     <!--only this scroll-->
     <div class="tab-container">
       <app-students
@@ -43,7 +43,7 @@
       </app-students>
     </div>
   </mat-tab>
-  <mat-tab label="VM">
+  <mat-tab label="VMs">
     <div class="tab-container">
       <app-vms-teacher
         [teams]="courseTeams$ | async"
@@ -54,7 +54,7 @@
       </app-vms-teacher>
     </div>
   </mat-tab>
-  <mat-tab label="assignment">
+  <mat-tab label="Assignments">
     <div class="tab-container">
       <app-assignment 
       [assignments]="assignments$ | async"

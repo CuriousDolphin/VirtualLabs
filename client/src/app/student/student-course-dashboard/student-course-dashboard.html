@@ -34,7 +34,7 @@
         (confirmTeam)="confirmTeam($event)" (rejectTeam)="rejectTeam($event)"></app-teams>
     </div>
   </mat-tab>
-  <mat-tab label="VM">
+  <mat-tab label="VMs">
     <div class="tab-container">
       <app-vms-student [studentId]="studentId" [course]="currentCourse.name" [courseAc]="currentCourse.acronym"
         [vmInstances]="studentVmInstances$ | async" [teams]="studentTeams$ | async" [vmModel]="currentVmModel$ | async"
@@ -42,7 +42,7 @@
         (createVm)="createVm($event)" (editVm)="editVm($event)"></app-vms-student>
     </div>
   </mat-tab>
-  <mat-tab label="Assignment">
+  <mat-tab label="Assignments">
     <div class="tab-container">
       <app-student-assignment
       [studentAssignments]="studentAssignments$ | async"
