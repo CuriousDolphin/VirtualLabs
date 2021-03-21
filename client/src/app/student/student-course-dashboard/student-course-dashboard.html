@@ -1,4 +1,4 @@
-<div class="loader" *ngIf="isLoading">
+<div class="loader" [ngClass]='{"hidden":!isLoading}' >
   <mat-spinner></mat-spinner>
 </div>
 <mat-toolbar *ngIf="currentCourse$ | async" style="color: rgb(32 32 32 / 87%);background-color: white;">
@@ -43,9 +43,11 @@
     </div>
   </mat-tab>
   <mat-tab label="Assignment">
-    <app-student-assignment
-    [studentAssignments]="studentAssignments$ | async"
-    (updatePaperStatusEvent)="updatePaperStatusByAssignmentAndStudent($event)"></app-student-assignment>
+    <div class="tab-container">
+      <app-student-assignment
+      [studentAssignments]="studentAssignments$ | async"
+      (updatePaperStatusEvent)="updatePaperStatusByAssignmentAndStudent($event)"></app-student-assignment>
+    </div>
   </mat-tab>
 </mat-tab-group>
 

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BehaviorSubject, combineLatest, Observable, Subscription, of } from "rxjs";
-import { switchMap, tap, map } from "rxjs/operators";
+import { switchMap, tap, map, shareReplay } from "rxjs/operators";
 import { Course } from "src/app/models/course.model";
 import { CourseService } from "src/app/services/course.service";
 import { StudentService } from "../../services/student.service";
@@ -54,7 +54,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   studentVmInstances$: Observable<VmInstance[]>;
   studentsNotInTeams$: Observable<Student[]>;
   studentId: String;
-  isLoading = false;
+  isLoading = true;
   constructor(
     private route: ActivatedRoute,
     private utilsService: UtilsService,
@@ -91,15 +91,16 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       tap((course) => {
         this.currentCourse = course;
       }),
-      tap(() => (this.isLoading = false))
+      tap(() => (this.isLoading = false)),
+      shareReplay(1)
     );
 
     this.studentTeams$ = combineLatest([
-      this._currentCourseName$,
+      this.currentCourse$,
       this._reloadTeams$,
     ]).pipe(
       tap(() => (/*this.currentActiveTeam = "", */this.isLoading = true)),
-      map(([courseName, reload]) => courseName),
+      map(([course, reload]) => course.name),
       switchMap((courseName) => {
         return this.studentService.getTeamsByStudentIdCourseName(
           this.authService.getUserId(),
@@ -112,44 +113,48 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
         else
           this.currentActiveTeam$.next("");
         this.isLoading = false;
-      })
+      }),
+      shareReplay(1)
     );
 
     this.studentsNotInTeams$ = combineLatest([
-      this._currentCourseName$,
+      this.currentCourse$,
       this._reloadTeams$,
     ]).pipe(
-      map(([courseName, reload]) => courseName),
+      map(([course, reload]) => course.name),
       tap(
         () => ((this.isLoading = true), console.log("get student not in team"))
       ),
       switchMap((courseName) => {
         return this.courseService.getStudentsNotInTeam(courseName);
       }),
-      tap(() => (this.isLoading = false))
+      tap(() => (this.isLoading = false)),
+      shareReplay(1)
     );
 
     //TODO: to finish
     this.studentAssignments$ = combineLatest([
-      this._currentCourseName$,
+      this.currentCourse$,
       this._reloadAssignments$
     ]).pipe(
       tap(() => (this.isLoading = true)),
-      switchMap(([courseName, reload]) => {
-        return this.studentService.getAllAssignmentsForCourseAndForStudent(courseName, this.studentId as string);
+      switchMap(([course, reload]) => {
+        return this.studentService.getAllAssignmentsForCourseAndForStudent(course.name, this.studentId as string);
       }),
-      tap(() => (this.isLoading = false))
+      tap(() => (this.isLoading = false)),
+      shareReplay(1)
     )
 
     this.studentPapers$ = combineLatest([
-      this._currentCourseName$,
+      this.currentCourse$,
       this._reloadPapers$
     ]).pipe(
       tap(() => (this.isLoading = true)),
-      switchMap(([courseName, reload]) => {
-        return this.studentService.getAllPapersForCourseAndForStudent(courseName, this.studentId as string);
+      switchMap(([course, reload]) => {
+        return this.studentService.getAllPapersForCourseAndForStudent(course.name, this.studentId as string);
       }),
-      tap(() => (this.isLoading = false))
+      tap(() => (this.isLoading = false)),
+      shareReplay(1)
     )
 
     this.currentVmModel$ = this.currentActiveTeam$.pipe(
@@ -165,7 +170,8 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
           return of<VmModel>();
         }
       }),
-      tap(() => (this.isLoading = false, console.log("Retrieved VmModel")))
+      tap(() => (this.isLoading = false, console.log("Retrieved VmModel"))),
+      shareReplay(1)
     )
 
     this.studentVmInstances$ = this.currentActiveTeam$.pipe(
@@ -181,8 +187,10 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
           return of<VmInstance[]>([]);
         }
       }),
-      tap(() => (this.isLoading = false, console.log("Retrieved team's VmInstances")))
+      tap(() => (this.isLoading = false, console.log("Retrieved team's VmInstances"))),
+      shareReplay(1)
     )
+    
   }
 
   createTeam(proposal: TeamProposal) {

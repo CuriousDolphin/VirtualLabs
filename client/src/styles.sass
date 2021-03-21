@@ -2,7 +2,7 @@ body, html
     height: 100%
     margin: 0
 .tab-container
-    height: calc(100vh - 174px)
+    height: calc(100vh - 110px)
     overflow: auto
 .ml-1
     margin-left: 8px
@@ -22,7 +22,7 @@ table
     bottom: 0
     left: 0
     right: 0
-    background-color: #ffffffad
+    background-color: #FFFFFF
     display: flex
     justify-content: center
     align-items: center
@@ -75,3 +75,35 @@ table
     -webkit-overflow-scrolling: touch
     background-color: #198bbf
     color: white
+
+.absolute-container
+    position: absolute
+    top: 0
+    bottom: 0
+    left: 0
+    right: 0
+    z-index: 0
+
+.my-list
+    overflow: auto
+    height: 400px
+
+.mat-drawer-content
+    position: absolute
+    z-index: 1
+    display: block
+    height: 100%
+    /* overflow: auto; */
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0
+    overflow: hidden
+.active
+    color: #ff9800!important
+
+.white
+    color: rgb(255 255 255 / 87%)
+
+.hidden
+    visibility: hidden
