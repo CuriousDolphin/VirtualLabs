@@ -158,6 +158,13 @@ export class CourseService {
       .pipe(catchError((e) => this.handleError(e)))
   }
 
+  getPaper(paperId: number): Observable<Paper> {
+    const url = BASE_PATH + "courses/" + "papers/" + paperId
+    return this.http
+    .get<Paper>(url)
+    .pipe(catchError((e) => this.handleError(e)))
+  }
+
   addPapersnapshot(paperId: Number, formData: SolutionFormData) {
     const url = BASE_PATH + "courses/" + "assignments/" + "papers/" + paperId + "/papersnapshots" + "/addPapersnapshot"
     return this.http

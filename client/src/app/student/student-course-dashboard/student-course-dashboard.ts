@@ -17,6 +17,7 @@ import * as _ from 'lodash';
 import { Assignment } from "src/app/models/assignment.model";
 import { Paper } from "src/app/models/paper.model";
 import { StudentAssignment } from "src/app/models/studentAssignment.model";
+import { PaperSnapshot } from "src/app/models/papersnapshot.model";
 
 @Component({
   selector: "app-course-dashboard",
@@ -45,11 +46,14 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   private createVmSubscription: Subscription;
   private editVmSubscription: Subscription;
   private updatePaperSubscription: Subscription;
+  private papersnapshotSubscription: Subscription;
   currentCourse: Course;
   currentVmModel$: Observable<VmModel>;
   currentCourse$: Observable<Course>;
+  currentAssignment$: Observable<StudentAssignment>;
   studentTeams$: Observable<Team[]>;
   studentAssignments$: Observable<StudentAssignment[]>;
+  studentPaperSnapshots$: Observable<PaperSnapshot[]>;
   studentPapers$: Observable<Paper[]>;
   studentVmInstances$: Observable<VmInstance[]>;
   studentsNotInTeams$: Observable<Student[]>;
@@ -224,6 +228,37 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       );
   }
 
+  getAssignment(assignmentId: number) {
+    this.isLoading = true
+   this.currentAssignment$ = this.studentService.getStudentAssignment(assignmentId, this.authService.getUserId()).pipe(
+     tap(() => this.isLoading = false)
+   )
+  }
+
+  getAllPapersnapshotsForAssignment(assignmentId: number) {
+    this.isLoading = true;
+    this.getAssignment(assignmentId)
+    this.studentPaperSnapshots$ = this.studentService
+      .getAllPapersSnapshotForAssignmentAndForStudent(assignmentId, this.authService.getUserId()).pipe(
+        tap(() => {
+          this.isLoading = false;
+        })
+      )
+  }
+
+  addPapersnapshotForAssignmentAndStudent(data: { paperSnapshot: PaperSnapshot, assignmentId: number }) {
+    if (this.papersnapshotSubscription) this.papersnapshotSubscription.unsubscribe();
+
+    this.isLoading = true;
+    console.log("addPapersnapshotForAssignmentAndStudent")
+    this.papersnapshotSubscription = this.studentService
+      .addPapersnapshotForAssignmentAndStudent(data.assignmentId, this.authService.getUserId(), data.paperSnapshot)
+      .subscribe((result) => {
+        this.isLoading = false;
+        this.getAllPapersnapshotsForAssignment(data.assignmentId)
+      })
+  }
+
   rejectTeam(team: Team) {
     if (this.rejectTeamSubscription) this.rejectTeamSubscription.unsubscribe();
 
@@ -354,11 +389,11 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       .updatePaperStatus(this.authService.getUserId(), data.assignmentId, data.status)
       .subscribe(
         (data) => {
-          this.toastService.success("Paper update success! \n");
+          this.toastService.success("Confirmed reading! \n");
           this._reloadAssignments()
         },
         (error) => {
-          this.toastService.error("Error paper udpate! \n");
+          this.toastService.error("Error! \n");
           this._reloadAssignments()
         }
       )

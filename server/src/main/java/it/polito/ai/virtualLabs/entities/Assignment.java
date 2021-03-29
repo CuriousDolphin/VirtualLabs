@@ -19,6 +19,7 @@ public class Assignment {
     @Id
     @GeneratedValue
     private Long id;
+    private String title;
     private Timestamp releaseDate;
     private Timestamp expiryDate;
     @Lob
@@ -57,6 +58,6 @@ public class Assignment {
 
     @Override
     public String toString(){
-        return this.id+"_"+this.releaseDate+"_"+this.expiryDate+"_"+this.content+"_"+this.course.getName();
+        return this.id+"_"+this.title+"_"+this.releaseDate+"_"+this.expiryDate+"_"+this.content+"_"+this.course.getName();
     }
 }

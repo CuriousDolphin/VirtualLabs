@@ -1,5 +1,6 @@
 <div class="container">
 
+  <!-- 
   <mat-card style="margin-bottom: 22px;">
     <mat-card-header fxLayout="row" fxLayoutAlign="space-between stretch">
       <mat-card-title>Filters</mat-card-title>
@@ -13,7 +14,7 @@
       </div>
     </mat-card-content>
   </mat-card>
-
+  -->
   <table mat-table [dataSource]="dataSource" class="elevation-z6" matSort>
 
     <ng-container matColumnDef="id">
@@ -28,6 +29,11 @@
       </th>
       <td mat-cell *matCellDef="let paper">
         <mat-icon *ngIf="paper.status === 'null'">mark_email_unread</mat-icon>
+        <mat-icon *ngIf="paper.status === 'readed'">mark_email_read</mat-icon>
+        <mat-icon *ngIf="paper.status === 'submitted' && paper.vote === null">assignment_returned</mat-icon>
+        <mat-icon *ngIf="paper.status === 'reviewed'">assignment_return</mat-icon>
+        <mat-icon *ngIf="paper.status === 'submitted' && paper.vote !== null">assignment_turned_in</mat-icon>
+        <mat-icon *ngIf="paper.status === 'closed'">assignment_late</mat-icon>
       </td>
     </ng-container>
 

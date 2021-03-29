@@ -59,6 +59,8 @@
       <app-assignment 
       [assignments]="assignments$ | async"
       [papers]="papers$ | async"
+      [currentPaper]="currentPaper$ | async"
+      [currentAssignment]="currentAssignment$ | async"
       [papersnapshots]= "papersnapshots$ | async"
       (assignmentClickedEvent)="getAllPapersForAssignment($event)"
       (paperClickedEvent)="getAllPapersnapshotsForPaper($event)"

@@ -4,6 +4,7 @@ import { Paper } from 'src/app/models/paper.model';
 import { formatDate } from '@angular/common'
 import { MatSort, Sort } from "@angular/material/sort";
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Assignment } from 'src/app/models/assignment.model';
 
 @Component({
   selector: 'app-assignment-paper',
@@ -22,10 +23,21 @@ export class AssignmentPaperComponent implements OnInit {
 
   colsToDisplay = ["studentId", "studentName", "studentLastName", "status", "lastUpdateTime"]
   dataSource = new MatTableDataSource<Paper>()
+  currentAssignment: Assignment
+
   @Input() set papersData(papers: Paper[]) {
     if (papers != null) {
       this.dataSource.data = papers
     }
+  }
+
+  @Input() set assignment(assignment: Assignment) {
+    if (assignment != null){
+      this.currentAssignment = assignment
+      //console.log("assignment: ",assignment)
+    }
+      
+
   }
 
   unreaded: boolean = true;
@@ -52,7 +64,7 @@ export class AssignmentPaperComponent implements OnInit {
   openFilterDialog() {
     const filterIconOffset = this.filterIcon.nativeElement.getBoundingClientRect()
     const dialogRef = this.dialog.open(FilterDialog, {
-      data: { 
+      data: {
         unreaded: this.unreaded,
         readed: this.readed,
         submitted: this.submitted,

@@ -68,6 +68,28 @@ public class StudentController {
         }
     }
 
+    @GetMapping("/{id}/assignment/{assignmentId}")
+    StudentAssignmentDTO getStudentAssignment(@PathVariable("assignmentId") Long assignmentId, @PathVariable("id") String studentId) {
+        try {
+            return this.teamService.getStudentAssignment(assignmentId, studentId);
+        } catch (AssignmentNotFoundException assignmentNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, assignmentId.toString());
+        } catch (StudentNotFoundException studentNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, studentId);
+        }
+    }
+
+    @GetMapping("/{id}/assignment/{assignmentId}/paperSnapshots")
+    List<PaperSnapshotDTO> getAllPaperSnapshotsForAssignmentAndForStudent(@PathVariable("assignmentId") Long assignmentId, @PathVariable("id") String studentId) {
+        try {
+            return teamService.getAllPapersnapshotsForAssignmentAndForStudent(assignmentId, studentId);
+        } catch (AssignmentNotFoundException assignmentNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, assignmentId.toString());
+        } catch (StudentNotFoundException studentNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, studentId);
+        }
+    }
+
     @PutMapping("/{id}/assignment/{assignmentId}/updatePaperStatus")
     PaperDTO updatePaperStatus(@PathVariable("id") String studentId, @PathVariable("assignmentId") Long assignmentId, @RequestBody String status) {
         try {
@@ -86,6 +108,18 @@ public class StudentController {
             return teamService.getAllPaperForCourseAndForStudent(courseName, studentId);
         } catch (CourseNotFoundException courseNotFoundException) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, courseName);
+        } catch (StudentNotFoundException studentNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, studentId);
+        }
+    }
+
+    @PostMapping("{id}/assignment/{assignmentId}/addPaperSnapshot")
+    @ResponseStatus(HttpStatus.CREATED)
+    PaperSnapshotDTO addPaperSnapshotForAssignmentAndForStudent(@PathVariable("id") String studentId, @PathVariable("assignmentId") Long assignmentId, @RequestBody PaperSnapshotDTO paperSnapshotDTO) {
+        try {
+            return teamService.addPaperSnapshotForAssignmentAndForStudent(paperSnapshotDTO, assignmentId, studentId);
+        } catch (AssignmentNotFoundException assignmentNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, assignmentId.toString());
         } catch (StudentNotFoundException studentNotFoundException) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, studentId);
         }

@@ -16,6 +16,7 @@ import { VmModel } from '../models/vm-model.model';
 import { Assignment } from "../models/assignment.model";
 import { Paper } from "../models/paper.model";
 import { StudentAssignment } from "../models/studentAssignment.model";
+import { PaperSnapshot } from "../models/papersnapshot.model";
 
 const BASE_PATH = environment.apiUrl;
 const IMG_PATH = 'assets/VM_images/';
@@ -53,10 +54,31 @@ export class StudentService {
       .pipe(catchError((e) => this.handleError(e)));
   }
 
+  getStudentAssignment(assignmentId: number, studentId: string): Observable<StudentAssignment> {
+    const url = BASE_PATH + "students/" + studentId + "/assignment/" + assignmentId
+    return this.http
+      .get<StudentAssignment>(url)
+      .pipe(catchError((e) => this.handleError(e)))
+  }
+
   getAllPapersForCourseAndForStudent(courseName: string, studentId: string): Observable<Paper[]> {
     const url = BASE_PATH + "students/" + studentId + "/course" + courseName + "/papers"
     return this.http
       .get<Paper[]>(url)
+      .pipe(catchError((e) => this.handleError(e)))
+  }
+
+  getAllPapersSnapshotForAssignmentAndForStudent(assignmentId: number, studentId: string): Observable<PaperSnapshot[]> {
+    const url = BASE_PATH + "students/" + studentId + "/assignment/" + assignmentId + "/paperSnapshots"
+    return this.http
+      .get<PaperSnapshot[]>(url)
+      .pipe(catchError((e) => this.handleError(e)))
+  }
+
+  addPapersnapshotForAssignmentAndStudent(assignmentId: number, studentId: string, paperSnapshot: PaperSnapshot): Observable<PaperSnapshot> {
+    const url = BASE_PATH + "students/" + studentId + "/assignment/" + assignmentId + "/addPaperSnapshot"
+    return this.http
+      .post<PaperSnapshot>(url, paperSnapshot)
       .pipe(catchError((e) => this.handleError(e)))
   }
 

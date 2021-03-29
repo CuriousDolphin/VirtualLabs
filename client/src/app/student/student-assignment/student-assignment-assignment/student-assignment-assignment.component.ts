@@ -5,6 +5,7 @@ import { Assignment } from 'src/app/models/assignment.model';
 import { formatDate } from '@angular/common'
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { StudentAssignment } from 'src/app/models/studentAssignment.model';
 
 @Component({
   selector: 'app-student-assignment-assignment',
@@ -23,7 +24,7 @@ export class StudentAssignmentAssignmentComponent implements OnInit {
 
   @ViewChild(MatSort, { static: true }) sort: MatSort
 
-  colsToDisplay = ["content", "releaseDate", "expiryDate"]
+  colsToDisplay = ["title", "content", "releaseDate", "expiryDate"]
   dataSource = new MatTableDataSource<Assignment>();
 
   @Input() set assignmentsData(assignments: Assignment[]) {
@@ -32,6 +33,7 @@ export class StudentAssignmentAssignmentComponent implements OnInit {
     }
   }
   @Output() confirmReadClickedEvent = new EventEmitter<{assignmentId: number, status: String}>();
+  @Output() clickAssignmentEvent = new EventEmitter<number>();
 
   format(date) {
     return formatDate(date, 'EEEE, MMMM d, y, h:mm:ss a', 'en-US', 'GMT+1')
@@ -39,6 +41,14 @@ export class StudentAssignmentAssignmentComponent implements OnInit {
 
   renderTrustImage(base64: string) {
     return this.domSanitizer.bypassSecurityTrustUrl(base64)
+  }
+
+  clickAssignment(assignment: StudentAssignment) {
+    if(assignment.status === "null") {
+      this.openImage(assignment.content, assignment.id, assignment.status)
+    } else {
+      this.clickAssignmentEvent.emit(assignment.id)
+    }
   }
 
   openImage(src, assignmentId: number, status: String) {

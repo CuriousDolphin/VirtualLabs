@@ -45,7 +45,11 @@
   <mat-tab label="Assignment">
     <app-student-assignment
     [studentAssignments]="studentAssignments$ | async"
-    (updatePaperStatusEvent)="updatePaperStatusByAssignmentAndStudent($event)"></app-student-assignment>
+    [studentPaperSnapshots]="studentPaperSnapshots$ | async"
+    [currentAssignment]="currentAssignment$ | async"
+    (updatePaperStatusEvent)="updatePaperStatusByAssignmentAndStudent($event)"
+    (assignmentClickedEvent)="getAllPapersnapshotsForAssignment($event)"
+    (solutionSubmittedEvent)="addPapersnapshotForAssignmentAndStudent($event)"></app-student-assignment>
   </mat-tab>
 </mat-tab-group>
 

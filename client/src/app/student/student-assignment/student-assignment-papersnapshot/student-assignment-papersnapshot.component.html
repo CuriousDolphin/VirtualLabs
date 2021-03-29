@@ -1,8 +1,8 @@
 <div class="container">
-  <ng-container *ngIf="canUploadSolution()">
+  <ng-container *ngIf="canUpload()">
     <mat-card style="margin-bottom: 22px;">
       <mat-card-header fxLayout="row" fxLayoutAlign="space-between stretch">
-        <mat-card-title>Upload correction or give vote</mat-card-title>
+        <mat-card-title>Upload solution</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <div class="p-16">
@@ -11,27 +11,17 @@
             <div fxLayout="column">
               <div fxLayout="row" fxLayoutAlign="start center">
 
-                <mat-form-field appearance="outline">
-                  <mat-label>Vote</mat-label>
-                  <input matInput type="number" formControlName="vote" min="1" max="30">
-                  <span matSuffix>/ 30</span>
-                  <mat-error *ngIf="formGroup.controls['vote'].invalid"></mat-error>
-                </mat-form-field>
+                <label for="input-file-id" id="upload-button">
+                  <mat-icon mat-icon color="primary" style="padding: 8px">add_a_photo</mat-icon>
+                </label>
+                <input id="input-file-id" accept="image/*" (change)="onFileChange($event)" style="display: none;"
+                  type="file" formControlName="solutionFile">
 
-                  <label for="input-file-id" id="upload-button">
-                    <mat-icon mat-icon color="primary" style="padding: 8px">add_a_photo</mat-icon>
-                  </label>
-                  <input id="input-file-id" accept="image/*" (change)="onFileChange($event)" style="display: none;"
-                    type="file" formControlName="solutionFile">
-
-                  <mat-checkbox [formControl]="toReviewControl" (change)="toggleVote($event)" color="primary">To review
-                  </mat-checkbox>
-
-                  <img [src]="imageSrc" *ngIf="imageSrc" style="height: 200px; width:320px; vertical-align: middle;">
+                <img [src]="imageSrc" *ngIf="imageSrc" style="height: 200px; width:320px; vertical-align: middle;">
               </div>
               <div fxLayout="column" fxLayoutAlign="end end">
                 <button mat-button color="accent" type="submit" [disabled]="!formGroup.valid" class="radius-20">
-                  <mat-icon> insert_drive_file</mat-icon>Add
+                  <mat-icon>insert_drive_file</mat-icon>Add
                 </button>
               </div>
             </div>
@@ -40,6 +30,7 @@
       </mat-card-content>
     </mat-card>
   </ng-container>
+
   <table mat-table [dataSource]="dataSource" class="elevation-z6" matSort>
 
     <ng-container matColumnDef="id">

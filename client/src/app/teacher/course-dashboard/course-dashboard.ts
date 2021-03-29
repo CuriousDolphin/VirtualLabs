@@ -49,6 +49,8 @@ export class CourseDashboard implements OnInit, OnDestroy {
   enrolledStudents$: Observable<Student[]>;
   assignments$: Observable<Assignment[]>
   papers$: Observable<Paper[]>
+  currentPaper$: Observable<Paper>;
+  currentAssignment$: Observable<Assignment>
   papersnapshots$: Observable<PaperSnapshot[]>
   courseTeams$: Observable<Team[]>;
   courseVmInstances$: Observable<VmInstance[]>;
@@ -273,6 +275,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
 
   getAllPapersForAssignment(assignmentId: number) {
     this.isLoading = true
+    this.currentAssignment$ = this.courseService.getAssignment(assignmentId)
     this.papers$ = this.courseService
       .getAllPapersForAssignment(assignmentId)
       .pipe(
@@ -280,9 +283,16 @@ export class CourseDashboard implements OnInit, OnDestroy {
       )
   }
 
-  getAllPapersnapshotsForPaper(paperId: number) {
-    console.log(paperId)
+  getCurrentPaper(paperId: number) {
     this.isLoading = true
+    this.currentPaper$ = this.courseService.getPaper(paperId).pipe(
+      tap(() => this.isLoading = false)
+    )
+  }
+
+  getAllPapersnapshotsForPaper(paperId: number) {
+    this.isLoading = true
+    this.getCurrentPaper(paperId)
     this.papersnapshots$ = this.courseService
       .getAllPapersnapshotsForPaper(paperId)
       .pipe(
