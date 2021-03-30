@@ -17,6 +17,11 @@
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker disabled="false"></mat-datepicker>
               </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Title</mat-label>
+                <input matInput formControlName="title">
+              </mat-form-field>
 
               <label for="input-file-id" id="upload-button">
                 <mat-icon mat-icon color="primary" style="padding: 8px">add_a_photo</mat-icon>
@@ -41,6 +46,11 @@
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
       <td mat-cell *matCellDef="let assignment">{{assignment.id}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
+      <td mat-cell *matCellDef="let assignment">{{assignment.title}}</td>
     </ng-container>
 
     <ng-container matColumnDef="content">

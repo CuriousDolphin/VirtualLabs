@@ -227,6 +227,16 @@ public class CourseController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Assignment not found");
         }
     }
+
+    @GetMapping("/papers/{id}")
+    PaperDTO getPaper(@PathVariable("id") Long paperId) {
+        try {
+            return teamService.getPaper(paperId);
+        } catch (PaperNotFoundException paperNotFoundException) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Paper nof found");
+        }
+    }
+
     @GetMapping("/{name}/assignments")
     List<AssignmentDTO> getAllAssignmentsForCourse(@PathVariable("name") String courseName) {
         try {

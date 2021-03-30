@@ -17,6 +17,7 @@ export class AssignmentAssignmentComponent implements OnInit {
   tomorrow: String;
   imageSrc: ArrayBuffer;
   formGroup: FormGroup;
+  titleControl = new FormControl(null, [Validators.required])
   expiryDateControl = new FormControl(null, [Validators.required])
   assignmentFileControl = new FormControl(null, [Validators.required])
   assignmentFileSourceControl = new FormControl(null, [Validators.required])
@@ -29,6 +30,7 @@ export class AssignmentAssignmentComponent implements OnInit {
 
   ) { 
     this.formGroup = formBuilder.group({
+      title: this.titleControl,
       expiryDate: this.expiryDateControl,
       assignmentFile: this.assignmentFileControl,
       assignmentFileSource: this.assignmentFileSourceControl
@@ -40,7 +42,7 @@ export class AssignmentAssignmentComponent implements OnInit {
 
   @ViewChild(MatSort, { static: true }) sort: MatSort
 
-  colsToDisplay = ["content", "releaseDate", "expiryDate"]
+  colsToDisplay = ["title", "content", "releaseDate", "expiryDate"]
   dataSource = new MatTableDataSource<Assignment>();
   @Input() set assignmentsData(assignments: Assignment[]) {
     if (assignments != null) {
@@ -97,6 +99,7 @@ export class AssignmentAssignmentComponent implements OnInit {
 
     const assignment: Assignment = {
       id: null,
+      title: this.formGroup.controls["title"].value,
       releaseDate: new Date(),
       expiryDate: this.formGroup.controls["expiryDate"].value,
       content: this.formGroup.controls["assignmentFileSource"].value

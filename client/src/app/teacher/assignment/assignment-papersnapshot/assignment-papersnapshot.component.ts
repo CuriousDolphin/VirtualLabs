@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, Inject} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, Inject } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { PaperSnapshot } from 'src/app/models/papersnapshot.model';
 import { formatDate } from '@angular/common'
@@ -7,6 +7,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { SolutionFormData } from 'src/app/models/formPaperSnapshotData.model';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Paper } from 'src/app/models/paper.model';
 
 
 @Component({
@@ -18,11 +19,12 @@ export class AssignmentPapersnapshotComponent implements OnInit {
 
   imageSrc: ArrayBuffer;
   formGroup: FormGroup;
-  toReviewControl = new FormControl(true)
+  currentPaper: Paper;
+  toReviewControl = new FormControl({value: false, disabled: this.toReviewDisabled()})
   voteControl = new FormControl({ value: 1, disabled: this.toReviewControl.value }, [Validators.min(1), Validators.max(30)])
-  solutionFileControl = new FormControl(null, [Validators.required])
-  solutionFileSourceControl = new FormControl(null, [Validators.required])
-  
+  solutionFileControl = new FormControl({value: null, disabled: !this.toReviewControl.value}, [Validators.required])
+  solutionFileSourceControl = new FormControl({value: null, disabled: !this.toReviewControl.value}, [Validators.required])
+
   constructor(
     private formBuilder: FormBuilder,
     private changeDetector: ChangeDetectorRef,
@@ -45,7 +47,17 @@ export class AssignmentPapersnapshotComponent implements OnInit {
       this.dataSource.data = papersnapshots
   }
 
+  @Input() set paper(paper: Paper) {
+    if (paper != null) {
+      //console.log(paper)
+      this.currentPaper = paper
+    }
+
+  }
+
   @Output() submitSolutionEvent = new EventEmitter<SolutionFormData>();
+
+
 
   format(date) {
     return formatDate(date, 'EEEE, MMMM d, y, h:mm:ss a', 'en-US', 'GMT+1')
@@ -55,8 +67,18 @@ export class AssignmentPapersnapshotComponent implements OnInit {
   }
 
   toggleVote(event: MatCheckboxChange) {
-    const control = this.formGroup.get("vote")
-    event.checked ? control.disable() : control.enable()
+    const voteControl = this.formGroup.get("vote")
+    const solutionFileControl = this.formGroup.get("solutionFile")
+    const solutionFileSourceControl = this.formGroup.get("solutionFileSource")
+    if (event.checked) { //toReview
+      voteControl.disable()
+      solutionFileControl.enable()
+      solutionFileSourceControl.enable()
+    } else { // final vote
+      voteControl.enable()
+      solutionFileControl.disable()
+      solutionFileSourceControl.disable()
+    }
   }
 
   onFileChange(event) {
@@ -88,6 +110,17 @@ export class AssignmentPapersnapshotComponent implements OnInit {
     });
   }
 
+  canUploadSolution() {
+    return (
+      this.currentPaper.vote === null && 
+      ((this.currentPaper.status === 'submitted') || (this.currentPaper.status === 'closed'))
+      )
+  }
+
+  toReviewDisabled() {
+    return (this.currentPaper && this.currentPaper.status === 'closed') 
+  }
+
   onSubmit(): void {
 
     //const splittedPath = this.formGroup.controls["solutionFile"].value.split("\\")
@@ -103,6 +136,8 @@ export class AssignmentPapersnapshotComponent implements OnInit {
       vote: this.formGroup.controls["vote"].value,
       papersnapshot: papersnapshot
     }
+
+    //console.log(solutionFormData)
 
     this.submitSolutionEvent.emit(solutionFormData)
   }
