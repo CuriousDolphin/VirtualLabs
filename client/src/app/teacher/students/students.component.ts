@@ -95,7 +95,7 @@ export class StudentsComponent implements OnInit {
     if (value) {
       const tmp = value.toLowerCase();
       return _.chain(this.allStudents)
-        .filter((student: Student) => student.name.toLowerCase().includes(tmp))
+        .filter((student: Student) => student.name.toLowerCase().includes(tmp) || student.id.toLowerCase().includes(tmp) || student.lastName.toLowerCase().includes(tmp))
         .value();
     }
   }

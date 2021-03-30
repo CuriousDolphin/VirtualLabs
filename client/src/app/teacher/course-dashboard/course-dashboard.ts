@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BehaviorSubject, combineLatest, Observable, Subscription } from "rxjs";
-import { switchMap, tap, map } from "rxjs/operators";
+import { switchMap, tap, map, shareReplay } from "rxjs/operators";
 import { Assignment } from 'src/app/models/assignment.model';
 import { Course } from "src/app/models/course.model";
 import { Student } from "src/app/models/student.model";
@@ -93,7 +93,8 @@ export class CourseDashboard implements OnInit, OnDestroy {
       }),
       tap((course) => {
         this.currentCourse = course;
-      })
+      }),
+      shareReplay(1)
     );
 
     this.courseTeams$ = this.currentCourse$.pipe(
@@ -105,7 +106,8 @@ export class CourseDashboard implements OnInit, OnDestroy {
         () => (
           (this.isLoading = false), console.log("Retrieved course's teams")
         )
-      )
+      ),
+      shareReplay(1)
     );
 
     
@@ -130,7 +132,8 @@ export class CourseDashboard implements OnInit, OnDestroy {
       }),
       tap(
         () => ((this.isLoading = false), console.log("Retrieved courseVmModel"))
-      )
+      ),
+      shareReplay(1)
     );
 
     this.enrolledStudents$ = combineLatest([
@@ -142,7 +145,8 @@ export class CourseDashboard implements OnInit, OnDestroy {
         if (course && course.name)
           return this.studentService.getEnrolledStudents(course.name);
       }),
-      tap(() => (this.isLoading = false))
+      tap(() => (this.isLoading = false)),
+      shareReplay(1)
     );
 
     this.assignments$ = combineLatest([
@@ -155,8 +159,10 @@ export class CourseDashboard implements OnInit, OnDestroy {
           return this.courseService.getAllAssignments(course.name);
       }
       ),
-      tap(() => (this.isLoading = false))
+      tap(() => (this.isLoading = false)),
+      shareReplay(1)
     );
+
   }
 
   toggleForMenuClick() {

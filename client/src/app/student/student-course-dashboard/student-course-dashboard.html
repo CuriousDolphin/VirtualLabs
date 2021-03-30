@@ -1,4 +1,4 @@
-<div class="loader" *ngIf="isLoading">
+<div class="loader" [ngClass]='{"hidden":!isLoading}' >
   <mat-spinner></mat-spinner>
 </div>
 <mat-toolbar *ngIf="currentCourse$ | async" style="color: rgb(32 32 32 / 87%);background-color: white;">
@@ -29,12 +29,12 @@
   <mat-tab label="Teams">
     <!--only this scroll-->
     <div class="tab-container">
-      <app-teams [studentId]="studentId" [currentCourse]="currentCourse.name" [teams]="studentTeams$ | async"
+      <app-teams [studentId]="studentId" [currentCourse]="currentCourse" [teams]="studentTeams$ | async"
         [studentsNotInTeams]="studentsNotInTeams$ | async" (createTeam)="createTeam($event)"
         (confirmTeam)="confirmTeam($event)" (rejectTeam)="rejectTeam($event)"></app-teams>
     </div>
   </mat-tab>
-  <mat-tab label="VM">
+  <mat-tab label="VMs">
     <div class="tab-container">
       <app-vms-student [studentId]="studentId" [course]="currentCourse.name" [courseAc]="currentCourse.acronym"
         [vmInstances]="studentVmInstances$ | async" [teams]="studentTeams$ | async" [vmModel]="currentVmModel$ | async"

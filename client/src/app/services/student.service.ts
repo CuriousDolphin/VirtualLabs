@@ -19,7 +19,7 @@ import { StudentAssignment } from "../models/studentAssignment.model";
 import { PaperSnapshot } from "../models/papersnapshot.model";
 
 const BASE_PATH = environment.apiUrl;
-const IMG_PATH = 'assets/VM_images/';
+const IMG_PATH = '/assets/VM_images/';
 
 @Injectable({
   providedIn: "root",
