@@ -100,7 +100,6 @@ export class AssignmentComponent implements OnInit {
         returnValue = ""
         break
     }
-    console.log("returnValue:", returnValue)
     return returnValue
   }
 
