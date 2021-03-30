@@ -7,6 +7,7 @@ import { MatSort } from '@angular/material/sort';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { StudentAssignment } from 'src/app/models/studentAssignment.model';
+import { StudentImageDialog } from '../student-assignment-assignment/student-assignment-assignment.component';
 
 @Component({
   selector: 'app-student-assignment-papersnapshot',
@@ -104,21 +105,5 @@ export class StudentAssignmentPapersnapshotComponent implements OnInit {
       && new Date(this.currAssignment.expiryDate) > new Date())
     return value
 
-  }
-}
-
-@Component({
-  selector: "student-image-dialog",
-  templateUrl: "../student-image-dialog.html"
-})
-export class StudentImageDialog {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
-
-  }
-
-  @Output() clickConfirmReadEvent = new EventEmitter<number>()
-
-  onConfirmClick() {
-    this.clickConfirmReadEvent.emit()
   }
 }
