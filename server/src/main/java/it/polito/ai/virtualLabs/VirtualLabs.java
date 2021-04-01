@@ -84,7 +84,7 @@ public class VirtualLabs {
                             .build());
                 }
 
-                generateMockData(
+                /*generateMockData(
                         teamRepository,
                         vmInstanceRepository,
                         courseRepository,
@@ -96,7 +96,7 @@ public class VirtualLabs {
                         notificationService,
                         tokenTeamRepository,
                         teacherRepository);
-
+                */
                 System.out.println("Printing all users:");
                 userRepository.findAll().forEach(v ->  System.out.println(" - User: " + v.toString()));
                 System.out.println("Printing all courses:");
