@@ -10,6 +10,7 @@ services:
       - MYSQL_DATABASE=db_test
     volumes:
       - ./db/db_data:/var/lib/mysql
+      - ./db_init:/docker-entrypoint-initdb.d
   spring:
     build: ./server/
     container_name: virtualLabs-backend
