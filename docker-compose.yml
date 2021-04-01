@@ -3,8 +3,8 @@ services:
   mariadb:
     image: mariadb:latest
     container_name: virtualLabs-db
-    #ports:
-    # - "3306:3306"
+    ports:
+     - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=pwd
       - MYSQL_DATABASE=db_test
