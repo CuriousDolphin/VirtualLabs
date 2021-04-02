@@ -12,6 +12,8 @@ import { PaperSnapshot } from 'src/app/models/papersnapshot.model';
 export class AssignmentComponent implements OnInit {
   assignmentsData = []
   papersData = []
+  currPaper: Paper
+  currAssignment: Assignment
   papersnapshotsData = []
   toShowLevel: number
   currentAssignmentId: number
@@ -32,6 +34,18 @@ export class AssignmentComponent implements OnInit {
     if (papersnapshots != null) {
       this.papersnapshotsData = papersnapshots
     }
+  }
+
+  @Input() set currentPaper(paper: Paper) {
+    console.log("paper corrente:", paper)
+    if (paper != null) {
+      this.currPaper = paper
+    }
+  }
+
+  @Input() set currentAssignment(assignment: Assignment) {
+    if (assignment != null)
+      this.currAssignment = assignment
   }
 
   @Output() assignmentClickedEvent = new EventEmitter<number>()
@@ -66,10 +80,27 @@ export class AssignmentComponent implements OnInit {
   }
 
   solutionSubmitted(formData: SolutionFormData) {
+    //console.log(formData)
     this.solutionSubmittedEvent.emit({
       solutionFormData: formData,
       paperId: this.currentPaperId
     })
+  }
+
+  breadCrumbHelper(type: string) {
+    let returnValue
+    switch (type) {
+      case "assignment":
+        returnValue = this.toShowLevel > 0 && this.currAssignment ? "(" + this.currAssignment.title + ")" : ""
+        break
+      case "paper":
+        returnValue = this.toShowLevel > 1 && this.currPaper ? "(" + this.currPaper.student.id + ")" : ""
+        break
+      default:
+        returnValue = ""
+        break
+    }
+    return returnValue
   }
 
 }

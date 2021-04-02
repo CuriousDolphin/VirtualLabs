@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, Inject} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, Inject } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { PaperSnapshot } from 'src/app/models/papersnapshot.model';
 import { formatDate } from '@angular/common'
@@ -7,6 +7,8 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { SolutionFormData } from 'src/app/models/formPaperSnapshotData.model';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Paper } from 'src/app/models/paper.model';
+import { BehaviorSubject } from 'rxjs';
 
 
 @Component({
@@ -18,11 +20,12 @@ export class AssignmentPapersnapshotComponent implements OnInit {
 
   imageSrc: ArrayBuffer;
   formGroup: FormGroup;
-  toReviewControl = new FormControl(true)
+  _currentPaper = new BehaviorSubject<Paper>(null);
+  toReviewControl = new FormControl({value: false, disabled: false})
   voteControl = new FormControl({ value: 1, disabled: this.toReviewControl.value }, [Validators.min(1), Validators.max(30)])
-  solutionFileControl = new FormControl(null, [Validators.required])
-  solutionFileSourceControl = new FormControl(null, [Validators.required])
-  
+  solutionFileControl = new FormControl({value: null, disabled: !this.toReviewControl.value}, [Validators.required])
+  solutionFileSourceControl = new FormControl({value: null, disabled: !this.toReviewControl.value}, [Validators.required])
+
   constructor(
     private formBuilder: FormBuilder,
     private changeDetector: ChangeDetectorRef,
@@ -45,18 +48,50 @@ export class AssignmentPapersnapshotComponent implements OnInit {
       this.dataSource.data = papersnapshots
   }
 
+  @Input() set paper(paper: Paper) {
+    if (paper != null) {
+      this._currentPaper.next(paper)
+      if (paper.status === "closed") {
+        const toReviewControl = this.formGroup.get("toReview")
+        toReviewControl.setValue(false)
+        toReviewControl.disable()
+      }
+    }
+  }
+
+  get paper() {
+    return this._currentPaper.getValue()
+  }
+
   @Output() submitSolutionEvent = new EventEmitter<SolutionFormData>();
+
+
 
   format(date) {
     return formatDate(date, 'EEEE, MMMM d, y, h:mm:ss a', 'en-US', 'GMT+1')
   }
 
   ngOnInit(): void {
+    this._currentPaper.subscribe()
+  }
+
+  ngOnDestroy(): void {
+    this._currentPaper.unsubscribe()
   }
 
   toggleVote(event: MatCheckboxChange) {
-    const control = this.formGroup.get("vote")
-    event.checked ? control.disable() : control.enable()
+    const voteControl = this.formGroup.get("vote")
+    const solutionFileControl = this.formGroup.get("solutionFile")
+    const solutionFileSourceControl = this.formGroup.get("solutionFileSource")
+    if (event.checked) { //toReview
+      voteControl.disable()
+      solutionFileControl.enable()
+      solutionFileSourceControl.enable()
+    } else { // final vote
+      voteControl.enable()
+      solutionFileControl.disable()
+      solutionFileSourceControl.disable()
+    }
   }
 
   onFileChange(event) {
@@ -88,6 +123,18 @@ export class AssignmentPapersnapshotComponent implements OnInit {
     });
   }
 
+  canUploadSolution() {
+    return (
+      this.paper.vote === null && 
+      ((this.paper.status === 'submitted') || (this.paper.status === 'closed'))
+      )
+  }
+
+  toReviewDisabled() {
+    console.log("entro:", this.paper)
+    return (this.paper && this.paper.status === 'closed') 
+  }
+
   onSubmit(): void {
 
     //const splittedPath = this.formGroup.controls["solutionFile"].value.split("\\")
@@ -103,6 +150,8 @@ export class AssignmentPapersnapshotComponent implements OnInit {
       vote: this.formGroup.controls["vote"].value,
       papersnapshot: papersnapshot
     }
+
+    //console.log(solutionFormData)
 
     this.submitSolutionEvent.emit(solutionFormData)
   }

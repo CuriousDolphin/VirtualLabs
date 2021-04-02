@@ -2,6 +2,7 @@ package it.polito.ai.virtualLabs.services;
 
 import it.polito.ai.virtualLabs.dtos.*;
 import it.polito.ai.virtualLabs.entities.Paper;
+import it.polito.ai.virtualLabs.entities.PaperSnapshot;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -86,14 +87,25 @@ public interface TeamService {
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or hasRole('ROLE_STUDENT')")
     List<StudentDTO> getAvailableStudents(String courseName);
 
+
+    /* Assignments methods */
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     AssignmentDTO getAssignment(Long assignmentId);
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT')")
+    StudentAssignmentDTO getStudentAssignment(Long assignmentId, String studentId);
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or hasRole('ROLE_STUDENT')")
+    PaperDTO getPaper(Long paperId);
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     List<AssignmentDTO> getAllAssignmentsForCourse(String courseName);
 
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or hasRole('ROLE_STUDENT')")
     List<StudentAssignmentDTO> getAllAssignmentsForCourseAndForStudent(String courseName, String studentId);
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or hasRole('ROLE_STUDENT')")
+    List<PaperSnapshotDTO> getAllPapersnapshotsForAssignmentAndForStudent(Long assignmentId, String studentId);
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF') or hasRole('ROLE_STUDENT')")
     PaperDTO updatePaperStatus(Long assignmentId, String studentId, String status);
@@ -112,6 +124,11 @@ public interface TeamService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     PaperSnapshotDTO addPaperSnapshotToPaper(Long paperId, PaperSnapshotDTO paperSnapshotDTO, boolean toReview, Integer vote);
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT')")
+    PaperSnapshotDTO addPaperSnapshotForAssignmentAndForStudent(PaperSnapshotDTO paperSnapshotDTO, Long assignmentId, String studentId);
+
+    /* End assignments methods */
 
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT') ")
     void activateTeam(Long teamId);
