@@ -1,13 +1,11 @@
-<div class="loader" [ngClass]='{"hidden":!isLoading}' >
+<div class="loader" [ngClass]='{"hidden":!isLoading}'>
   <mat-spinner></mat-spinner>
 </div>
 <mat-toolbar *ngIf="currentCourse$ | async" style="color: rgb(32 32 32 / 87%);background-color: white;">
-  
-  <button color="primary"
-      mat-icon-button
-      class="mr-1"
-      (click)="toggleForMenuClick()"
-    > <mat-icon>menu</mat-icon></button>
+
+  <button color="primary" mat-icon-button class="mr-1" (click)="toggleForMenuClick()">
+    <mat-icon>menu</mat-icon>
+  </button>
   <span>{{currentCourse?.name}}</span>
   <div class="subtitle">{{currentCourse?.acronym}}</div>
 
@@ -43,14 +41,15 @@
     </div>
   </mat-tab>
   <mat-tab label="Assignment">
-    <app-student-assignment
-    [studentAssignments]="studentAssignments$ | async"
-    [studentPaperSnapshots]="studentPaperSnapshots$ | async"
-    [currentAssignment]="currentAssignment$ | async"
-    (updatePaperStatusEvent)="updatePaperStatusByAssignmentAndStudent($event)"
-    (assignmentClickedEvent)="getAllPapersnapshotsForAssignment($event)"
-    (solutionSubmittedEvent)="addPapersnapshotForAssignmentAndStudent($event)"></app-student-assignment>
+    <div class="tab-container">
+      <app-student-assignment [studentAssignments]="studentAssignments$ | async"
+        [studentPaperSnapshots]="studentPaperSnapshots$ | async" [currentAssignment]="currentAssignment$ | async"
+        (updatePaperStatusEvent)="updatePaperStatusByAssignmentAndStudent($event)"
+        (assignmentClickedEvent)="getAllPapersnapshotsForAssignment($event)"
+        (solutionSubmittedEvent)="addPapersnapshotForAssignmentAndStudent($event)"></app-student-assignment>
+    </div>
   </mat-tab>
+
 </mat-tab-group>
 
 <ng-template #courseNotEnabled>
