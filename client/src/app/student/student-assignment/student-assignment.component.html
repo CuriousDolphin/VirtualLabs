@@ -1,43 +1,36 @@
 <div class="container">
-  <mat-card style="margin-bottom:22px">
-    <mat-card-header fxLayout="row" fxLayoutAlign="space-between stretch">
-      <mat-card-title>
-        <div fxLayout="row">
+  <!--  <div fxLayout="row">
+    <div fxLayout="row" *ngIf="toShowLevel > 0">
+      <button mat-button (click)="toShowLevel = 0">
+        Assignments {{breadCrumbHelper("assignment")}}
+      </button>
+    </div>
 
-          <div fxLayout="row" *ngIf="toShowLevel >= 0">
-            <button mat-button (click)="toShowLevel = 0">
-              Assignments {{breadCrumbHelper("assignment")}}
-            </button>
-          </div>
-
-          <div fxLayout="row" *ngIf="toShowLevel >= 1">
-            <p>></p>
-            <button mat-button (click)="toShowLevel = 1">
-              PaperSnapshots
-            </button>
-          </div>
-
-        </div>
-      </mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <ng-container *ngIf="toShowLevel !== 0">
-        <button mat-flat-button (click)="back()" class="radius-20" style="background-color: transparent">
-          <mat-icon color="primary">
-            arrow_back
-          </mat-icon>
-        </button>
-      </ng-container>
-      <ng-container *ngIf="toShowLevel === 0">
-        <app-student-assignment-assignment [assignmentsData]="assignmentsData"
-          (confirmReadClickedEvent)="updatePaperStatus($event)" (clickAssignmentEvent)="assignmentClicked($event)">
-        </app-student-assignment-assignment>
-      </ng-container>
-      <ng-container *ngIf="toShowLevel === 1">
-        <app-student-assignment-papersnapshot [paperSnapshotsData]="paperSnapshotsData"
-          [currentAssignment]="currAssignment" (submitSolutionEvent)="solutionSubmitted($event)">
-        </app-student-assignment-papersnapshot>
-      </ng-container>
-    </mat-card-content>
-  </mat-card>
+    <div fxLayout="row" *ngIf="toShowLevel >= 1">
+      <p>></p>
+      <button mat-button (click)="toShowLevel = 1">
+        PaperSnapshots
+      </button>
+    </div>
+  </div> -->
+  <ng-container *ngIf="toShowLevel !== 0">
+    <div fxLayout="row" fxLayoutAlign="start center" >
+      <button mat-icon-button (click)="back()" class="radius-20">
+        <mat-icon color="primary">
+          arrow_back
+        </mat-icon>
+      </button>
+      <h2>{{currAssignment.title}}</h2>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="toShowLevel === 0">
+    <app-student-assignment-assignment [assignmentsData]="assignmentsData"
+      (confirmReadClickedEvent)="updatePaperStatus($event)" (clickAssignmentEvent)="assignmentClicked($event)">
+    </app-student-assignment-assignment>
+  </ng-container>
+  <ng-container *ngIf="toShowLevel === 1">
+    <app-student-assignment-papersnapshot [paperSnapshotsData]="paperSnapshotsData" [currentAssignment]="currAssignment"
+      (submitSolutionEvent)="solutionSubmitted($event)">
+    </app-student-assignment-papersnapshot>
+  </ng-container>
 </div>

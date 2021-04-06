@@ -24,7 +24,7 @@ export class StudentAssignmentAssignmentComponent implements OnInit {
 
   @ViewChild(MatSort, { static: true }) sort: MatSort
 
-  colsToDisplay = ["title", "content", "status", "releaseDate", "expiryDate"]
+  colsToDisplay = ["title", "content", "status", "releaseDate", "expiryDate", "openAssignment"]
   dataSource = new MatTableDataSource<StudentAssignment>();
 
   @Input() set assignmentsData(assignments: StudentAssignment[]) {
