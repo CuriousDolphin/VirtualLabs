@@ -29,9 +29,12 @@
               <input id="input-file-id" accept="image/*" (change)="onFileChange($event)" style="display: none;"
                 type="file" formControlName="assignmentFile">
 
-              <img [src]="imageSrc" *ngIf="imageSrc" style="height: 200px; width:320px; vertical-align: middle;">
+              <img [src]="imageSrc" *ngIf="imageSrc" style="max-height: 350px;
+              max-width: 600px;
+              height: auto;
+              width: auto;">
             </div>
-            <div fxLayout="column" fxLayoutAlign="end end">
+            <div fxLayout="column" fxLayoutAlign="start center">
               <button mat-button color="accent" type="submit" [disabled]="!formGroup.valid" class="radius-20">
                 <mat-icon> insert_drive_file</mat-icon>Add
               </button>
@@ -56,7 +59,10 @@
     <ng-container matColumnDef="content">
       <th mat-header-cell *matHeaderCellDef>Content</th>
       <td mat-cell (click)="openImage(assignment.content);$event.stopPropagation()" *matCellDef="let assignment">
-        <img [src]="renderTrustImage(assignment.content)" width="160px" height="100px">
+        <img [src]="renderTrustImage(assignment.content)" style="max-height: 150px;
+        max-width: 300px;
+        height: auto;
+        width: auto;">
       </td>
     </ng-container>
 

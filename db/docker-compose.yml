@@ -9,6 +9,7 @@ services:
             - MYSQL_DATABASE=db_test
         volumes:
         - ./db_data:/var/lib/mysql
+        - ./db_init:/docker-entrypoint-initdb.d
     #server:
         #build: .
         #container_name: virtuallabs_server    

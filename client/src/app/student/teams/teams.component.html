@@ -64,7 +64,7 @@
               </div>
             </mat-list>
             <p class="ml-1 mr-1">
-              * min {{ currentCourse?.min }} max {{ currentCourse?.max }}
+              * #members min {{ currentCourse?.min }} max {{ currentCourse?.max }}
             </p>
             <div class="p-16">
               <span *ngFor="let student of selectedStudents.selected">
@@ -111,7 +111,7 @@
         </div>
       </mat-card-content>
       <mat-divider></mat-divider>
-      <mat-card-actions class="button-area">
+      <mat-card-actions class="button-area" >
         <button
           color="primary"
           [disabled]="isCreateTeamDisabled()"
@@ -155,7 +155,7 @@
                     >
                       <mat-icon>account_circle</mat-icon>
                       <p fxLayout="row" fxLayoutAlign="start center">
-                        <mat-icon *ngIf="studentId && studentId === student.id"
+                        <mat-icon *ngIf="studentId && studentId === student.id" style="margin-right: 10px;"
                           >star</mat-icon
                         >
                         {{ student.name }}
@@ -235,7 +235,7 @@
                       >
                         <mat-icon>account_circle</mat-icon>
                         <p fxLayout="row" fxLayoutAlign="start center">
-                          <mat-icon
+                          <mat-icon style="margin-right: 10px;"
                             *ngIf="studentId && studentId === student.id"
                             >star</mat-icon
                           >
