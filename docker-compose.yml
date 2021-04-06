@@ -2,7 +2,6 @@ version: "3.3"
 services:
   mariadb:
     image: mariadb:latest
-    container_name: virtualLabs-db
     ports:
      - "3306:3306"
     environment:
@@ -10,29 +9,27 @@ services:
       - MYSQL_DATABASE=db_test
     volumes:
       - ./db/db_data:/var/lib/mysql
-      - ./db_init:/docker-entrypoint-initdb.d
+      - ./db/db_init:/docker-entrypoint-initdb.d
   spring:
     build: ./server/
     container_name: virtualLabs-backend
-
     ports:
       - "8080:8080"
-    links:
-      - "mariadb"
+    expose: 
+      - "8080"
     depends_on:
-      - "mariadb"
+      - mariadb
     environment:
       - DB_SERVER=mariadb
       - DB_NAME=db_test
     restart: always
   angular:
-    container_name: virtualLabs-frontend
     build: ./client/
     ports:
       - "80:80"
     volumes:
       - ./client/dist:/app/dist
-    links:
-      - "spring"
+    depends_on:
+      - spring
 volumes:
   db_data: {}
