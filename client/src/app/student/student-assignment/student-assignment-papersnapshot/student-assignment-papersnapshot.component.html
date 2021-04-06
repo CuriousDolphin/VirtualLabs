@@ -1,8 +1,7 @@
 <ng-container *ngIf="canUpload()">
   <mat-card style="margin-bottom: 22px;">
-    <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" style="width: 100%;">
       <mat-card-header fxLayout="row" fxLayoutAlign="space-between stretch">
-        <mat-card-title>Upload solution</mat-card-title>
+        <mat-card-title>Solution</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <div class="p-16">
@@ -11,14 +10,13 @@
           <div fxLayout="column">
             <div fxLayout="row" fxLayoutAlign="start center">
 
-              <button mat-raised-button (click)="uploader.click()">
-                <mat-icon mat-icon color="primary" style="padding: 8px">add_a_photo</mat-icon>
+              <button mat-raised-button color="primary" (click)="uploader.click()">
+                <mat-icon mat-icon style="padding: 8px">add_a_photo</mat-icon>
                 Choose a file
               </button>
-              <input hidden #uploader accept="image/*" (change)="onFileChange($event)" type="file"
-                formControlName="solutionFile">
+              <input hidden #uploader accept="image/*" (change)="onFileChange($event)" type="file">
 
-              <img [src]="imageSrc" *ngIf="imageSrc" style="height: 200px; width:320px; vertical-align: middle;">
+              <img class="preview" [src]="imageSrc" *ngIf="imageSrc">
             </div>
             <!--  <div fxLayout="column" fxLayoutAlign="end end">
              
@@ -27,11 +25,10 @@
         </div>
       </mat-card-content>
       <mat-card-actions class="button-area">
-        <button mat-button color="accent" type="submit" [disabled]="!formGroup.valid" class="radius-20">
-          <mat-icon>insert_drive_file</mat-icon>Add
+        <button mat-button color="accent" type="submit" (click)="onSubmit()" [disabled]="imageSrc === null">
+          <mat-icon>insert_drive_file</mat-icon>Upload solution
         </button>
       </mat-card-actions>
-    </form>
   </mat-card>
 </ng-container>
 
