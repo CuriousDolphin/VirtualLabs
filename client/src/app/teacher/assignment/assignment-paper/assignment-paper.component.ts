@@ -21,7 +21,7 @@ export class AssignmentPaperComponent implements OnInit {
     read: ElementRef
   }) filterIcon: ElementRef
 
-  colsToDisplay = ["studentId", "studentName", "studentLastName", "status", "lastUpdateTime"]
+  colsToDisplay = ["studentId", "studentName", "studentLastName", "status", "lastUpdateTime", "openPaper"]
   dataSource = new MatTableDataSource<Paper>()
   currentAssignment: Assignment
 
@@ -32,11 +32,11 @@ export class AssignmentPaperComponent implements OnInit {
   }
 
   @Input() set assignment(assignment: Assignment) {
-    if (assignment != null){
+    if (assignment != null) {
       this.currentAssignment = assignment
       //console.log("assignment: ",assignment)
     }
-      
+
 
   }
 
@@ -44,6 +44,8 @@ export class AssignmentPaperComponent implements OnInit {
   readed: boolean = true;
   submitted: boolean = true;
   reviewed: boolean = true;
+  finished: boolean = true
+  closed: boolean = true;
 
   @Output() clickPaperEvent = new EventEmitter<number>()
 
@@ -68,7 +70,9 @@ export class AssignmentPaperComponent implements OnInit {
         unreaded: this.unreaded,
         readed: this.readed,
         submitted: this.submitted,
-        reviewed: this.reviewed
+        reviewed: this.reviewed,
+        finished: this.finished,
+        closed: this.closed
       },
       position: {
         top: filterIconOffset.top + "px",
@@ -83,6 +87,8 @@ export class AssignmentPaperComponent implements OnInit {
       this.unreaded = data.unreaded
       this.reviewed = data.reviewed
       this.submitted = data.submitted
+      this.finished = data.finished
+      this.closed = data.closed
       this.applyFilter()
     })
 
@@ -104,14 +110,18 @@ export class AssignmentPaperComponent implements OnInit {
       const readed = filterArray[1] //has read the assignment
       const submitted = filterArray[2] //has submitted the paper
       const reviewed = filterArray[3] //teacher has reviewed the paper
+      const finished = filterArray[4] //teacher given vote 
+      const closed = filterArray[5] //assignment expired
 
       const matchFilter = []
 
       unreaded != "" ? matchFilter.push(data.status.toLowerCase().includes(unreaded)) : null
       readed != "" ? matchFilter.push(data.status.toLowerCase().includes(readed)) : null
-      submitted != "" ? matchFilter.push(data.status.toLowerCase().includes(submitted)) : null
+      submitted != "" ? matchFilter.push(data.status.toLowerCase().includes(submitted) && data.vote === null) : null
       reviewed != "" ? matchFilter.push(data.status.toLowerCase().includes(reviewed)) : null
-
+      finished != "" ? matchFilter.push(data.status.toLowerCase().includes(finished) && data.vote !== null) : null
+      closed != "" ? matchFilter.push(data.status.toLowerCase().includes(closed)) : null
+      
       //return true it all values in array are true else return false
       return this.isFilterRow(matchFilter)
 
@@ -129,14 +139,24 @@ export class AssignmentPaperComponent implements OnInit {
   }
 
   applyFilter() {
+
+    /*In this part i set the status for the filter  */
     const unreaded = this.unreaded ? "null" : ""
     const readed = this.readed ? "readed" : ""
     const submitted = this.submitted ? "submitted" : ""
     const reviewed = this.reviewed ? "reviewed" : ""
+    const finished = this.finished ? "submitted" : ""
+    const closed = this.closed ? "closed" : ""
     const separator = "$"
 
 
-    const filterValue = unreaded + separator + readed + separator + submitted + separator + reviewed + separator
+    const filterValue =
+      unreaded + separator +
+      readed + separator +
+      submitted + separator +
+      reviewed + separator +
+      finished + separator +
+      closed + separator
     this.dataSource.filter = filterValue.trim().toLowerCase()
   }
 }

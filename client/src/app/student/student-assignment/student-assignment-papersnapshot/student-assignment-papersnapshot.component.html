@@ -6,7 +6,6 @@
       <mat-card-content>
         <div class="p-16">
 
-
           <div fxLayout="column">
             <div fxLayout="row" fxLayoutAlign="start center">
 
@@ -48,7 +47,7 @@
         <ng-container matColumnDef="content">
           <th mat-header-cell *matHeaderCellDef>Content</th>
           <td mat-cell (click)="openImage(papersnapshot.content)" *matCellDef="let papersnapshot">
-            <img [src]="renderTrustImage(papersnapshot.content)" width="160px" height="100px">
+            <img [src]="renderTrustImage(papersnapshot.content)" class="mini-preview">
           </td>
         </ng-container>
 
