@@ -9,6 +9,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Paper } from 'src/app/models/paper.model';
 import { BehaviorSubject } from 'rxjs';
+import { Assignment } from 'src/app/models/assignment.model';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class AssignmentPapersnapshotComponent implements OnInit {
   imageSrc: ArrayBuffer;
   formGroup: FormGroup;
   _currentPaper = new BehaviorSubject<Paper>(null);
+  currentAssignment: Assignment;
   toReviewControl = new FormControl({value: false, disabled: false})
   voteControl = new FormControl({ value: 1, disabled: this.toReviewControl.value }, [Validators.min(1), Validators.max(30)])
   solutionFileControl = new FormControl({value: null, disabled: !this.toReviewControl.value}, [Validators.required])
@@ -59,13 +61,17 @@ export class AssignmentPapersnapshotComponent implements OnInit {
     }
   }
 
+  @Input() set assignment(assignment: Assignment) {
+    if(assignment != null) {
+      this.currentAssignment = assignment
+    }
+  }
+
   get paper() {
     return this._currentPaper.getValue()
   }
 
   @Output() submitSolutionEvent = new EventEmitter<SolutionFormData>();
-
-
 
   format(date) {
     return formatDate(date, 'EEEE, MMMM d, y, h:mm:ss a', 'en-US', 'GMT+1')

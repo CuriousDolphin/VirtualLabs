@@ -1,56 +1,64 @@
-<div class="container">
-  <ng-container *ngIf="canUpload()">
-    <mat-card style="margin-bottom: 22px;">
+<ng-container *ngIf="canUpload()">
+  <mat-card style="margin-bottom: 22px;">
       <mat-card-header fxLayout="row" fxLayoutAlign="space-between stretch">
-        <mat-card-title>Upload solution</mat-card-title>
+        <mat-card-title>Solution</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <div class="p-16">
-          <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" style="width: 100%;">
 
-            <div fxLayout="column">
-              <div fxLayout="row" fxLayoutAlign="start center">
+          <div fxLayout="column">
+            <div fxLayout="row" fxLayoutAlign="start center">
 
-                <label for="input-file-id" id="upload-button">
-                  <mat-icon mat-icon color="primary" style="padding: 8px">add_a_photo</mat-icon>
-                </label>
-                <input id="input-file-id" accept="image/*" (change)="onFileChange($event)" style="display: none;"
-                  type="file" formControlName="solutionFile">
+              <button mat-raised-button color="primary" (click)="uploader.click()">
+                <mat-icon mat-icon style="padding: 8px">add_a_photo</mat-icon>
+                Choose a file
+              </button>
+              <input hidden #uploader accept="image/*" (change)="onFileChange($event)" type="file">
 
-                <img [src]="imageSrc" *ngIf="imageSrc" style="height: 200px; width:320px; vertical-align: middle;">
-              </div>
-              <div fxLayout="column" fxLayoutAlign="end end">
-                <button mat-button color="accent" type="submit" [disabled]="!formGroup.valid" class="radius-20">
-                  <mat-icon>insert_drive_file</mat-icon>Add
-                </button>
-              </div>
+              <img class="preview" [src]="imageSrc" *ngIf="imageSrc">
             </div>
-          </form>
+            <!--  <div fxLayout="column" fxLayoutAlign="end end">
+             
+            </div> -->
+          </div>
         </div>
       </mat-card-content>
-    </mat-card>
-  </ng-container>
+      <mat-card-actions class="button-area">
+        <button mat-button color="accent" type="submit" (click)="onSubmit()" [disabled]="imageSrc === null">
+          <mat-icon>insert_drive_file</mat-icon>Upload solution
+        </button>
+      </mat-card-actions>
+  </mat-card>
+</ng-container>
 
-  <table mat-table [dataSource]="dataSource" class="elevation-z6" matSort>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>History</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="container">
+      <table mat-table [dataSource]="dataSource" class="elevation-z6" matSort>
 
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef>Id</th>
-      <td mat-cell *matCellDef="let papersnapshot">{{papersnapshot.id}}</td>
-    </ng-container>
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>Id</th>
+          <td mat-cell *matCellDef="let papersnapshot">{{papersnapshot.id}}</td>
+        </ng-container>
 
-    <ng-container matColumnDef="content">
-      <th mat-header-cell *matHeaderCellDef>Content</th>
-      <td mat-cell (click)="openImage(papersnapshot.content)" *matCellDef="let papersnapshot">
-        <img [src]="renderTrustImage(papersnapshot.content)" width="160px" height="100px">
-      </td>
-    </ng-container>
+        <ng-container matColumnDef="content">
+          <th mat-header-cell *matHeaderCellDef>Content</th>
+          <td mat-cell (click)="openImage(papersnapshot.content)" *matCellDef="let papersnapshot">
+            <img [src]="renderTrustImage(papersnapshot.content)" class="mini-preview">
+          </td>
+        </ng-container>
 
-    <ng-container matColumnDef="submissionDate">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Submission Date</th>
-      <td mat-cell *matCellDef="let papersnapshot">{{format(papersnapshot.submissionDate)}}</td>
-    </ng-container>
+        <ng-container matColumnDef="submissionDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Submission Date</th>
+          <td mat-cell *matCellDef="let papersnapshot">{{format(papersnapshot.submissionDate)}}</td>
+        </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="colsToDisplay"></tr>
-    <tr mat-row *matRowDef="let row; columns: colsToDisplay"></tr>
-  </table>
-</div>
+        <tr mat-header-row *matHeaderRowDef="colsToDisplay"></tr>
+        <tr mat-row *matRowDef="let row; columns: colsToDisplay"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>
