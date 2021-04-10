@@ -1,25 +1,34 @@
-#new-icon
+.new-icon
   position: absolute
-  bottom: 45px
-  left: 59px
+  left: 0px
+  right: 0px
+  bottom: 0px
+  top: 0px
   font-size: 40px
+  justify-content: center
+  display: flex
+  align-items: center
 
 #image
   display: block
 
 .image-container
+  padding-left: 12px
+  padding-right: 12px
   position: relative
+  cursor: zoom-in
+  
 
 .mat-row
   padding: 100px
 
-.mat-row:hover 
-  background-color: lighten(royalblue, 20%)
-  cursor: pointer
-
 .mat-row:nth-child(odd)
   background-color: lighten(grey, 40%)
-  &:hover
-    background-color: lighten(royalblue, 20%)
 
+.mat-header-cell
+  text-align: center !important
 
+::ng-deep .mat-sort-header-container 
+  justify-content: center !important
+::ng-deep td.mat-cell
+  text-align: center
