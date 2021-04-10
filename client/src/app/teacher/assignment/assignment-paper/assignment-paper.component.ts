@@ -21,7 +21,7 @@ export class AssignmentPaperComponent implements OnInit {
     read: ElementRef
   }) filterIcon: ElementRef
 
-  colsToDisplay = ["studentId", "studentName", "studentLastName", "status", "lastUpdateTime", "openPaper"]
+  colsToDisplay = ["studentId", "studentName", "studentLastName", "status", "vote", "lastUpdateTime", "openPaper"]
   dataSource = new MatTableDataSource<Paper>()
   currentAssignment: Assignment
 

@@ -7,27 +7,33 @@
       <div class="p-16">
         <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" style="width: 100%;">
 
-          <div fxLayout="column">
-            <div fxLayout="row" fxLayoutAlign="start center">
+          <div fxLayout="column" fxLayoutAlign="center start">
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
 
-              <mat-form-field appearance="outline">
-                <mat-label>Vote</mat-label>
-                <input matInput type="number" formControlName="vote" min="1" max="30">
-                <span matSuffix>/ 30</span>
-                <mat-error *ngIf="formGroup.controls['vote'].invalid"></mat-error>
-              </mat-form-field>
-
-              <label for="input-file-id" id="upload-button">
+              <!-- <label for="input-file-id" id="upload-button">
                 <mat-icon mat-icon color="primary" style="padding: 8px">add_a_photo</mat-icon>
-              </label>
-              <input id="input-file-id" accept="image/*" (change)="onFileChange($event)" style="display: none;"
-                type="file" formControlName="solutionFile">
+              </label> -->
 
               <mat-checkbox [formControl]="toReviewControl" (change)="toggleVote($event)" color="primary">To review
               </mat-checkbox>
+
+              <button [disabled]="formGroup.get('solutionFile').disabled" type="button" mat-raised-button color="primary"
+                (click)="uploader.click()">
+                <mat-icon mat-icon style="padding: 8px">add_a_photo</mat-icon>
+                Choose a file
+              </button>
+              <input hidden #uploader accept="image/*" (change)="onFileChange($event)" type="file"
+                formControlName="solutionFile">
+
               <img class="preview" [src]="imageSrc" *ngIf="imageSrc">
             </div>
-            <div fxLayout="column" fxLayoutAlign="end end">
+            <mat-form-field appearance="outline" style="margin-left: 0px;">
+              <mat-label>Vote</mat-label>
+              <input matInput type="number" formControlName="vote" min="1" max="30">
+              <span matSuffix>/ 30</span>
+              <mat-error *ngIf="formGroup.controls['vote'].invalid"></mat-error>
+            </mat-form-field>
+            <div fxLayout="column" fxLayoutAlign="start start">
               <button mat-button color="accent" type="submit" [disabled]="!formGroup.valid" class="radius-20">
                 <mat-icon> insert_drive_file</mat-icon>Add
               </button>
@@ -50,7 +56,7 @@
 
     <ng-container matColumnDef="content">
       <th mat-header-cell *matHeaderCellDef>Content</th>
-      <td mat-cell (click)="openImage(papersnapshot.content)" *matCellDef="let papersnapshot">
+      <td mat-cell (click)="openImage(papersnapshot.content)" *matCellDef="let papersnapshot" style="width:200px">
         <img class="mini-preview" [src]="renderTrustImage(papersnapshot.content)">
       </td>
     </ng-container>

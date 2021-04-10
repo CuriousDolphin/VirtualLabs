@@ -71,7 +71,6 @@ export class AssignmentAssignmentComponent implements OnInit {
 
   onFileChange(event) {
     let reader = new FileReader();
-
     if (event.target.files && event.target.files.length) {
       const [file] = event.target.files
       reader.readAsDataURL(file)
@@ -81,6 +80,9 @@ export class AssignmentAssignmentComponent implements OnInit {
           assignmentFileSource: reader.result
         })
         this.changeDetector.markForCheck()
+      }
+      reader.onerror = () => {
+        this.imageSrc = null
       }
     }
   }
@@ -94,7 +96,7 @@ export class AssignmentAssignmentComponent implements OnInit {
   }
 
   onSubmit(): void {
-
+    console.log("ciaoi")
     const splittedPath = this.formGroup.controls["assignmentFile"].value.split("\\")
 
     const assignment: Assignment = {

@@ -7,29 +7,34 @@
       <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" style="width: 100%;">
 
         <div fxLayout="column">
-          <div fxLayout="row" fxLayoutAlign="start center">
+          <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px">
 
-            <mat-form-field appearance="outline">
-              <mat-label>Expiry date</mat-label>
-              <input matInput [min]="tomorrow" formControlName="expiryDate" [matDatepicker]="picker" disabled>
-              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker disabled="false"></mat-datepicker>
-            </mat-form-field>
+            <div fxLayout="column">
+              <mat-form-field appearance="outline" style="margin-top: -4px">
+                <mat-label>Title</mat-label>
+                <input matInput formControlName="title">
+              </mat-form-field>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Title</mat-label>
-              <input matInput formControlName="title">
-            </mat-form-field>
-
-            <label for="input-file-id" id="upload-button">
+              <mat-form-field appearance="outline">
+                <mat-label>Expiry date</mat-label>
+                <input matInput [min]="tomorrow" formControlName="expiryDate" [matDatepicker]="picker" disabled>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker disabled="false"></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <!-- <label for="input-file-id" id="upload-button">
               <mat-icon mat-icon color="primary" style="padding: 8px">add_a_photo</mat-icon>
-            </label>
-            <input id="input-file-id" accept="image/*" (change)="onFileChange($event)" style="display: none;"
-              type="file" formControlName="assignmentFile">
+            </label> -->
+            <button type="button" mat-raised-button color="primary" (click)="uploader.click()">
+              <mat-icon mat-icon style="padding: 8px">add_a_photo</mat-icon>
+              Choose a file
+            </button>
+            <input hidden #uploader id="input-file-id" accept="image/*" (change)="onFileChange($event)" type="file"
+              formControlName="assignmentFile">
 
             <img class="preview" [src]="imageSrc" *ngIf="imageSrc">
           </div>
-          <div fxLayout="column" fxLayoutAlign="start center">
+          <div fxLayout="column" fxLayoutAlign="start start">
             <button mat-button color="accent" type="submit" [disabled]="!formGroup.valid" class="radius-20">
               <mat-icon> insert_drive_file</mat-icon>Add
             </button>
@@ -57,7 +62,8 @@
 
     <ng-container matColumnDef="content">
       <th mat-header-cell *matHeaderCellDef>Content</th>
-      <td mat-cell (click)="openImage(assignment.content);$event.stopPropagation()" *matCellDef="let assignment">
+      <td mat-cell (click)="openImage(assignment.content);$event.stopPropagation()" *matCellDef="let assignment"
+        style="width:200px">
         <img [src]="renderTrustImage(assignment.content)" class="mini-preview">
       </td>
     </ng-container>
