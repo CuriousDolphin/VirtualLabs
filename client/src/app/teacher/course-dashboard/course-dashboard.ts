@@ -46,6 +46,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
   studentsDB$: Observable<Student[]>;
   currentCourse: Course;
   currentCourse$: Observable<Course>;
+  currentAssignmentId: number;
   enrolledStudents$: Observable<Student[]>;
   assignments$: Observable<Assignment[]>
   papers$: Observable<Paper[]>
@@ -285,7 +286,9 @@ export class CourseDashboard implements OnInit, OnDestroy {
     this.papers$ = this.courseService
       .getAllPapersForAssignment(assignmentId)
       .pipe(
-        tap(() => this.isLoading = false)
+        tap(() => {
+          this.currentAssignmentId = assignmentId
+          this.isLoading = false})
       )
   }
 
@@ -311,10 +314,9 @@ export class CourseDashboard implements OnInit, OnDestroy {
     const paperId = data.paperId
     if (this.papersnapshotSubscription) this.papersnapshotSubscription.unsubscribe()
     this.isLoading = true
-    console.log(data.solutionFormData)
     this.papersnapshotSubscription = this.courseService.addPapersnapshot(data.paperId, data.solutionFormData).subscribe((data) => {
-      console.log(data)
       this.isLoading = false
+      this.getAllPapersForAssignment(this.currentAssignmentId)
       this.getAllPapersnapshotsForPaper(paperId)
     })
   }
