@@ -1,6 +1,6 @@
 <ng-container *ngIf="hasTeam; else noTeam">
   <ng-container *ngIf="hasLoadedVmModel && hasLoadedVmInstances">
-    <mat-grid-list cols="100" rowHeight="3rem" style="margin-right: 2.2%; margin-left: 2.2%">
+    <mat-grid-list cols="100" rowHeight="3rem" style="margin-right: 2.2%; margin-left: 2.2%" class="my-title">
       <mat-grid-tile colspan="100" rowspan="1">{{ team.name }}'s Virtual Machines</mat-grid-tile>
       <mat-grid-tile colspan="4" rowspan="2">VM</mat-grid-tile>
       <mat-grid-tile colspan="10" rowspan="2">Creator</mat-grid-tile>
@@ -195,7 +195,7 @@
         </mat-grid-list>
       </mat-card>
     </div>-->
-    <div>
+    <div class="sum">
       <mat-grid-list cols="100" rowHeight="4rem" style="margin-right: 2.2%; margin-left: 2.2%">
         <div *ngIf="_vmInstances.length != _vmModel.maxVms; else maxVms">
           <mat-grid-tile colspan="4">{{ _vmInstances.length }} / {{ _vmModel.maxVms }}</mat-grid-tile>
