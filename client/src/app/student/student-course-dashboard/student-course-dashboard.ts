@@ -50,6 +50,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   currentCourse: Course;
   currentVmModel$: Observable<VmModel>;
   currentCourse$: Observable<Course>;
+  currentAssignmentId: number;
   currentAssignment$: Observable<StudentAssignment>;
   studentTeams$: Observable<Team[]>;
   studentAssignments$: Observable<StudentAssignment[]>;
@@ -242,7 +243,10 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   getAssignment(assignmentId: number) {
     this.isLoading = true
    this.currentAssignment$ = this.studentService.getStudentAssignment(assignmentId, this.authService.getUserId()).pipe(
-     tap(() => this.isLoading = false)
+     tap(() => {
+       this.currentAssignmentId = assignmentId
+       this.isLoading = false
+      })
    )
   }
 
@@ -421,6 +425,11 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   reloadData() {
     this._reloadCourse$.next();
     this._reloadTeams$.next();
+    this._reloadAssignments$.next();
+    if( this.currentAssignmentId != null) {
+      this.getAllPapersnapshotsForAssignment(this.currentAssignmentId)
+    }
+
   }
 
   ngOnDestroy(): void {
