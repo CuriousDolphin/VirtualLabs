@@ -4,21 +4,27 @@
   <div class="breadcrumb" fxLayout="row">
     <div fxLayout="row" *ngIf="toShowLevel > 0">
       <button class="breadcrumb-button" mat-button (click)="toShowLevel = 0">
-        Assignments
+        <h3>
+          Assignments
+        </h3>
       </button>
     </div>
 
     <div fxLayout="row" *ngIf="toShowLevel > 1">
-      <p class="breadcrumb-button">/</p>
+      <h3 class="breadcrumb-button">/</h3>
       <button class="breadcrumb-button" mat-button (click)="toShowLevel = 1">
-        Papers
+        <h3>
+          Papers
+        </h3>
       </button>
     </div>
 
     <div fxLayout="row" *ngIf="toShowLevel > 2">
       <p class="breadcrumb-button">/</p>
       <button class="breadcrumb-button" mat-button (click)="toShowLevel = 2">
-        PaperSnapshots
+        <h3>
+          PaperSnapshots
+        </h3>
       </button>
     </div>
   </div>
