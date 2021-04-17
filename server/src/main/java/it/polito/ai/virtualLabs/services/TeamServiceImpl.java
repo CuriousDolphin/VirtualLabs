@@ -360,7 +360,7 @@ public class TeamServiceImpl implements TeamService {
         List<StudentDTO> students = csvToBean.parse();
         List<String> studentIds = new ArrayList<>();
         students.forEach(student -> {
-            studentIds.add(student.getId());
+            studentIds.add(student.getId().toLowerCase());
             System.out.println(student.toString());
         });
 
