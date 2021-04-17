@@ -13,56 +13,56 @@
       </mat-card-header>
 
       <mat-card-content>
-        <div fxLayout="row" class="font_size_16" fxLayoutAlign="center stretch">
-          <div fxFlex="20" fxLayout="column" fxLayoutAlign="center center">
+        <div fxLayout="row" class="font_size_16" fxLayoutAlign="start stretch">
+          <div>
+            <img fxFlex [src]="_vmModel.image" class="vm_img mat-elevation-z3">
+          </div>
+          <div fxLayout="column" fxLayoutAlign="center start" style="margin-left: 75px;">
             <div>
               <span class="mat-body-strong mat-body-2 prop">
-                Vm Allowed:
+                Maximum VM instances:
               </span>
-              <span class="mat-small mat-caption">
+              <span class="mat-small mat-caption font_size_16">
                 {{ _vmModel.maxVms }}
               </span>
             </div>
 
             <div>
               <span class="mat-body-strong mat-body-2 prop">
-                Vm Running simultaneously (max):
+                Maximum VMs running simultaneously:
               </span>
-              <span class="mat-small mat-caption">
+              <span class="mat-small mat-caption font_size_16">
                 {{ _vmModel.maxRunningVms }}
               </span>
             </div>
 
             <div>
               <span class="mat-body-strong mat-body-2 prop">
-                VCPU (max):
+                Maximum total VCPUs:
               </span>
-              <span class="mat-small mat-caption">
+              <span class="mat-small mat-caption font_size_16">
                 {{ _vmModel.maxVcpus }}
               </span>
             </div>
 
             <div>
               <span class="mat-body-strong mat-body-2 prop">
-                Ram (max):
+                Maximum total RAM:
               </span>
-              <span class="mat-small mat-caption">
+              <span class="mat-small mat-caption font_size_16">
                 {{ _vmModel.maxRam }} GB
               </span>
             </div>
 
             <div>
               <span class="mat-body-strong mat-body-2 prop">
-                Disk (max):
+                Maximum total Disk:
               </span>
-              <span class="mat-small mat-caption">
+              <span class="mat-small mat-caption font_size_16">
                 {{ _vmModel.maxDisk }} GB
               </span>
             </div>
 
-          </div>
-          <div>
-            <img fxFlex [src]="_vmModel.image" class="vm_img">
           </div>
         </div>
 
@@ -78,13 +78,72 @@
 
       <mat-expansion-panel>
         <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{ team.name }}
+          <mat-panel-title fxLayout="row" fxLayoutAlign="none center">
+            <p class="mat-body-strong mat-body-2 prop" style="margin: 0;">
+              {{ team.name }}
+            </p>
+            <div style="width: 16px;"></div>
+            <p *ngFor="let student of team.members">
+              [ {{ student.id }} ]
+            </p>
           </mat-panel-title>
           <mat-panel-description>
-            <a *ngFor="let student of team.members">
-              [ {{ student.id }} ]
-            </a>
+            <div *ngIf="team.vmInstances.length !== 0; else zeroVm" fxLayout="row" fxLayoutAlign="space-between center"
+              style="width: 100%;">
+              <div *ngIf='team.vmInstances.length != _vmModel.maxVms; else maxVms'>
+                <p>VMs: {{ team.vmInstances.length }} / {{ _vmModel.maxVms }}
+                </p>
+              </div>
+              <ng-template #maxVms>
+                <p style='color: red'>VMs: {{ team.vmInstances.length }} / {{ _vmModel.maxVms }}
+                </p>
+              </ng-template>
+              <div *ngIf='countVcpus(team.vmInstances) != _vmModel.maxVcpus; else maxVcpu'>
+                <p>VCPUs: {{ countVcpus(team.vmInstances) }} / {{ _vmModel.maxVcpus }}
+                </p>
+              </div>
+              <ng-template #maxVcpu>
+                <p style='color: red'>VCPUs: {{ countVcpus(team.vmInstances) }} / {{
+                  _vmModel.maxVcpus
+                  }}
+                </p>
+              </ng-template>
+              <div *ngIf='countRam(team.vmInstances) != _vmModel.maxRam; else maxRam'>
+                <p>RAM: {{ countRam(team.vmInstances) }} / {{ _vmModel.maxRam }} GB
+                </p>
+              </div>
+              <ng-template #maxRam>
+                <p style='color: red'>RAM: {{ countRam(team.vmInstances) }} / {{ _vmModel.maxRam
+                  }} GB
+                </p>
+              </ng-template>
+              <div *ngIf='countDisk(team.vmInstances) != _vmModel.maxDisk; else maxDisk'>
+                <p>Disk: {{ countDisk(team.vmInstances) }} / {{ _vmModel.maxDisk }} GB
+                </p>
+              </div>
+              <ng-template #maxDisk>
+                <p style='color: red'>Disk: {{ countDisk(team.vmInstances) }} / {{ _vmModel.maxDisk
+                  }}
+                  GB
+                </p>
+              </ng-template>
+              <div *ngIf='countRunningVms(team.vmInstances) != _vmModel.maxRunningVms; else maxRunning'>
+                <p *ngIf="team.vmInstances !== null">
+                  Running VMs: {{ countRunningVms(team.vmInstances) }} /
+                  {{ _vmModel.maxRunningVms }}
+                </p>
+              </div>
+              <ng-template #maxRunning>
+                <p *ngIf="team.vmInstances !== null" style='color: red'>
+                  Running VMs: {{ countRunningVms(team.vmInstances) }} /
+                  {{ _vmModel.maxRunningVms }}
+                </p>
+              </ng-template>
+            </div>
+            <ng-template #zeroVm>
+              <div fxLayout="row" fxLayoutAlign="start center" style="width: 100%;">Zero VM instances</div>
+            </ng-template>
+
           </mat-panel-description>
         </mat-expansion-panel-header>
 
@@ -137,58 +196,6 @@
                 </button>
               </ng-template>
             </mat-grid-tile>
-          </mat-grid-list>
-        </div>
-        <div *ngIf="team.vmInstances.length !== 0">
-          <mat-grid-list cols="80" rowHeight="4rem">
-            <div *ngIf='team.vmInstances.length != _vmModel.maxVms; else maxVms'>
-              <mat-grid-tile colspan="10">{{ team.vmInstances.length }} / {{ _vmModel.maxVms }}
-              </mat-grid-tile>
-            </div>
-            <ng-template #maxVms>
-              <mat-grid-tile colspan="10" style='color: red'>{{ team.vmInstances.length }} / {{ _vmModel.maxVms }}
-              </mat-grid-tile>
-            </ng-template>
-            <mat-grid-tile colspan="20"></mat-grid-tile>
-            <div *ngIf='countVcpus(team.vmInstances) != _vmModel.maxVcpus; else maxVcpu'>
-              <mat-grid-tile colspan="10">{{ countVcpus(team.vmInstances) }} / {{ _vmModel.maxVcpus }}
-              </mat-grid-tile>
-            </div>
-            <ng-template #maxVcpu>
-              <mat-grid-tile colspan="10" style='color: red'>{{ countVcpus(team.vmInstances) }} / {{ _vmModel.maxVcpus
-                }}
-              </mat-grid-tile>
-            </ng-template>
-            <div *ngIf='countRam(team.vmInstances) != _vmModel.maxRam; else maxRam'>
-              <mat-grid-tile colspan="10">{{ countRam(team.vmInstances) }} / {{ _vmModel.maxRam }} GB
-              </mat-grid-tile>
-            </div>
-            <ng-template #maxRam>
-              <mat-grid-tile colspan="10" style='color: red'>{{ countRam(team.vmInstances) }} / {{ _vmModel.maxRam }} GB
-              </mat-grid-tile>
-            </ng-template>
-            <div *ngIf='countDisk(team.vmInstances) != _vmModel.maxDisk; else maxDisk'>
-              <mat-grid-tile colspan="10">{{ countDisk(team.vmInstances) }} / {{ _vmModel.maxDisk }} GB
-              </mat-grid-tile>
-            </div>
-            <ng-template #maxDisk>
-              <mat-grid-tile colspan="10" style='color: red'>{{ countDisk(team.vmInstances) }} / {{ _vmModel.maxDisk }}
-                GB
-              </mat-grid-tile>
-            </ng-template>
-            <div *ngIf='countRunningVms(team.vmInstances) != _vmModel.maxRunningVms; else maxRunning'>
-              <mat-grid-tile colspan="10" *ngIf="team.vmInstances !== null">
-                {{ countRunningVms(team.vmInstances) }} /
-                {{ _vmModel.maxRunningVms }}
-              </mat-grid-tile>
-            </div>
-            <ng-template #maxRunning>
-              <mat-grid-tile colspan="10" *ngIf="team.vmInstances !== null" style='color: red'>
-                {{ countRunningVms(team.vmInstances) }} /
-                {{ _vmModel.maxRunningVms }}
-              </mat-grid-tile>
-            </ng-template>
-            <mat-grid-tile colspan="10"></mat-grid-tile>
           </mat-grid-list>
         </div>
 
