@@ -1,13 +1,12 @@
 <ng-container *ngIf="hasTeam; else noTeam">
   <ng-container *ngIf="hasLoadedVmModel && hasLoadedVmInstances">
-    <mat-grid-list cols="100" rowHeight="3rem" style="margin-right: 2.2%; margin-left: 2.2%" class="my-title">
+    <mat-grid-list cols="100" rowHeight="3rem" style="margin-right: 2.2%; margin-left: 2.2%" class="my-title mat-caption">
       <mat-grid-tile colspan="100" rowspan="1">{{ team.name }}'s Virtual Machines</mat-grid-tile>
-      <mat-grid-tile colspan="4" rowspan="2">VM</mat-grid-tile>
-      <mat-grid-tile colspan="10" rowspan="2">Creator</mat-grid-tile>
-      <mat-grid-tile colspan="10" rowspan="2">Accessible</mat-grid-tile>
-      <mat-grid-tile colspan="30" rowspan="1">Resources</mat-grid-tile>
-      <mat-grid-tile colspan="10" rowspan="2">State</mat-grid-tile>
-      <mat-grid-tile colspan="36" rowspan="2">Actions</mat-grid-tile>
+      <mat-grid-tile colspan="4" rowspan="1">VM</mat-grid-tile>
+      <mat-grid-tile colspan="10" rowspan="1">Creator</mat-grid-tile>
+      <mat-grid-tile colspan="10" rowspan="1">Accessible</mat-grid-tile>
+      <mat-grid-tile colspan="10" rowspan="1">State</mat-grid-tile>
+      <mat-grid-tile colspan="36" rowspan="1">Actions</mat-grid-tile>
       <mat-grid-tile colspan="10" rowspan="1">VCPUs</mat-grid-tile>
       <mat-grid-tile colspan="10" rowspan="1">RAM</mat-grid-tile>
       <mat-grid-tile colspan="10" rowspan="1">Disk</mat-grid-tile>

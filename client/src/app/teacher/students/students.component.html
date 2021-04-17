@@ -100,7 +100,7 @@
     <mat-card-content>
       <table mat-table [dataSource]="dataSource" class="elevation-z6" matSort>
         <ng-container matColumnDef="select">
-          <th mat-header-cell *matHeaderCellDef>
+          <th mat-header-cell *matHeaderCellDef >
             <mat-checkbox
              
               (change)="masterToggle($event)"
@@ -120,7 +120,7 @@
               </button>
             </mat-menu>
           </th>
-          <td mat-cell *matCellDef="let student">
+          <td mat-cell *matCellDef="let student" style="text-align: start;">
             <mat-checkbox
               (click)="$event.stopPropagation()"
               (change)="$event ? toggleStudent(student) : null"
