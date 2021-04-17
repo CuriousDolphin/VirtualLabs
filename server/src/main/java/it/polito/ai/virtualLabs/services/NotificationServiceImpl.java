@@ -6,10 +6,7 @@ import it.polito.ai.virtualLabs.dtos.TeamDTO;
 import it.polito.ai.virtualLabs.dtos.UserDTO;
 import it.polito.ai.virtualLabs.entities.*;
 import it.polito.ai.virtualLabs.exceptions.TokenNotFoundException;
-import it.polito.ai.virtualLabs.repositories.RegistrationTokenRepository;
-import it.polito.ai.virtualLabs.repositories.StudentRepository;
-import it.polito.ai.virtualLabs.repositories.TeamRepository;
-import it.polito.ai.virtualLabs.repositories.TokenTeamRepository;
+import it.polito.ai.virtualLabs.repositories.*;
 import lombok.Builder;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
@@ -49,6 +46,12 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Autowired
     RegistrationTokenRepository registrationRepository;
+
+    @Autowired
+    TokenAssignmentRepository tokenAssignmentRepository;
+
+    @Autowired
+    PaperRepository paperRepository;
 
 
     @Autowired
@@ -99,6 +102,38 @@ public class NotificationServiceImpl implements NotificationService{
                 }
             }catch(Exception e){
                 System.out.println("Errore nel rimuovere l'utente "+e.toString());
+                continue;
+            }
+        }
+
+    }
+
+    @Scheduled(fixedRate = 1000*60*60/4) // every quarter hour
+    public void cleanAssignmentToken() {
+        Timestamp t = new Timestamp(System.currentTimeMillis());
+        System.out.println("SCHEDULED TASK "+t);
+        List<TokenAssignment> expired = tokenAssignmentRepository.findAllByExpiryBefore(t);
+        System.out.println("FOUNDED  "+expired.size()+" EXPIRED ASSIGNMENT TOKEN");
+
+        ArrayList<Long> assignmentId = new ArrayList<Long>();
+
+        expired.forEach(token ->{
+            assignmentId.add(token.getAssignment().getId());
+            tokenAssignmentRepository.delete(token);
+        });
+
+        for (Long id : assignmentId){
+            try{
+                List<Paper> papers;
+                papers = paperRepository.findAllByAssignment_Id(id);
+                if(!papers.isEmpty()){
+                    for (Paper p : papers) {
+                        p.setStatus("closed");
+                        System.out.println("Paper " + id + "impostato come non valido.");
+                    }
+                }
+            }catch(Exception e){
+                System.out.println("Errore nella modifica del paper. "+e.toString());
                 continue;
             }
         }
