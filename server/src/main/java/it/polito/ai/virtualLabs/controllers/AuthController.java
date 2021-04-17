@@ -92,17 +92,17 @@ public class AuthController {
 
     public User AddGenericUser(String username, String psw)
     {
-        if(users.findByUsername(username).isPresent())
+        if(users.findByUsername(username.toLowerCase()).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists!");
-        User u = User.builder().id(username.split("@")[0])
-                .username(username)
+        User u = User.builder().id(username.toLowerCase().split("@")[0])
+                .username(username.toLowerCase())
                 .password(passwordEncoder.encode(psw))
                 .enabled(false)
                 .roles(username.toLowerCase().startsWith("d") ? Arrays.asList( "ROLE_PROF") : Arrays.asList( "ROLE_STUDENT"))
                 .build();
 
         users.save(u);
-        u = users.findByUsername(username).get();
+        u = users.findByUsername(username.toLowerCase()).get();
         return u;
     }
 
@@ -124,7 +124,7 @@ public class AuthController {
             if(username.endsWith("@studenti.polito.it") && username.startsWith("s"))
             {
                 user = AddGenericUser(username,psw);
-                String id = username.split("@")[0];
+                String id = username.split("@")[0].toLowerCase();
                 optStudent = students.findByIdIgnoreCase(id);
                 if(optStudent.isPresent())
                 {
@@ -151,7 +151,7 @@ public class AuthController {
             else if(username.endsWith("@polito.it") && username.startsWith("d"))
             {
                 user = AddGenericUser(username,psw);
-                String id = username.split("@")[0];
+                String id = username.split("@")[0].toLowerCase();
                 optTeacher = teachers.findByIdIgnoreCase(id);
                 if(!optTeacher.isPresent())
                 {
