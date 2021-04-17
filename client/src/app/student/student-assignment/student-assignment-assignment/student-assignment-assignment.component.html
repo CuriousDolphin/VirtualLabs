@@ -1,36 +1,75 @@
-<table mat-table [dataSource]="dataSource" class="elevation-z6" matSort>
+<mat-card>
+  <mat-card-content>
+    <table mat-table [dataSource]="dataSource" class="elevation-z6" matSort>
 
-  <ng-container matColumnDef="id">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-    <td mat-cell *matCellDef="let assignment">{{assignment.id}}</td>
-  </ng-container>
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+        <td mat-cell *matCellDef="let assignment">{{assignment.id}}</td>
+      </ng-container>
 
-  <ng-container matColumnDef="title">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
-    <td mat-cell *matCellDef="let assignment">{{assignment.title}}</td>
-  </ng-container>
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
+        <td mat-cell *matCellDef="let assignment">{{assignment.title}}</td>
+      </ng-container>
 
-  <ng-container matColumnDef="content">
-    <th mat-header-cell *matHeaderCellDef>Content</th>
-    <td mat-cell (click)="openImage(assignment.content, assignment.id, assignment.status); $event.stopPropagation()" *matCellDef="let assignment">
-      <div class="image-container">
-        <mat-icon *ngIf="assignment.status === 'null'" [ngStyle]="{'color':'red'}" id="new-icon" aria-hidden="false" aria-label="New Assignment">fiber_new
-        </mat-icon>
-        <img id="image" [src]="renderTrustImage(assignment.content)" width="160px" height="100px">
-      </div>
-    </td>
-  </ng-container>
+      <ng-container matColumnDef="content">
+        <th mat-header-cell *matHeaderCellDef>Content</th>
+        <td mat-cell (click)="openImage(assignment.content, assignment.id, assignment.status); $event.stopPropagation()"
+          *matCellDef="let assignment" style="width:200px">
+          <div class="image-container">
+            <div class='new-icon' *ngIf="assignment.status === 'null' || assignment.status === 'reviewed'">
+              <mat-icon [ngStyle]="{'color':'red'}" aria-hidden="false" aria-label="New Assignment"
+                style="font-size: 44px;height: 44px;width: 44px;">fiber_new </mat-icon>
+            </div>
 
-  <ng-container matColumnDef="releaseDate">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Release Date</th>
-    <td mat-cell *matCellDef="let assignment">{{format(assignment.releaseDate)}}</td>
-  </ng-container>
+            <img id="image" [src]="renderTrustImage(assignment.content)" class="mini-preview">
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+        <td mat-cell *matCellDef="let assignment">
+          <mat-icon matTooltip="The student did not read the assignment" *ngIf="assignment.status === 'null'">
+            mark_email_unread</mat-icon>
+          <mat-icon matTooltip="The student read the assignment" *ngIf="assignment.status === 'readed'">mark_email_read
+          </mat-icon>
+          <mat-icon matTooltip="The student has submitted a solution"
+            *ngIf="assignment.status === 'submitted' && assignment.vote === null">assignment_returned</mat-icon>
+          <mat-icon matTooltip="The teacher has submitted a correction" *ngIf="assignment.status === 'reviewed'">
+            assignment_return</mat-icon>
+          <mat-icon matTooltip="The solution has been voted"
+            *ngIf="assignment.status === 'submitted' && assignment.vote !== null">assignment_turned_in</mat-icon>
+          <mat-icon matTooltip="Assignment has expired" *ngIf="assignment.status === 'closed'">assignment_late</mat-icon>
+        </td>
+      </ng-container>
 
-  <ng-container matColumnDef="expiryDate">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Expiry Date</th>
-    <td mat-cell *matCellDef="let assignment">{{format(assignment.expiryDate)}}</td>
-  </ng-container>
+      <ng-container matColumnDef="vote">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Vote</th>
+        <td mat-cell *matCellDef="let assignment">{{assignment.vote}}</td>
+      </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="colsToDisplay"> </tr>
-  <tr mat-row (click)="clickAssignment(row)" *matRowDef="let row; columns: colsToDisplay"></tr>
-</table>
+      <ng-container matColumnDef="releaseDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Release Date</th>
+        <td mat-cell *matCellDef="let assignment">{{format(assignment.releaseDate)}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="expiryDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Expiry Date</th>
+        <td mat-cell *matCellDef="let assignment">{{format(assignment.expiryDate)}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="openAssignment">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let assignment">
+          <button (click)="clickAssignment(assignment)" mat-icon-button color="primary">View
+            <mat-icon>
+              chevron_right</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="colsToDisplay"> </tr>
+      <tr mat-row *matRowDef="let row; columns: colsToDisplay"></tr>
+    </table>
+  </mat-card-content>
+</mat-card>

@@ -2,7 +2,7 @@ export interface StudentAssignment {
   id: number,
   title: string;
   status: string;
-  votes: number;
+  vote: number;
   releaseDate: Date;
   expiryDate: Date;
   content: string;

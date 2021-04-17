@@ -1,11 +1,12 @@
 import { formatDate } from '@angular/common';
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { PaperSnapshot } from 'src/app/models/papersnapshot.model';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatSort } from '@angular/material/sort';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { StudentAssignment } from 'src/app/models/studentAssignment.model';
+import { StudentImageDialog } from '../student-assignment-assignment/student-assignment-assignment.component';
 
 @Component({
   selector: 'app-student-assignment-papersnapshot',
@@ -16,12 +17,8 @@ export class StudentAssignmentPapersnapshotComponent implements OnInit {
 
   constructor(
     private domSanitizer: DomSanitizer,
-    private formBuilder: FormBuilder,
-    private changeDetector: ChangeDetectorRef) {
-    this.formGroup = formBuilder.group({
-      solutionFile: this.solutionFileControl,
-      solutionFileSource: this.solutionFileSourceControl
-    })
+    private changeDetector: ChangeDetectorRef,
+    public dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -29,12 +26,8 @@ export class StudentAssignmentPapersnapshotComponent implements OnInit {
   }
 
   @ViewChild(MatSort, { static: true }) sort: MatSort
-  imageSrc: ArrayBuffer;
-  formGroup: FormGroup;
+  imageSrc: ArrayBuffer = null;
   currAssignment: StudentAssignment;
-  solutionFileControl = new FormControl(null, [Validators.required])
-  solutionFileSourceControl = new FormControl(null, [Validators.required])
-
   dataSource = new MatTableDataSource<PaperSnapshot>();
   colsToDisplay = ["submissionDate", "content"]
 
@@ -70,10 +63,10 @@ export class StudentAssignmentPapersnapshotComponent implements OnInit {
       reader.readAsDataURL(file)
       reader.onload = () => {
         this.imageSrc = reader.result as ArrayBuffer;
-        this.formGroup.patchValue({
-          solutionFileSource: reader.result
-        })
-        this.changeDetector.markForCheck()
+        //this.changeDetector.markForCheck()
+      }
+      reader.onerror = () => {
+        this.imageSrc = null
       }
     }
   }
@@ -82,9 +75,18 @@ export class StudentAssignmentPapersnapshotComponent implements OnInit {
     const papersnapshot: PaperSnapshot = {
       id: null,
       submissionDate: new Date(),
-      content: this.formGroup.controls["solutionFileSource"].value
+      content: this.imageSrc
     }
     this.submitSolutionEvent.emit(papersnapshot)
+  }
+
+  openImage(src) {
+    const dialogRef = this.dialog.open(StudentImageDialog, {
+      data: {
+        src: this.renderTrustImage(src),
+        status: "readed"
+      }
+    })
   }
 
   canUpload(): boolean {

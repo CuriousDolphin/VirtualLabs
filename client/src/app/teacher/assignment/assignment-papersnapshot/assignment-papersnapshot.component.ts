@@ -8,6 +8,8 @@ import { SolutionFormData } from 'src/app/models/formPaperSnapshotData.model';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Paper } from 'src/app/models/paper.model';
+import { BehaviorSubject } from 'rxjs';
+import { Assignment } from 'src/app/models/assignment.model';
 
 
 @Component({
@@ -19,8 +21,9 @@ export class AssignmentPapersnapshotComponent implements OnInit {
 
   imageSrc: ArrayBuffer;
   formGroup: FormGroup;
-  currentPaper: Paper;
-  toReviewControl = new FormControl({value: false, disabled: this.toReviewDisabled()})
+  _currentPaper = new BehaviorSubject<Paper>(null);
+  currentAssignment: Assignment;
+  toReviewControl = new FormControl({value: false, disabled: false})
   voteControl = new FormControl({ value: 1, disabled: this.toReviewControl.value }, [Validators.min(1), Validators.max(30)])
   solutionFileControl = new FormControl({value: null, disabled: !this.toReviewControl.value}, [Validators.required])
   solutionFileSourceControl = new FormControl({value: null, disabled: !this.toReviewControl.value}, [Validators.required])
@@ -49,21 +52,37 @@ export class AssignmentPapersnapshotComponent implements OnInit {
 
   @Input() set paper(paper: Paper) {
     if (paper != null) {
-      //console.log(paper)
-      this.currentPaper = paper
+      this._currentPaper.next(paper)
+      if (paper.status === "closed") {
+        const toReviewControl = this.formGroup.get("toReview")
+        toReviewControl.setValue(false)
+        toReviewControl.disable()
+      }
     }
+  }
 
+  @Input() set assignment(assignment: Assignment) {
+    if(assignment != null) {
+      this.currentAssignment = assignment
+    }
+  }
+
+  get paper() {
+    return this._currentPaper.getValue()
   }
 
   @Output() submitSolutionEvent = new EventEmitter<SolutionFormData>();
-
-
 
   format(date) {
     return formatDate(date, 'EEEE, MMMM d, y, h:mm:ss a', 'en-US', 'GMT+1')
   }
 
   ngOnInit(): void {
+    this._currentPaper.subscribe()
+  }
+
+  ngOnDestroy(): void {
+    this._currentPaper.unsubscribe()
   }
 
   toggleVote(event: MatCheckboxChange) {
@@ -112,13 +131,14 @@ export class AssignmentPapersnapshotComponent implements OnInit {
 
   canUploadSolution() {
     return (
-      this.currentPaper.vote === null && 
-      ((this.currentPaper.status === 'submitted') || (this.currentPaper.status === 'closed'))
+      this.paper.vote === null && 
+      ((this.paper.status === 'submitted') || (this.paper.status === 'closed'))
       )
   }
 
   toReviewDisabled() {
-    return (this.currentPaper && this.currentPaper.status === 'closed') 
+    console.log("entro:", this.paper)
+    return (this.paper && this.paper.status === 'closed') 
   }
 
   onSubmit(): void {

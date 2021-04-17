@@ -1,57 +1,63 @@
 <mat-divider></mat-divider>
 
 <div class="container">
-  <mat-card style="margin-bottom:22px">
+  <div class="breadcrumb" fxLayout="row">
+    <div fxLayout="row" *ngIf="toShowLevel > 0">
+      <button class="breadcrumb-button" mat-button (click)="toShowLevel = 0">
+        Assignments
+      </button>
+    </div>
+
+    <div fxLayout="row" *ngIf="toShowLevel > 1">
+      <p class="breadcrumb-button">/</p>
+      <button class="breadcrumb-button" mat-button (click)="toShowLevel = 1">
+        Papers
+      </button>
+    </div>
+
+    <div fxLayout="row" *ngIf="toShowLevel > 2">
+      <p class="breadcrumb-button">/</p>
+      <button class="breadcrumb-button" mat-button (click)="toShowLevel = 2">
+        PaperSnapshots
+      </button>
+    </div>
+  </div>
+
+  <!--     <ng-container *ngIf="toShowLevel !== 0">
+      <button mat-flat-button (click)="back()" class="radius-20" style="background-color: transparent">
+        <mat-icon color="primary">
+          arrow_back
+        </mat-icon>
+      </button>
+    </ng-container> -->
+
+  <ng-container *ngIf="toShowLevel === 0">
+    <app-assignment-assignment [assignmentsData]="assignmentsData" (clickAssignmentEvent)="assignmentClicked($event)"
+      (submitAssignmentEvent)="assignmentSubmitted($event)">
+    </app-assignment-assignment>
+  </ng-container>
+  <ng-container *ngIf="toShowLevel === 1">
+    <app-assignment-paper [assignment]="currAssignment" [papersData]="papersData"
+      (clickPaperEvent)="paperClicked($event)">
+    </app-assignment-paper>
+  </ng-container>
+  <ng-container *ngIf="toShowLevel === 2">
+    <app-assignment-papersnapshot [assignment]="currAssignment" [papersnapshotsData]="papersnapshotsData"
+      [paper]="currPaper" (submitSolutionEvent)="solutionSubmitted($event)">
+    </app-assignment-papersnapshot>
+  </ng-container>
+
+
+  <!-- <mat-card style="margin-bottom:22px">
     <mat-card-header fxLayout="row" fxLayoutAlign="space-between stretch">
       <mat-card-title>
-        <div fxLayout="row">
-
-          <div fxLayout="row" *ngIf="toShowLevel >= 0">
-            <button mat-button (click)="toShowLevel = 0">
-              Assignments {{breadCrumbHelper("assignment")}}
-            </button>
-          </div>
-
-          <div fxLayout="row" *ngIf="toShowLevel >= 1">
-            <p>></p>
-            <button mat-button (click)="toShowLevel = 1">
-              Papers {{breadCrumbHelper("paper")}}
-            </button>
-          </div>
-
-          <div fxLayout="row" *ngIf="toShowLevel >= 2">
-            <p>></p>
-            <button mat-button (click)="toShowLevel = 2">
-              PaperSnapshots
-            </button>
-          </div>
-
-        </div>
+        
       </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <ng-container *ngIf="toShowLevel !== 0">
-        <button mat-flat-button (click)="back()" class="radius-20" style="background-color: transparent">
-          <mat-icon color="primary">
-            arrow_back
-          </mat-icon>
-        </button>
-      </ng-container>
-      <ng-container *ngIf="toShowLevel === 0">
-        <app-assignment-assignment [assignmentsData]="assignmentsData"
-          (clickAssignmentEvent)="assignmentClicked($event)" (submitAssignmentEvent)="assignmentSubmitted($event)">
-        </app-assignment-assignment>
-      </ng-container>
-      <ng-container *ngIf="toShowLevel === 1">
-        <app-assignment-paper [assignment]="currAssignment" [papersData]="papersData"
-          (clickPaperEvent)="paperClicked($event)">
-        </app-assignment-paper>
-      </ng-container>
-      <ng-container *ngIf="toShowLevel === 2">
-        <app-assignment-papersnapshot [papersnapshotsData]="papersnapshotsData" [paper]="currPaper"
-          (submitSolutionEvent)="solutionSubmitted($event)">
-        </app-assignment-papersnapshot>
-      </ng-container>
+    
+     
     </mat-card-content>
-  </mat-card>
+  </mat-card> -->
+
 </div>

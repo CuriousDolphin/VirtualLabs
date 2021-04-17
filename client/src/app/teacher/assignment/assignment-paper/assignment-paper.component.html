@@ -1,6 +1,4 @@
-<div class="container">
-
-  <!-- 
+<!-- 
   <mat-card style="margin-bottom: 22px;">
     <mat-card-header fxLayout="row" fxLayoutAlign="space-between stretch">
       <mat-card-title>Filters</mat-card-title>
@@ -15,54 +13,75 @@
     </mat-card-content>
   </mat-card>
   -->
-  <table mat-table [dataSource]="dataSource" class="elevation-z6" matSort>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      {{currentAssignment.title}}
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <table mat-table [dataSource]="dataSource" class="elevation-z6" matSort>
 
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef>Id</th>
-      <td mat-cell *matCellDef="let paper">{{paper.id}}</td>
-    </ng-container>
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>Id</th>
+        <td mat-cell *matCellDef="let paper">{{paper.id}}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef>Status
-        <mat-icon [ngStyle]="{'color':'#69F0AE'}" #filterIcon class="filterIcon" (click)="openFilterDialog()">filter_alt
-        </mat-icon>
-      </th>
-      <td mat-cell *matCellDef="let paper">
-        <mat-icon *ngIf="paper.status === 'null'">mark_email_unread</mat-icon>
-        <mat-icon *ngIf="paper.status === 'readed'">mark_email_read</mat-icon>
-        <mat-icon *ngIf="paper.status === 'submitted' && paper.vote === null">assignment_returned</mat-icon>
-        <mat-icon *ngIf="paper.status === 'reviewed'">assignment_return</mat-icon>
-        <mat-icon *ngIf="paper.status === 'submitted' && paper.vote !== null">assignment_turned_in</mat-icon>
-        <mat-icon *ngIf="paper.status === 'closed'">assignment_late</mat-icon>
-      </td>
-    </ng-container>
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status
+          <mat-icon [ngStyle]="{'color':'#69F0AE'}" #filterIcon class="filterIcon" (click)="openFilterDialog()">
+            filter_alt
+          </mat-icon>
+        </th>
+        <td mat-cell *matCellDef="let paper">
+          <mat-icon matTooltip="The student did not read the assignment" *ngIf="paper.status === 'null'">
+            mark_email_unread</mat-icon>
+          <mat-icon matTooltip="The student read the assignment" *ngIf="paper.status === 'readed'">mark_email_read
+          </mat-icon>
+          <mat-icon matTooltip="The student has submitted a solution" *ngIf="paper.status === 'submitted' && paper.vote === null">assignment_returned</mat-icon>
+          <mat-icon matTooltip="The teacher has submitted a correction" *ngIf="paper.status === 'reviewed'">assignment_return</mat-icon>
+          <mat-icon matTooltip="The solution has been voted" *ngIf="paper.status === 'submitted' && paper.vote !== null">assignment_turned_in</mat-icon>
+          <mat-icon matTooltip="Assignment has expired"*ngIf="paper.status === 'closed'">assignment_late</mat-icon>
+        </td>
+      </ng-container>
 
-    <ng-container matColumnDef="vote">
-      <th mat-header-cell *matHeaderCellDef>Vote</th>
-      <td mat-cell *matCellDef="let paper">{{paper.vote}}</td>
-    </ng-container>
+      <ng-container matColumnDef="vote">
+        <th mat-header-cell *matHeaderCellDef>Vote</th>
+        <td mat-cell *matCellDef="let paper">{{paper.vote}}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="lastUpdateTime">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Last update time</th>
-      <td mat-cell *matCellDef="let paper">{{format(paper.lastUpdateTime)}}</td>
-    </ng-container>
+      <ng-container matColumnDef="lastUpdateTime">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Last update time</th>
+        <td mat-cell *matCellDef="let paper">{{format(paper.lastUpdateTime)}}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="studentId">
-      <th mat-header-cell *matHeaderCellDef>Student Id</th>
-      <td mat-cell *matCellDef="let paper">{{paper.student.id}}</td>
-    </ng-container>
+      <ng-container matColumnDef="studentId">
+        <th mat-header-cell *matHeaderCellDef>Student Id</th>
+        <td mat-cell *matCellDef="let paper">{{paper.student.id}}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="studentName">
-      <th mat-header-cell *matHeaderCellDef>Student Name</th>
-      <td mat-cell *matCellDef="let paper">{{paper.student.name}}</td>
-    </ng-container>
+      <ng-container matColumnDef="studentName">
+        <th mat-header-cell *matHeaderCellDef>Student Name</th>
+        <td mat-cell *matCellDef="let paper">{{paper.student.name}}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="studentLastName">
-      <th mat-header-cell *matHeaderCellDef>Student Lastname</th>
-      <td mat-cell *matCellDef="let paper">{{paper.student.lastName}}</td>
-    </ng-container>
+      <ng-container matColumnDef="studentLastName">
+        <th mat-header-cell *matHeaderCellDef>Student Lastname</th>
+        <td mat-cell *matCellDef="let paper">{{paper.student.lastName}}</td>
+      </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="colsToDisplay"></tr>
-    <tr mat-row (click)="clickPaper(row.id)" *matRowDef="let row; columns: colsToDisplay"></tr>
-  </table>
-</div>
+      <ng-container matColumnDef="openPaper">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let paper">
+          <button (click)="clickPaper(paper.id)" mat-icon-button color="primary">View
+            <mat-icon>
+              chevron_right</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="colsToDisplay"></tr>
+      <tr mat-row *matRowDef="let row; columns: colsToDisplay"></tr>
+    </table>
+  </mat-card-content>
+</mat-card>

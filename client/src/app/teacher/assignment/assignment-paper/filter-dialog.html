@@ -1,9 +1,41 @@
 <mat-dialog-content>
-    <mat-checkbox [(ngModel)]="data.unreaded" (change)="emitChangeFilters()">Unreaded</mat-checkbox>
-    <br>
-    <mat-checkbox [(ngModel)]="data.readed" (change)="emitChangeFilters()">Readed</mat-checkbox>
-    <br>
-    <mat-checkbox [(ngModel)]="data.submitted" (change)="emitChangeFilters()">Submitted</mat-checkbox>
-    <br>
-    <mat-checkbox [(ngModel)]="data.reviewed" (change)="emitChangeFilters()">Reviewed</mat-checkbox>
+    <div fxLayout="column">
+        <div fxLayout="row">
+            <mat-checkbox [(ngModel)]="data.unreaded" (change)="emitChangeFilters()">
+                <mat-icon>mark_email_unread</mat-icon>
+            </mat-checkbox>
+            <span>(Unreaded)</span>
+        </div>
+        <div fxLayout="row">
+            <mat-checkbox [(ngModel)]="data.readed" (change)="emitChangeFilters()">
+                <mat-icon>mark_email_read
+                </mat-icon>
+            </mat-checkbox>
+            <span>(Readed)</span>
+        </div>
+        <div fxLayout="row">
+            <mat-checkbox [(ngModel)]="data.submitted" (change)="emitChangeFilters()">
+                <mat-icon>assignment_returned</mat-icon>
+            </mat-checkbox>
+            <span>(Submitted)</span>
+        </div>
+        <div fxLayout="row">
+            <mat-checkbox [(ngModel)]="data.reviewed" (change)="emitChangeFilters()">
+                <mat-icon>assignment_return</mat-icon>
+            </mat-checkbox>
+            <span>(Reviewed)</span>
+        </div>
+        <div fxLayout="row">
+            <mat-checkbox [(ngModel)]="data.finished" (change)="emitChangeFilters()">
+                <mat-icon>assignment_turned_in</mat-icon>
+            </mat-checkbox>
+            <span>(Finished)</span>
+        </div>
+        <div fxLayout="row">
+            <mat-checkbox [(ngModel)]="data.closed" (change)="emitChangeFilters()">
+                <mat-icon>assignment_late</mat-icon>
+            </mat-checkbox>
+            <span>(Closed)</span>
+        </div>
+    </div>
 </mat-dialog-content>

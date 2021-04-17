@@ -24,10 +24,10 @@ export class StudentAssignmentAssignmentComponent implements OnInit {
 
   @ViewChild(MatSort, { static: true }) sort: MatSort
 
-  colsToDisplay = ["title", "content", "releaseDate", "expiryDate"]
-  dataSource = new MatTableDataSource<Assignment>();
+  colsToDisplay = ["title", "content", "status", "vote", "releaseDate", "expiryDate", "openAssignment"]
+  dataSource = new MatTableDataSource<StudentAssignment>();
 
-  @Input() set assignmentsData(assignments: Assignment[]) {
+  @Input() set assignmentsData(assignments: StudentAssignment[]) {
     if (assignments != null) {
       this.dataSource.data = assignments;
     }
@@ -78,7 +78,7 @@ export class StudentAssignmentAssignmentComponent implements OnInit {
   templateUrl: "../student-image-dialog.html"
 })
 export class StudentImageDialog {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: object) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
 
   }
 

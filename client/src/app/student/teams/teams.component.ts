@@ -86,8 +86,8 @@ export class TeamsComponent implements OnInit {
   isCreateTeamDisabled() {
     if (
       this.currentCourse != null &&
-      (this.selectedStudents.selected.length > this.currentCourse.max ||
-        this.selectedStudents.selected.length < this.currentCourse.min)
+      (this.selectedStudents.selected.length > (this.currentCourse.max -1) ||
+        this.selectedStudents.selected.length < (this.currentCourse.min -1) )
     ) {
       return true;
     }

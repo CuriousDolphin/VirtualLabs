@@ -654,7 +654,7 @@ public class TeamServiceImpl implements TeamService {
         paper.setStatus(status);
         paperRepository.save(paper);
 
-        System.out.println("Update paper:" + paper.toString());
+        System.out.println("Update paper:" + paper);
 
         return modelMapper.map(paper, PaperDTO.class);
     }
