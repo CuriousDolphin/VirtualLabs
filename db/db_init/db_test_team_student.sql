@@ -10,5 +10,3 @@ create table team_student
 
 INSERT INTO db_test.team_student (team_id, student_id) VALUES (9, 's265542');
 INSERT INTO db_test.team_student (team_id, student_id) VALUES (9, 's263138');
-INSERT INTO db_test.team_student (team_id, student_id) VALUES (10, 's263094');
-INSERT INTO db_test.team_student (team_id, student_id) VALUES (10, 's255300');

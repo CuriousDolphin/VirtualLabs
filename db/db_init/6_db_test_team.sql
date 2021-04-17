@@ -15,4 +15,3 @@ create table team
 );
 
 INSERT INTO db_test.team (id, name, status, course_id, owner_id) VALUES (9, 'AwesomeTeam1', 1, 2, 's263138');
-INSERT INTO db_test.team (id, name, status, course_id, owner_id) VALUES (10, 'CompagniaDeiCelestini', 1, 2, 's255300');
