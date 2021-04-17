@@ -352,6 +352,11 @@ export class CourseDashboard implements OnInit, OnDestroy {
       );
   }
 
+  reloadDataTeacher() {
+    this._reloadCourse$.next();
+    this._reloadStudents$.next();
+  }
+
   ngOnDestroy(): void {
     if (this.dialogSubscription) this.dialogSubscription.unsubscribe();
     if (this.courseSubscription) this.courseSubscription.unsubscribe();

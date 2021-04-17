@@ -62,6 +62,9 @@ public class TeamServiceImpl implements TeamService {
     @Autowired
     TeacherRepository teacherRepository;
 
+    @Autowired
+    TokenAssignmentRepository tokenAssignmentRepository;
+
 
     @Override
     public boolean addCourse(CourseDTO course, String userId) {
@@ -671,11 +674,21 @@ public class TeamServiceImpl implements TeamService {
         /* save */
         assignmentRepository.save(assignment);
 
+
+        /* create token */
+        System.out.println("pre token" + assignment.getId());
+        TokenAssignment tokenAssignment = TokenAssignment.builder()
+                .assignment(assignment)
+                .expiryDate(assignment.getExpiryDate())
+                .build();
+
+        tokenAssignmentRepository.save(tokenAssignment);
+        System.out.println("post token" );
         /* Create papers for every student in course */
         course.get().getStudents().forEach(student -> {
             Paper paper = Paper.builder()
                     .vote(null)
-                    .lastUpdateTime(assignment.getReleaseDate())
+                    .lastUpdateTime(assignment.getExpiryDate())
                     .status("null")
                     .build();
             paper.setAssignment(assignment);
