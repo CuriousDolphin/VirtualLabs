@@ -131,6 +131,7 @@ export class AssignmentPapersnapshotComponent implements OnInit {
 
   canUploadSolution() {
     return (
+      this.paper && 
       this.paper.vote === null && 
       ((this.paper.status === 'submitted') || (this.paper.status === 'closed'))
       )
