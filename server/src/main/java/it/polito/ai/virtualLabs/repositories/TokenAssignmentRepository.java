@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
-public interface TokenAssignmentRepository extends JpaRepository<TokenAssignment, String> {
+public interface TokenAssignmentRepository extends JpaRepository<TokenAssignment, Long> {
     @Query("SELECT t FROM TokenAssignment t WHERE t.expiryDate<:time")
     List<TokenAssignment> findAllByExpiryBefore(Timestamp time); //per selezionare quelli scaduti
 

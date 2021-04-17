@@ -676,18 +676,19 @@ public class TeamServiceImpl implements TeamService {
 
 
         /* create token */
+        System.out.println("pre token" + assignment.getId());
         TokenAssignment tokenAssignment = TokenAssignment.builder()
                 .assignment(assignment)
                 .expiryDate(assignment.getExpiryDate())
                 .build();
 
         tokenAssignmentRepository.save(tokenAssignment);
-
+        System.out.println("post token" );
         /* Create papers for every student in course */
         course.get().getStudents().forEach(student -> {
             Paper paper = Paper.builder()
                     .vote(null)
-                    .lastUpdateTime(assignment.getReleaseDate())
+                    .lastUpdateTime(assignment.getExpiryDate())
                     .status("null")
                     .build();
             paper.setAssignment(assignment);
