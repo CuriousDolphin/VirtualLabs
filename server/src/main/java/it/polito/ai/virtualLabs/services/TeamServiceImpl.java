@@ -258,10 +258,50 @@ public class TeamServiceImpl implements TeamService {
         Student s = studentRepository.findByIdIgnoreCase(studentId).get();
         System.out.println(" STUDENT" + s.getId());
 
-        c.removeStudent(s);
-        return true;
+        /* get teams for student and for course */
+        List<Team> teamsCourseStudent = s.getTeams()
+                .stream()
+                .filter(team -> team.getCourse().getName().equals(courseName)).collect(Collectors.toList());
 
+        if(teamsCourseStudent.isEmpty()) { /* i can remove the student */
+            System.out.println("Non posso cancellare");
 
+            /* get papers related with this course and with this students*/
+            List<Paper> papers = s.getPapers().stream()
+                    .filter(paper ->
+                        paper.getAssignment().getCourse().getName().equals(courseName) &&
+                        paper.getStudent().getId().equals(studentId))
+                    .collect(Collectors.toList());
+
+            /* get assignment related with this course and with this student */
+            List<Assignment> assignments = papers.stream().map(Paper::getAssignment).collect(Collectors.toList());
+
+            /* delete paperSnapshots from papers*/
+            papers.forEach(paper -> {
+                List<PaperSnapshot> paperSnapshots = paper.getPaperSnapshots();
+                paper.getPaperSnapshots().forEach(paper::removePaperSnapshot);
+                paperSnapshotRepository.deleteAll(paperSnapshots);
+            });
+
+            /* delete papers from assignment */
+            papers.forEach(paper -> paper.setAssignment(null));
+            paperRepository.deleteAll(papers);
+
+            /* delete assignment if there aren't more paper related with*/
+            List<Assignment> deletableAssignments = assignments.stream()
+                    .filter(assignment -> assignment.getPapers().isEmpty())
+                    .collect(Collectors.toList());
+
+            /* delete empty assignments */
+            if(!deletableAssignments.isEmpty()) {
+                deletableAssignments.forEach(assignment -> assignment.setCourse(null));
+                assignmentRepository.deleteAll(deletableAssignments);
+            }
+            c.removeStudent(s);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -747,12 +787,11 @@ public class TeamServiceImpl implements TeamService {
         if (!studentRepository.existsById(studentId)) throw new StudentNotFoundException();
 
         List<TokenTeam> tokens = tokenRepository.findAllByStudentId(studentId);
-
         List<TeamDTO> tmp = null;
-
         tokens.forEach(teamToken ->
                 tmp.add(modelMapper.map(teamToken.getTeam(), TeamDTO.class))
         );
+
         return tmp;
     }
 
