@@ -51,6 +51,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
   assignments$: Observable<Assignment[]>
   papers$: Observable<Paper[]>
   currentPaper$: Observable<Paper>;
+  currentPaperId: number;
   currentAssignment$: Observable<Assignment>
   papersnapshots$: Observable<PaperSnapshot[]>
   courseTeams$: Observable<Team[]>;
@@ -295,7 +296,9 @@ export class CourseDashboard implements OnInit, OnDestroy {
   getCurrentPaper(paperId: number) {
     this.isLoading = true
     this.currentPaper$ = this.courseService.getPaper(paperId).pipe(
-      tap(() => this.isLoading = false)
+      tap(() => {
+        this.currentPaperId = paperId
+        this.isLoading = false})
     )
   }
 
@@ -355,6 +358,11 @@ export class CourseDashboard implements OnInit, OnDestroy {
   reloadDataTeacher() {
     this._reloadCourse$.next();
     this._reloadStudents$.next();
+    this._reloadAssignments$.next();
+    if(this.currentAssignmentId != null)
+      this.getAllPapersForAssignment(this.currentAssignmentId);
+    if(this.currentPaperId != null)
+      this.getAllPapersnapshotsForPaper(this.currentPaperId);
   }
 
   ngOnDestroy(): void {

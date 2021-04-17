@@ -16,7 +16,7 @@
 <mat-card>
   <mat-card-header>
     <mat-card-title>
-      {{currentAssignment.title}}
+      {{ currentAssignment ? currentAssignment.title : ""}}
     </mat-card-title>
   </mat-card-header>
   <mat-card-content>
