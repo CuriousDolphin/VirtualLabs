@@ -4,6 +4,13 @@ web application project made with love with:
 - Angular
 - MariaDb
 
+## AVAILABLE USER
+    - admin@polito.it pwd
+    - d123456@polito.it pwd
+    - s263138@studenti.polito.it pwd
+    - s263094@studenti.polito.it pwd
+    - s255300@studenti.polito.it pwd
+
 ## RUN VIRTUALLABS STANDALONE
 
 You can run the app (frontend,backend and db) just type in root folder:
