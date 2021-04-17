@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output  } from '@angular/core';
 import { Assignment } from 'src/app/models/assignment.model';
 import { SolutionFormData } from 'src/app/models/formPaperSnapshotData.model';
 import { Paper } from 'src/app/models/paper.model';
@@ -20,6 +20,7 @@ export class AssignmentComponent implements OnInit {
   currentPaperId: number
 
   @Input() set assignments(assignments: Assignment[]) {
+    this.resetState();
     if (assignments != null) {
       this.assignmentsData = assignments
     }
@@ -58,9 +59,20 @@ export class AssignmentComponent implements OnInit {
   ngOnInit(): void {
     this.toShowLevel = 0
   }
+ 
 
   back() {
     this.toShowLevel = this.toShowLevel - 1
+  }
+
+  resetState(){
+    this.toShowLevel=0;
+    this.currentAssignmentId=null;
+    this.currentPaperId=null;
+    this.papersData=null;
+    this.papersnapshotsData=null;
+    this.currPaper=null;
+    this.currAssignment = null;
   }
 
   assignmentClicked(assignmentId: number) {

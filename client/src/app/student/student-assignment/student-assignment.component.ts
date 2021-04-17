@@ -16,6 +16,7 @@ export class StudentAssignmentComponent implements OnInit {
   currentAssignmentId: number
 
   @Input() set studentAssignments(assignments: StudentAssignment[]) {
+    this.resetData();
     if (assignments != null) {
       this.assignmentsData = assignments
     }
@@ -44,6 +45,12 @@ export class StudentAssignmentComponent implements OnInit {
 
   back() {
     this.toShowLevel = this.toShowLevel - 1
+  }
+  resetData(){
+    this.toShowLevel=0;
+    this.currAssignment=null;
+    this.paperSnapshotsData=null;
+    this.assignmentsData=null;
   }
 
   assignmentClicked(assignmentId: number) {
