@@ -109,7 +109,7 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity signin(@RequestBody @Valid UserProposal data) {
         try {
-            String username = data.getUsername();
+            String username = data.getUsername().toLowerCase();
             String psw = data.getPassword();
             User user;
             Optional<Student> optStudent;
