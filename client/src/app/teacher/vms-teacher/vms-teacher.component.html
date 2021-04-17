@@ -147,14 +147,13 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
 
-        <div *ngIf="team.vmInstances.length !== 0">
+        <div *ngIf="team.vmInstances.length !== 0" class='mat-caption'>
           <mat-grid-list cols="80" rowHeight="3rem">
-            <mat-grid-tile colspan="10" rowspan="2">VM</mat-grid-tile>
-            <mat-grid-tile colspan="10" rowspan="2">Creator</mat-grid-tile>
-            <mat-grid-tile colspan="10" rowspan="2">Accessibility</mat-grid-tile>
-            <mat-grid-tile colspan="30" rowspan="1">Resources</mat-grid-tile>
-            <mat-grid-tile colspan="10" rowspan="2">State</mat-grid-tile>
-            <mat-grid-tile colspan="10" rowspan="2">Access</mat-grid-tile>
+            <mat-grid-tile colspan="10" rowspan="1">VM</mat-grid-tile>
+            <mat-grid-tile colspan="10" rowspan="1">Creator</mat-grid-tile>
+            <mat-grid-tile colspan="10" rowspan="1">Accessibility</mat-grid-tile>
+            <mat-grid-tile colspan="10" rowspan="1">State</mat-grid-tile>
+            <mat-grid-tile colspan="10" rowspan="1">Access</mat-grid-tile>
             <mat-grid-tile colspan="10" rowspan="1">VCPUs</mat-grid-tile>
             <mat-grid-tile colspan="10" rowspan="1">RAM</mat-grid-tile>
             <mat-grid-tile colspan="10" rowspan="1">Disk</mat-grid-tile>
