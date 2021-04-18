@@ -36,8 +36,6 @@ export class AssignmentPaperComponent implements OnInit {
       this.currentAssignment = assignment
       //console.log("assignment: ",assignment)
     }
-
-
   }
 
   unreaded: boolean = true;

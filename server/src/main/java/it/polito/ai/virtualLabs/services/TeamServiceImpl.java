@@ -731,10 +731,14 @@ public class TeamServiceImpl implements TeamService {
     public PaperSnapshotDTO addPaperSnapshotToPaper(Long paperId, PaperSnapshotDTO paperSnapshotDTO, boolean toReview, Integer vote) {
         if (!paperRepository.existsById(paperId)) throw new PaperNotFoundException();
         Paper paper = paperRepository.findById(paperId).get();
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+
 
         if(toReview) { //is to review
+            if (paper.getAssignment().getExpiryDate().after(now)) { /* if assignment expire */
+                throw new AssignmentExpiredException();
+            }
             byte[] bytes = Base64.getMimeDecoder().decode(paperSnapshotDTO.getContent().split(",")[1]);
-
             PaperSnapshot paperSnapshot = modelMapper.map(paperSnapshotDTO, PaperSnapshot.class);
             paper.setStatus("reviewed");
             paperSnapshot.setPaper(paper);

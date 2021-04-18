@@ -44,7 +44,7 @@ export class StudentAssignmentAssignmentComponent implements OnInit {
   }
 
   clickAssignment(assignment: StudentAssignment) {
-    if(assignment.status === "null") {
+    if(assignment.status === "null" || assignment.status === "reviewed") {
       this.openImage(assignment.content, assignment.id, assignment.status)
     } else {
       this.clickAssignmentEvent.emit(assignment.id)
@@ -64,6 +64,7 @@ export class StudentAssignmentAssignmentComponent implements OnInit {
         assignmentId: assignmentId,
         status: "readed"
       }
+      this.dialog.closeAll()
       this.confirmReadClickedEvent.emit(data)
     })
 
