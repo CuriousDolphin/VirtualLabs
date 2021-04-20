@@ -29,7 +29,7 @@ export class StudentAssignmentPapersnapshotComponent implements OnInit {
   imageSrc: ArrayBuffer = null;
   currAssignment: StudentAssignment;
   dataSource = new MatTableDataSource<PaperSnapshot>();
-  colsToDisplay = ["submissionDate", "content"]
+  colsToDisplay = ["submissionDate", "type",  "content"]
 
   @Input() set paperSnapshotsData(paperSnapshots: PaperSnapshot[]) {
     if (paperSnapshots != null)
@@ -75,6 +75,7 @@ export class StudentAssignmentPapersnapshotComponent implements OnInit {
     const papersnapshot: PaperSnapshot = {
       id: null,
       submissionDate: new Date(),
+      type: "solution",
       content: this.imageSrc
     }
     this.submitSolutionEvent.emit(papersnapshot)

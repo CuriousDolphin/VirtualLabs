@@ -20,6 +20,7 @@ public class PaperSnapshot {
     @Lob
     @Column(columnDefinition="MEDIUMBLOB")
     private byte[] content;
+    private String type;
     private Timestamp submissionDate;
     @ManyToOne
     @JoinColumn(name = "paper_id")

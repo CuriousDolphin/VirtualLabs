@@ -42,7 +42,7 @@ export class AssignmentPapersnapshotComponent implements OnInit {
     })
   }
 
-  colsToDisplay = ["submissionDate", "content"]
+  colsToDisplay = ["submissionDate", "type", "content"]
   dataSource = new MatTableDataSource<PaperSnapshot>()
 
   @Input() set papersnapshotsData(papersnapshots: PaperSnapshot[]) {
@@ -149,6 +149,7 @@ export class AssignmentPapersnapshotComponent implements OnInit {
     const papersnapshot: PaperSnapshot = {
       id: null,
       submissionDate: new Date(),
+      type: "correction",
       content: this.formGroup.controls["solutionFileSource"].value
     }
 

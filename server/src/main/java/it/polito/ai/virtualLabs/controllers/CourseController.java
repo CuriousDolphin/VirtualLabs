@@ -298,6 +298,8 @@ public class CourseController {
         }
         catch (PaperNotFoundException paperNotFoundException) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Paper not found");
+        } catch (AssignmentExpiredException assignmentExpiredException) {
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Method not allowed");
         }
     }
     @GetMapping("/{name}/vmInstances")
