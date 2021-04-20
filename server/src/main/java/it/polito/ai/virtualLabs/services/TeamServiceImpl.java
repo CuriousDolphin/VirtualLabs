@@ -735,12 +735,13 @@ public class TeamServiceImpl implements TeamService {
 
 
         if(toReview) { //is to review
-            if (paper.getAssignment().getExpiryDate().after(now)) { /* if assignment expire */
+            if (paper.getAssignment().getExpiryDate().before(now)) { /* if assignment expire */
                 throw new AssignmentExpiredException();
             }
             byte[] bytes = Base64.getMimeDecoder().decode(paperSnapshotDTO.getContent().split(",")[1]);
             PaperSnapshot paperSnapshot = modelMapper.map(paperSnapshotDTO, PaperSnapshot.class);
             paper.setStatus("reviewed");
+            paper.setLastUpdateTime(paperSnapshotDTO.getSubmissionDate());
             paperSnapshot.setPaper(paper);
             paperSnapshot.setContent(bytes);
             paperSnapshotRepository.save(paperSnapshot);
@@ -748,7 +749,6 @@ public class TeamServiceImpl implements TeamService {
             paper.setVote(vote);
         }
         paperRepository.save(paper);
-
         return paperSnapshotDTO;
     }
 
@@ -767,6 +767,7 @@ public class TeamServiceImpl implements TeamService {
         paperSnapshot.setPaper(paper);
         paperSnapshot.setContent(bytes);
         paper.setStatus("submitted");
+        paper.setLastUpdateTime(paperSnapshotDTO.getSubmissionDate());
 
         paperRepository.save(paper);
         paperSnapshotRepository.save(paperSnapshot);

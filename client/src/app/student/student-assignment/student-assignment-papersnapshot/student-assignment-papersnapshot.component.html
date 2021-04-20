@@ -51,6 +51,11 @@
           </td>
         </ng-container>
 
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
+          <td mat-cell *matCellDef="let papersnapshot">{{papersnapshot.type}}</td>
+        </ng-container>
+
         <ng-container matColumnDef="submissionDate">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Submission Date</th>
           <td mat-cell *matCellDef="let papersnapshot">{{format(papersnapshot.submissionDate)}}</td>
