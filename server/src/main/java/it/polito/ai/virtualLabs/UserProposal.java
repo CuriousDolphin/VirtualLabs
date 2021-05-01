@@ -25,4 +25,5 @@ public class UserProposal {
     @NotBlank
     @NotNull
     private String lastName;
+    private String photo;
 }

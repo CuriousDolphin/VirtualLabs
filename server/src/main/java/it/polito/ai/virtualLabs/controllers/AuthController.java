@@ -26,10 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -90,14 +87,16 @@ public class AuthController {
     }
 
 
-    public User AddGenericUser(String username, String psw)
+    public User AddGenericUser(String username, String psw, byte[] photo)
     {
         if(users.findByUsername(username.toLowerCase()).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists!");
+
         User u = User.builder().id(username.toLowerCase().split("@")[0])
                 .username(username.toLowerCase())
                 .password(passwordEncoder.encode(psw))
                 .enabled(false)
+                .photo(photo)
                 .roles(username.toLowerCase().startsWith("d") ? Arrays.asList( "ROLE_PROF") : Arrays.asList( "ROLE_STUDENT"))
                 .build();
 
@@ -117,13 +116,15 @@ public class AuthController {
             Optional<Teacher> optTeacher;
             Teacher teacher;
 
+            byte[] photo = Base64.getMimeDecoder().decode(data.getPhoto().split(",")[1]);
+
             if(!(data.getPassword().equals(data.getConfirmPassword())))
             {
                 throw new BadCredentialsException("Passwords not match");
             }
             if(username.endsWith("@studenti.polito.it") && username.startsWith("s"))
             {
-                user = AddGenericUser(username,psw);
+                user = AddGenericUser(username,psw,photo);
                 String id = username.split("@")[0].toLowerCase();
                 optStudent = students.findByIdIgnoreCase(id);
                 if(optStudent.isPresent())
@@ -150,7 +151,7 @@ public class AuthController {
             }
             else if(username.endsWith("@polito.it") && username.startsWith("d"))
             {
-                user = AddGenericUser(username,psw);
+                user = AddGenericUser(username,psw,photo);
                 String id = username.split("@")[0].toLowerCase();
                 optTeacher = teachers.findByIdIgnoreCase(id);
                 if(!optTeacher.isPresent())

@@ -29,5 +29,6 @@ public class UserDTO {
     @NotBlank
     @NotNull
     private Boolean enabled;
+    private String photo;
 
 }

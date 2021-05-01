@@ -35,6 +35,9 @@ public class User implements UserDetails {
     private String password;
     @NotNull
     private Boolean enabled;
+    @Lob
+    @Column(columnDefinition="MEDIUMBLOB")
+    private byte[] photo;
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
