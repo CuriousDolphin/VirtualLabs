@@ -689,9 +689,11 @@ public class TeamServiceImpl implements TeamService {
         Optional<Student> student = studentRepository.findById(studentId);
         if(assignment.isEmpty()) throw new AssignmentNotFoundException();
         if(student.isEmpty()) throw new StudentNotFoundException();
+        Timestamp now = new Timestamp(System.currentTimeMillis());
 
         Paper paper = paperRepository.findByAssignment_IdAndStudent_Id(assignmentId, studentId);
         paper.setStatus(status);
+        paper.setLastUpdateTime(now);
         paperRepository.save(paper);
 
         System.out.println("Update paper:" + paper);
@@ -728,7 +730,7 @@ public class TeamServiceImpl implements TeamService {
         course.get().getStudents().forEach(student -> {
             Paper paper = Paper.builder()
                     .vote(null)
-                    .lastUpdateTime(assignment.getExpiryDate())
+                    .lastUpdateTime(assignment.getReleaseDate())
                     .status("null")
                     .build();
             paper.setAssignment(assignment);
