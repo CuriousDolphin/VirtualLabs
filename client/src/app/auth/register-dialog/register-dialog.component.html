@@ -56,15 +56,17 @@
     <!-- PHOTO-->
     
     <div>
+      
+      <input hidden #uploader accept="image/*" (change)="onFileChange($event)" type="file">
+        <!--formControlName="solutionFile"-->
+
+      <img class="preview" [src]="imageSrc" *ngIf="imageSrc" width="200" height="200">
+      <br>
       <button type="button" mat-raised-button color="primary" 
         (click)="uploader.click()">
         <mat-icon mat-icon style="padding: 8px">add_a_photo</mat-icon>
         Choose a file
       </button>
-      <input hidden #uploader accept="image/*" (change)="onFileChange($event)" type="file">
-        <!--formControlName="solutionFile"-->
-
-      <img class="preview" [src]="imageSrc" *ngIf="imageSrc">
     </div>
     <!-- END PHOTO-->
 
