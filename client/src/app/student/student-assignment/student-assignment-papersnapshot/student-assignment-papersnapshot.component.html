@@ -45,7 +45,7 @@
         </ng-container>
 
         <ng-container matColumnDef="content">
-          <th mat-header-cell *matHeaderCellDef>Content</th>
+          <th mat-header-cell *matHeaderCellDef style="text-align: center">Content</th>
           <td mat-cell (click)="openImage(papersnapshot.content)" *matCellDef="let papersnapshot">
             <img [src]="renderTrustImage(papersnapshot.content)" class="mini-preview">
           </td>
