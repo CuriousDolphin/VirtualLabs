@@ -128,7 +128,7 @@ public class TeamServiceImpl implements TeamService {
         //if (!courseRepository.existsById(name)) throw new CourseNotFoundException();
 
         Course course = courseRepository.findByNameIgnoreCase(name).get();
-        System.out.println("GET COURSE " + course.getName());
+        //System.out.println("GET COURSE " + course.getName());
         return courseRepository
                 .findByNameIgnoreCase(name)
                 .map(course1 -> modelMapper.map(course1, CourseDTO.class));
@@ -185,9 +185,9 @@ public class TeamServiceImpl implements TeamService {
         // add preferred tea for course
         students.forEach(student -> {
             EnrolledStudentDTO std = modelMapper.map(student, EnrolledStudentDTO.class);
-            System.out.println(std);
+            //System.out.println(std);
             student.getTeams().forEach(team -> {
-                System.out.println(team);
+                //System.out.println(team);
 
                 if (team.getCourse().getName().toLowerCase().equals(courseName.toLowerCase()) && team.getStatus() == 1) {
                     std.setTeamName(team.getName());
@@ -217,9 +217,9 @@ public class TeamServiceImpl implements TeamService {
             return false;
 
         Course c = courseRepository.findByNameIgnoreCase(courseName).get();
-        System.out.println("ADD STUDENT TO COURSE " + c.getName());
+        //System.out.println("ADD STUDENT TO COURSE " + c.getName());
         Student s = studentRepository.findByIdIgnoreCase(studentId).get();
-        System.out.println("ADD STUDENT TO COURSE STUDENT" + s.getId());
+        //System.out.println("ADD STUDENT TO COURSE STUDENT" + s.getId());
         c.addStudent(s);
 
         return true;
@@ -232,14 +232,14 @@ public class TeamServiceImpl implements TeamService {
 
 
         Course c = courseRepository.findByNameIgnoreCase(courseName).get();
-        System.out.println("REMOVE STUDENTS TO COURSE " + c.getName());
+        //System.out.println("REMOVE STUDENTS TO COURSE " + c.getName());
 
         List<Boolean> ris = new ArrayList<>();
         studentIds.forEach(s -> {
             try {
                 ris.add(this.removeStudentFromCourse(s, courseName));
             } catch (Exception e) {
-                System.out.println("catched exception " + e.toString());
+                //System.out.println("catched exception " + e.toString());
                 ris.add(false);
             }
         });
@@ -254,9 +254,9 @@ public class TeamServiceImpl implements TeamService {
         if (!studentRepository.existsById(studentId)) throw new StudentNotFoundException();
 
         Course c = courseRepository.findByNameIgnoreCase(courseName).get();
-        System.out.println("REMOVE STUDENT TO COURSE " + c.getName());
+        //System.out.println("REMOVE STUDENT TO COURSE " + c.getName());
         Student s = studentRepository.findByIdIgnoreCase(studentId).get();
-        System.out.println(" STUDENT" + s.getId());
+        //System.out.println(" STUDENT" + s.getId());
 
         /* get teams for student and for course */
         List<Team> teamsCourseStudent = s.getTeams()
@@ -264,7 +264,7 @@ public class TeamServiceImpl implements TeamService {
                 .filter(team -> team.getCourse().getName().equals(courseName)).collect(Collectors.toList());
 
         if(teamsCourseStudent.isEmpty()) { /* i can remove the student */
-            System.out.println("Non posso cancellare");
+            //System.out.println("Non posso cancellare");
 
             /* get papers related with this course and with this students*/
             List<Paper> papers = s.getPapers().stream()
@@ -323,7 +323,7 @@ public class TeamServiceImpl implements TeamService {
     public List<Boolean> addAll(List<StudentDTO> students) {
         List<Boolean> ris = new ArrayList<>();
         students.forEach(studentDTO -> {
-            System.out.println("st " + studentDTO.toString());
+            //System.out.println("st " + studentDTO.toString());
             ris.add(this.addStudent(studentDTO));
         });
         return ris;
@@ -339,7 +339,7 @@ public class TeamServiceImpl implements TeamService {
             try {
                 ris.add(this.addStudentToCourse(s, courseName));
             } catch (Exception e) {
-                System.out.println("catched exception " + e.toString());
+                //System.out.println("catched exception " + e.toString());
                 ris.add(false);
             }
         });
@@ -361,7 +361,7 @@ public class TeamServiceImpl implements TeamService {
         List<String> studentIds = new ArrayList<>();
         students.forEach(student -> {
             studentIds.add(student.getId().toLowerCase());
-            System.out.println(student.toString());
+            //System.out.println(student.toString());
         });
 
         List<Boolean> l1 = this.addAll(students);
@@ -415,7 +415,7 @@ public class TeamServiceImpl implements TeamService {
                 .collect(Collectors.toList());
 
         // check status for each
-        System.out.println(teams.toString());
+        //System.out.println(teams.toString());
 
         teams.forEach(
                 teamDTO -> {
@@ -424,7 +424,7 @@ public class TeamServiceImpl implements TeamService {
                     Map<String, String> studentsStatus = new java.util.HashMap<>(Map.of());
                     teamDTO.getMembers().forEach(
                             studentDTO -> {
-                                System.out.println("=======" + studentDTO.getId());
+                                //System.out.println("=======" + studentDTO.getId());
 
                                 if (!tokenRepository.existsByTeamAndStudentId(modelMapper.map(teamDTO, Team.class), studentDTO.getId())) {
                                     studentsStatus.put(studentDTO.getId(), "Confirmed");
@@ -512,10 +512,10 @@ public class TeamServiceImpl implements TeamService {
         newTeam.setCourse(course);
         newTeam.setMembers(members);
         teamRepository.save(newTeam);
-        System.out.println("new team saved " + newTeam.toString());
+        //System.out.println("new team saved " + newTeam.toString());
 
         course.addTeam(newTeam);
-        System.out.println("=======================8");
+        //System.out.println("=======================8");
 
 
         return modelMapper.map(newTeam, TeamDTO.class);
@@ -696,7 +696,7 @@ public class TeamServiceImpl implements TeamService {
         paper.setLastUpdateTime(now);
         paperRepository.save(paper);
 
-        System.out.println("Update paper:" + paper);
+        //System.out.println("Update paper:" + paper);
 
         return modelMapper.map(paper, PaperDTO.class);
     }
@@ -718,14 +718,14 @@ public class TeamServiceImpl implements TeamService {
 
 
         /* create token */
-        System.out.println("pre token" + assignment.getId());
+        //System.out.println("pre token" + assignment.getId());
         TokenAssignment tokenAssignment = TokenAssignment.builder()
                 .assignment(assignment)
                 .expiryDate(assignment.getExpiryDate())
                 .build();
 
         tokenAssignmentRepository.save(tokenAssignment);
-        System.out.println("post token" );
+        //System.out.println("post token" );
         /* Create papers for every student in course */
         course.get().getStudents().forEach(student -> {
             Paper paper = Paper.builder()
@@ -811,7 +811,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public void evictTeam(Long teamId) {
-        System.out.println("GOING TO EVICT " + teamId.toString());
+        //System.out.println("GOING TO EVICT " + teamId.toString());
         if (!teamRepository.existsById(teamId)) throw new TeamNotFoundException();
         Team t = teamRepository.getOne(teamId);
         teamRepository.delete(t);

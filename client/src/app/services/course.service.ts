@@ -189,14 +189,10 @@ export class CourseService {
             team.vmInstances.forEach((instance) =>
               _.set(instance, "image", IMG_PATH + instance.image)
             );
-            console.log(team);
 
             return team;
           })
-        ),
-        tap((vm) => {
-          console.log(vm);
-        })
+        )
       )
       .pipe(catchError((e) => this.handleError(e)));
   }
@@ -222,7 +218,6 @@ export class CourseService {
   }
 
   private handleError(error) {
-    console.log(error)
     let errorMessage = "";
     if (error.error instanceof ErrorEvent) {
       // client-side error
@@ -236,7 +231,6 @@ export class CourseService {
     // window.alert(errorMessage);
 
     this.toastService.error(error.message, error.status.toString());
-    console.log("HTTP ERROR", error);
     return of(null);
   }
 }

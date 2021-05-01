@@ -38,7 +38,6 @@ export class StudentAssignmentPapersnapshotComponent implements OnInit {
 
   @Input() set currentAssignment(assignment: StudentAssignment) {
     if (assignment != null) {
-      console.log(assignment)
       this.currAssignment = assignment
     }
       

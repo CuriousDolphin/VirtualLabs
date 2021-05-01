@@ -96,7 +96,6 @@ export class AssignmentAssignmentComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log("ciaoi")
     const splittedPath = this.formGroup.controls["assignmentFile"].value.split("\\")
 
     const assignment: Assignment = {

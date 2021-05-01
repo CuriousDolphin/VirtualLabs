@@ -20,10 +20,8 @@ export class HomeGuard implements CanActivate {
   ): boolean {
     if (this.auth.isLogged())
       if (this.auth.hasRoleTeacher() == true) {
-        console.log("Redirect to teacher");
         this.router.navigate(["teacher"], {});
       } else {
-        console.log("Redirect to student");
         this.router.navigate(["student"], {});
       }
 

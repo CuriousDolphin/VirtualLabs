@@ -138,7 +138,6 @@ export class AssignmentPapersnapshotComponent implements OnInit {
   }
 
   toReviewDisabled() {
-    console.log("entro:", this.paper)
     return (this.paper && this.paper.status === 'closed') 
   }
 
@@ -158,8 +157,6 @@ export class AssignmentPapersnapshotComponent implements OnInit {
       vote: this.formGroup.controls["vote"].value,
       papersnapshot: papersnapshot
     }
-
-    //console.log(solutionFormData)
 
     this.submitSolutionEvent.emit(solutionFormData)
   }

@@ -43,19 +43,16 @@ export class AuthService {
           localStorage.setItem("token", token);
 
           const user: User = JSON.parse(atob(token.split(".")[1]));
-          console.log("LOGGED ", user);
           this.currentUserSubject$.next(user);
         }
       }),
       catchError((e) => {
-        console.log("ERRORE LOGIN");
         this.toastService.error("Login failed");
         return of(null);
       })
     );
   }
   getUserId(): string {
-    console.log(this.currentUserSubject$.value.userId)
     return this.currentUserSubject$.value.userId;
   }
 
@@ -98,7 +95,6 @@ export class AuthService {
       const now: number = Date.now() / 1000;
       const user: User = JSON.parse(atob(token.split(".")[1]));
       if (user.exp < now) {
-        console.log("TOKEN SCADUTO", user.exp, now);
         this.toastService.warning("Please login again", "Token expired");
         // scaduto
         this.logout();
@@ -129,7 +125,6 @@ export class AuthService {
     };
     return this.http.post(BASE_PATH + 'signin', body).pipe(
       catchError((e) => {
-        console.log('ERRORE REGISTRAZIONE');
         return of(null);
       })
     );
