@@ -314,7 +314,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
       .startVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), vm)
       .subscribe(
         (data) => {
-          this.toastService.success("VM started success! \n"); //TODO: open VM image
+          this.toastService.success("VM started success! \n");
           this._reloadTeams();
         },
         (error) => {
