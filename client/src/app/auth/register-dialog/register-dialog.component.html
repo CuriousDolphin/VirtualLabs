@@ -57,7 +57,7 @@
     
     <div>
       
-      <input hidden #uploader accept="image/*" (change)="onFileChange($event)" type="file">
+      <input hidden #uploader accept="image/*" (change)="onFileChange($event)" type="file" formControlName="photo">
         <!--formControlName="solutionFile"-->
 
       <img class="preview" [src]="imageSrc" *ngIf="imageSrc" width="200" height="200">

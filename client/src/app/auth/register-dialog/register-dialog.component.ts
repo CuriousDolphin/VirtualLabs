@@ -36,6 +36,7 @@ export class RegisterDialogComponent implements OnInit {
       confirmPassword: ['',[Validators.required, Validators.minLength(3) ]],
       firstName: ['', [Validators.required,removeSpaces]],
       lastName: ['', [Validators.required,removeSpaces]],
+      photo: ['',[]],
     },{validator: this.mustMatch("password", "confirmPassword") });
 
   }
@@ -72,7 +73,8 @@ export class RegisterDialogComponent implements OnInit {
           this.registerForm.get("password").value,
           this.registerForm.get("confirmPassword").value,
           this.registerForm.get("firstName").value,
-          this.registerForm.get("lastName").value
+          this.registerForm.get("lastName").value,
+          this.imageSrc.toString()
         )
         .subscribe((evt) => {
           this.isLoading = false;
