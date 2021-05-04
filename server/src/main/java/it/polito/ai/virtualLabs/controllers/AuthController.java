@@ -5,6 +5,7 @@ import it.polito.ai.virtualLabs.dtos.UserDTO;
 import it.polito.ai.virtualLabs.entities.Student;
 import it.polito.ai.virtualLabs.entities.Teacher;
 import it.polito.ai.virtualLabs.entities.User;
+import it.polito.ai.virtualLabs.exceptions.ImageException;
 import it.polito.ai.virtualLabs.repositories.StudentRepository;
 import it.polito.ai.virtualLabs.repositories.TeacherRepository;
 import it.polito.ai.virtualLabs.repositories.CourseRepository;
@@ -25,7 +26,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.imageio.ImageIO;
+import javax.swing.text.html.Option;
 import javax.validation.Valid;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.*;
 
 import static org.springframework.http.ResponseEntity.ok;
@@ -71,11 +79,13 @@ public class AuthController {
                 if(d.isPresent())
                     id=d.get().getId();
             }
+            Optional<User> u = this.users.findByUsername(email);
+            if(!u.isPresent())
+                throw new UsernameNotFoundException("Username " + email + "not found");
 
             String token = jwtTokenProvider.createToken(
                     email,
-                    this.users.findByUsername(email)
-                            .orElseThrow(() -> new UsernameNotFoundException("Username " + email + "not found")).getRoles(),id);
+                    u.get().getRoles(),id,"data:image/png;base64," + Base64.getMimeEncoder().encodeToString(u.get().getPhoto()));
             Map<Object, Object> model = new HashMap<>();
             model.put("username", email);
             model.put("token", token);
@@ -86,11 +96,36 @@ public class AuthController {
         }
     }
 
+    public byte[] ResizeImg(byte[] fileData, int width, int height) {
+        ByteArrayInputStream in = new ByteArrayInputStream(fileData);
+        try {
+            BufferedImage img = ImageIO.read(in);
+            if(height == 0) {
+                height = (width * img.getHeight())/ img.getWidth();
+            }
+            if(width == 0) {
+                width = (height * img.getWidth())/ img.getHeight();
+            }
+            Image scaledImage = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+            BufferedImage imageBuff = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            imageBuff.getGraphics().drawImage(scaledImage, 0, 0, new Color(0,0,0), null);
+
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+            ImageIO.write(imageBuff, "jpg", buffer);
+
+            return buffer.toByteArray();
+        } catch (IOException e) {
+            throw new ImageException();
+        }
+    }
 
     public User AddGenericUser(String username, String psw, byte[] photo)
     {
         if(users.findByUsername(username.toLowerCase()).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists!");
+
+        photo = ResizeImg(photo,45,45);
 
         User u = User.builder().id(username.toLowerCase().split("@")[0])
                 .username(username.toLowerCase())

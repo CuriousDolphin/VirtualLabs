@@ -20,6 +20,7 @@ import { CourseService } from "../services/course.service";
 import { ToastService } from "../services/toast.service";
 import { UtilsService } from "../services/utils.service";
 import { CourseDialogComponent } from "./course-dialog/course-dialog.component";
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: "app-teacher",
@@ -47,6 +48,7 @@ export class TeacherComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private authService: AuthService,
     private router: Router,
+    private domSanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
@@ -90,6 +92,10 @@ export class TeacherComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.menuSubscription) this.menuSubscription.unsubscribe();
+  }
+
+  renderTrustImage(base64: string) {
+    return this.domSanitizer.bypassSecurityTrustUrl(base64)
   }
 
   createCourse() {

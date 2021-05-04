@@ -19,6 +19,7 @@ import { UtilsService } from "../services/utils.service";
 import { StudentService } from "../services/student.service";
 import { AuthService } from "../auth/auth.service";
 import { User } from "../models/user.model";
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: "app-student",
@@ -43,7 +44,8 @@ export class StudentComponent implements OnInit {
     private toastService: ToastService,
     private router: Router,
     private studentService: StudentService,
-    private authService: AuthService
+    private authService: AuthService,
+    private domSanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
@@ -82,12 +84,18 @@ export class StudentComponent implements OnInit {
       )
     );
   }
+  
   ngOnDestroy(): void {
     console.log("Student component destroyed");
     if (this.reloadCourseFromServiceSubscription)
       this.reloadCourseFromServiceSubscription.unsubscribe();
     if (this.menuSubscription) this.menuSubscription.unsubscribe();
   }
+
+  renderTrustImage(base64: string) {
+    return this.domSanitizer.bypassSecurityTrustUrl(base64)
+  }
+  
   logout() {
     this.authService.logout();
     this.router.navigate(["home"]);

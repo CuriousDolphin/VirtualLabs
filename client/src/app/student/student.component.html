@@ -29,7 +29,8 @@
       </div>
       <mat-divider style="background-color: #5dcdff;width:100%"></mat-divider>
       <div  fxLayout="row" fxLayoutAlign="center center" style="color:white;height: 64px; padding:8px;width:100%">
-        <mat-icon style="height: 30px;width: 30px; font-size: 30px;">account_circle</mat-icon>
+        <!--mat-icon style="height: 30px;width: 30px; font-size: 30px;">account_circle</mat-icon-->
+        <img style="height: 45px;width: 45px; font-size: 45px; border-radius:50%" [src]="renderTrustImage(user.photo)" />
         <div style="width:8px"></div>
         <span class="ml-1" class="mat-body-strong mat-body-2">{{ user?.sub }} <button mat-icon-button class="right"
             (click)="logout()">

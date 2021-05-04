@@ -36,17 +36,17 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(jwtProperties.getSecretKey().getBytes());
     }
 
-    public String createToken(String username, List<String> roles,String id) {
+    public String createToken(String username, List<String> roles,String id, String photo) {
 
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("roles", roles);
         claims.put("userId",id);
+        claims.put("photo",photo);
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + jwtProperties.getValidityInMs());
 
         return Jwts.builder()//
-
                 .setClaims(claims)//
                 .setIssuedAt(now)//
                 .setExpiration(validity)//
