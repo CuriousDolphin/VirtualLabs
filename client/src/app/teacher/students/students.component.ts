@@ -28,7 +28,6 @@ export class StudentsComponent implements OnInit {
   dataSource = new MatTableDataSource<Student>();
   @Input() set enrolledStudents(students: Student[]) {
     if (students != null) {
-      console.log("set enrolled students", students);
       this.myControl.setValue("");
       this.studentToAdd=null;
       this.selectedStudents.clear();
@@ -38,7 +37,6 @@ export class StudentsComponent implements OnInit {
   @Input() set studentsDB(students: Student[]) {
     if (students != null) {
       this.allStudents = students;
-      console.log("Retrieved all students", this.allStudents);
     }
   }
   allStudents = []; // for autocomplete
@@ -76,7 +74,6 @@ export class StudentsComponent implements OnInit {
     this.myInputVariable.nativeElement.value = ""; // reset input
   }
   selectStudentToAdd(student: Student) {
-    console.log(student);
     this.studentToAdd = student;
   }
   addStudentToTable() {
@@ -112,7 +109,6 @@ export class StudentsComponent implements OnInit {
       maxLen > this.dataSource.data.length
         ? this.dataSource.data.length
         : maxLen;
-    // console.log(this.selectedStudents.selected.length === maxLen);
     return this.selectedStudents.selected.length >= maxLen;
   }
 
@@ -122,10 +118,8 @@ export class StudentsComponent implements OnInit {
   }
 
   masterToggle(event) {
-    console.log(event);
 
     if (this.checkedFN()) {
-      console.log("STUDENT CLEAR");
       this.selectedStudents.clear();
     } else {
       this.selectMode = "page";

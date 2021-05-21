@@ -9,5 +9,6 @@ import java.sql.Timestamp;
 public class PaperSnapshotDTO {
     Long id;
     String content;
+    String type;
     Timestamp submissionDate;
 }

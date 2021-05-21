@@ -51,7 +51,6 @@ export class StudentComponent implements OnInit {
   ngOnInit(): void {
     this.userSubscription = this.authService.currentUser$.subscribe(
       (user: User) => {
-        console.log("user subscription ", user);
         if (user != null) {
          
           this.user = user;
@@ -86,7 +85,6 @@ export class StudentComponent implements OnInit {
   }
   
   ngOnDestroy(): void {
-    console.log("Student component destroyed");
     if (this.reloadCourseFromServiceSubscription)
       this.reloadCourseFromServiceSubscription.unsubscribe();
     if (this.menuSubscription) this.menuSubscription.unsubscribe();

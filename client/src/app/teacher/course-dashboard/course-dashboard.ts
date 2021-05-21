@@ -69,7 +69,6 @@ export class CourseDashboard implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    console.log("dashboard on init");
     this.studentsDB$ = this._reloadStudents$.pipe(
       switchMap(() => this.studentService.getAllStudents())
     );
@@ -77,7 +76,6 @@ export class CourseDashboard implements OnInit, OnDestroy {
     // take the name of the route (course name)
     this.routeSubscription = this.route.url.subscribe((evt) => {
       const name = evt[0].path;
-      console.log("teacher course dashboard route change", "data", name);
       if (name) {
         this._currentCourseName$.next(name);
       }
@@ -106,7 +104,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
       }),
       tap(
         () => (
-          (this.isLoading = false), console.log("Retrieved course's teams")
+          (this.isLoading = false)
         )
       ),
       shareReplay(1)
@@ -122,7 +120,6 @@ export class CourseDashboard implements OnInit, OnDestroy {
       tap(
         (instances) => (
           (this.isLoading = false),
-          console.log("Retrieved vmInstances", instances)
         )
       )
     );
@@ -133,7 +130,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
         return this.courseService.getCourseVmModel(course.name);
       }),
       tap(
-        () => ((this.isLoading = false), console.log("Retrieved courseVmModel"))
+        () => ((this.isLoading = false))
       ),
       shareReplay(1)
     );
@@ -174,13 +171,11 @@ export class CourseDashboard implements OnInit, OnDestroy {
 
 
   uploadCsv(file: File) {
-    console.log(file);
     const reader = new FileReader();
     this.isLoading = true;
     const formData: FormData = new FormData();
     formData.append("file", file);
 
-    // console.log(reader.result);
     this.uploadSubscription = this.courseService
       .addAndEnrollFromCsv(this.currentCourse, formData)
       .subscribe((evt) => {
@@ -208,7 +203,7 @@ export class CourseDashboard implements OnInit, OnDestroy {
   }
 
   unEnrollStudents(studentsId: Array<string>) {
-    console.log("going to unenroll students", studentsId);
+
     this.isLoading = true;
     this.unenrollSubscription = this.courseService
       .unEnrollMany(this.currentCourse, studentsId)
@@ -227,7 +222,6 @@ export class CourseDashboard implements OnInit, OnDestroy {
               countError + " students failed of " + evt.length
             );
           }
-          console.log("delete students", evt);
         }
 
         // trigger reload
@@ -243,7 +237,6 @@ export class CourseDashboard implements OnInit, OnDestroy {
       .subscribe((evt) => {
         this.isLoading = false;
         if (evt !== null) {
-          console.log("enroll success");
           this.toastService.success("enroll success");
         }
 
@@ -261,7 +254,6 @@ export class CourseDashboard implements OnInit, OnDestroy {
     this.dialogSubscription = dialogRef
       .afterClosed()
       .subscribe((result: Course) => {
-        console.log(`Dialog result: ${result}`);
         if (result !== null && result !== undefined) {
           this.toastService.success("update success!");
           // this._currentCourseName$.next(result.name);
@@ -330,7 +322,6 @@ export class CourseDashboard implements OnInit, OnDestroy {
 
     this.isLoading = true
     this.assignmentSubscription = this.courseService.addAssignmentToCourse(this.currentCourse.name, assignment).subscribe((data) => {
-      console.log(data)
       this.isLoading = false
       this._reloadAssignments$.next()
     })
@@ -339,7 +330,6 @@ export class CourseDashboard implements OnInit, OnDestroy {
   editModel(newModel: JSON) {
     if (this.editModelSubscription) this.editModelSubscription.unsubscribe();
 
-    console.log("edit MODEL requested");
     this.editModelSubscription = this.courseService
       .editModel(this.currentCourse.name, newModel)
       .subscribe(

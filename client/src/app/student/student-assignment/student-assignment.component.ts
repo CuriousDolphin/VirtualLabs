@@ -69,7 +69,6 @@ export class StudentAssignmentComponent implements OnInit {
 
   breadCrumbHelper(type: string) {
     let returnValue
-    console.log("bread")
     switch (type) {
       case "assignment":
         returnValue = this.toShowLevel > 0 && this.currAssignment ? "(" + this.currAssignment.title + ")" : ""

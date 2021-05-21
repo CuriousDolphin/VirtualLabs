@@ -34,10 +34,7 @@ export class AssignmentPaperComponent implements OnInit {
   @Input() set assignment(assignment: Assignment) {
     if (assignment != null) {
       this.currentAssignment = assignment
-      //console.log("assignment: ",assignment)
     }
-
-
   }
 
   unreaded: boolean = true;
@@ -105,7 +102,6 @@ export class AssignmentPaperComponent implements OnInit {
     this.dataSource.filterPredicate = ((data: Paper, filter: string): boolean => {
       const filterArray = filter.split("$")
 
-      //console.log(filter)
       const unreaded = filterArray[0] //has not read yet the assignment
       const readed = filterArray[1] //has read the assignment
       const submitted = filterArray[2] //has submitted the paper

@@ -44,7 +44,6 @@ export class HomeComponent implements OnInit {
     );
     this.userSubscription = this.authService.currentUser$.subscribe(
       (user: User) => {
-        console.log("user subscription ", user);
         if (user != null) {
           this.isLogged = true;
           this.user = user;
@@ -58,10 +57,6 @@ export class HomeComponent implements OnInit {
           }
           //this.toastService.success("redirect to " + nextLink);
           // this.router.navigate([nextLink]);
-          console.log(
-            "User is logged and is a " + nextLink,
-            this.route.snapshot
-          );
         } else {
           this.isLogged = false;
           this.user = null;
@@ -91,7 +86,6 @@ export class HomeComponent implements OnInit {
     const dialogRef = this.dialog.open(LoginDialogComponent);
 
     this.dialogSubscription = dialogRef.afterClosed().subscribe((result) => {
-      console.log(`Dialog result: ${result}`);
 
       // se non c'e' il campo nextlink nello state default home
       // const nextLink = _.get(history.state, 'nextlink', 'home');
@@ -104,7 +98,6 @@ export class HomeComponent implements OnInit {
         }
         this.toastService.success("Login success,redirect to " + nextLink);
         // se il login e' andato bene e devo ridiriggere verso un altra pagina
-        console.log("REDIRECT TO", nextLink);
         this.router.navigate([nextLink]);
       } else {
         this.router.navigate(["home"]);
@@ -122,7 +115,6 @@ export class HomeComponent implements OnInit {
     const dialogRef = this.dialog.open(RegisterDialogComponent);
 
     this.dialogSubscription = dialogRef.afterClosed().subscribe((result) => {
-      console.log(`Dialog result: ${result}`);
       if (result === true) {
         this.toastService.success('Register with success! Please confirm your email.')
         this.router.navigate(['home']);

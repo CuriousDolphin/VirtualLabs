@@ -26,7 +26,6 @@ export class CourseDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     public fb: FormBuilder) {
 
-    console.log(data);
     if (_.get(data, 'mode') === 'Create')
       this.courseForm = this.fb.group({
         name: ['', [Validators.required, Validators.minLength(3)]],
@@ -46,8 +45,6 @@ export class CourseDialogComponent implements OnInit {
         max: course.max,
       });
     }
-
-    console.log(this.courseForm);
 
   }
 

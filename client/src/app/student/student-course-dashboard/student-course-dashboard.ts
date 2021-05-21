@@ -71,14 +71,12 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    console.log("student dashboard on init");
     this.studentId = this.authService.getUserId();
     //this.currentActiveTeam = "";
 
     // take the name of the route (course name)
     this.routeSubscription = this.route.url.subscribe((evt) => {
       const name = evt[0].path;
-      console.log("student course dashboard route change", "data", name);
       if (name) {
         this._currentCourseName$.next(name);
       }
@@ -128,7 +126,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
     ]).pipe(
       map(([course, reload]) => course.name),
       tap(
-        () => ((this.isLoading = true), console.log("get student not in team"))
+        () => ((this.isLoading = true))
       ),
       switchMap((courseName) => {
         return this.courseService.getStudentsNotInTeam(courseName);
@@ -175,7 +173,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
           return of<VmModel>();
         }
       }),
-      tap(() => (this.isLoading = false, console.log("Retrieved VmModel"))),
+      tap(() => (this.isLoading = false)),
       shareReplay(1)
     )
 
@@ -192,7 +190,7 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
           return of<VmInstance[]>([]);
         }
       }),
-      tap(() => (this.isLoading = false, console.log("Retrieved team's VmInstances"))),
+      tap(() => (this.isLoading = false)),
       shareReplay(1)
     )
     
@@ -265,7 +263,6 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
     if (this.papersnapshotSubscription) this.papersnapshotSubscription.unsubscribe();
 
     this.isLoading = true;
-    console.log("addPapersnapshotForAssignmentAndStudent")
     this.papersnapshotSubscription = this.studentService
       .addPapersnapshotForAssignmentAndStudent(data.assignmentId, this.authService.getUserId(), data.paperSnapshot)
       .subscribe((result) => {
@@ -295,8 +292,6 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
 
   deleteVm(vm: VmInstance) {
     if (this.deleteVmSubscription) this.deleteVmSubscription.unsubscribe();
-
-    console.log("delete VM requested")
     this.deleteVmSubscription = this.studentService
       .deleteVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), vm)
       .subscribe(
@@ -315,13 +310,11 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
 
   startVm(vm: VmInstance) {
     if (this.startVmSubscription) this.startVmSubscription.unsubscribe();
-
-    console.log("start VM requested")
     this.startVmSubscription = this.studentService
       .startVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), vm)
       .subscribe(
         (data) => {
-          this.toastService.success("VM started success! \n"); //TODO: open VM image
+          this.toastService.success("VM started success! \n");
           this._reloadTeams();
         },
         (error) => {
@@ -335,8 +328,6 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
 
   stopVm(vm: VmInstance) {
     if (this.stopVmSubscription) this.stopVmSubscription.unsubscribe();
-
-    console.log("stop VM requested")
     this.stopVmSubscription = this.studentService
       .stopVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), vm)
       .subscribe(
@@ -355,8 +346,6 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
 
   createVm(newVm: JSON) {
     if (this.createVmSubscription) this.createVmSubscription.unsubscribe();
-
-    console.log("create VM requested")
     this.createVmSubscription = this.studentService
       .createVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), newVm)
       .subscribe(
@@ -376,7 +365,6 @@ export class StudentCourseDashboard implements OnInit, OnDestroy {
   editVm(newVm: JSON) {
     if (this.editVmSubscription) this.editVmSubscription.unsubscribe();
 
-    console.log("edit VM requested")
     this.editVmSubscription = this.studentService
       .editVm(this.authService.getUserId(), this.currentActiveTeam$.getValue(), newVm["id"], newVm)
       .subscribe(

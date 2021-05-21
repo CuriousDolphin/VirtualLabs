@@ -122,7 +122,7 @@ public class CourseController {
     TeamDTO proposeTeam(@Valid @RequestBody(required = true) TeamProposal proposal, @PathVariable("name") String courseName, BindingResult result) {
 
         try {
-            System.out.println("_______________________"+proposal.toString());
+            //System.out.println("_______________________"+proposal.toString());
 
             TeamDTO team = teamService.proposeTeam(courseName, proposal.getName(), proposal.getMembers(),proposal.getOwner(),proposal.getDaysTimeout());
             notificationService.notifyTeam(team,proposal.getMembers(),proposal.getDaysTimeout());
@@ -142,7 +142,7 @@ public class CourseController {
         } catch (StudentAlreadyHaveTeam se) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Student  already have a enabled team");
         } catch (Exception e) {
-            System.out.println("___________________________________________________"+e.toString());
+            //System.out.println("___________________________________________________"+e.toString());
 
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
@@ -298,6 +298,8 @@ public class CourseController {
         }
         catch (PaperNotFoundException paperNotFoundException) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Paper not found");
+        } catch (AssignmentExpiredException assignmentExpiredException) {
+            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Method not allowed");
         }
     }
     @GetMapping("/{name}/vmInstances")

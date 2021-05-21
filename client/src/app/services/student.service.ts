@@ -173,7 +173,6 @@ export class StudentService {
     // window.alert(errorMessage);
 
     this.toastService.error(error.error.message, error.error.status.toString());
-    console.log("HTTP ERROR", error);
     return of(null);
   }
 }

@@ -38,7 +38,6 @@ export class AssignmentComponent implements OnInit {
   }
 
   @Input() set currentPaper(paper: Paper) {
-    console.log("paper corrente:", paper)
     if (paper != null) {
       this.currPaper = paper
     }
@@ -92,7 +91,6 @@ export class AssignmentComponent implements OnInit {
   }
 
   solutionSubmitted(formData: SolutionFormData) {
-    //console.log(formData)
     this.solutionSubmittedEvent.emit({
       solutionFormData: formData,
       paperId: this.currentPaperId

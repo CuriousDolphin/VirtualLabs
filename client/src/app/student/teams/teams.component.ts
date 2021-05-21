@@ -35,7 +35,6 @@ export class TeamsComponent implements OnInit {
 
       if (this.team != null) {
         this.hasTeam = true;
-        console.log("User have a team: ", this.team);
       } else {
         this.hasTeam = false;
         this._userRequests = _.filter(
@@ -48,8 +47,6 @@ export class TeamsComponent implements OnInit {
         );
       }
       this.initPage();
-
-      console.log("Retrieved student teams", this._teams);
     }
   }
 

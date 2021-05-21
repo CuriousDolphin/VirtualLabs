@@ -54,7 +54,6 @@ export class TeacherComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userSubscription = this.authService.currentUser$.subscribe(
       (user: User) => {
-        console.log("user subscription ", user);
         if (user != null) {
          
           this.user = user;
@@ -69,7 +68,6 @@ export class TeacherComponent implements OnInit, OnDestroy {
 
     
     this.routeSubscription = this.route.url.subscribe((params: Params) => {
-      console.log("teacher url");
     });
 
     // reload courses from service
@@ -108,7 +106,6 @@ export class TeacherComponent implements OnInit, OnDestroy {
     this.dialogSubscription = dialogRef
       .afterClosed()
       .subscribe((result: Course) => {
-        console.log(`Dialog result: ${result}`);
         if (result !== null && result !== undefined) {
           this.toastService.success("Create success!");
           // reload data
