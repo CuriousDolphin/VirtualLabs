@@ -31,9 +31,6 @@ the process might be very slower (around 5-7 mins) because the containers build 
 the frontend will be exposed at http://localhost:80/ 
 server api at http://localhost:8080/api/ 
 
-## - TODO add users and pwds
-
-
 this docker-compose yml contains 3 microservices:
 
 - nginx (for serving frontend static file and proxy api request to spring)
