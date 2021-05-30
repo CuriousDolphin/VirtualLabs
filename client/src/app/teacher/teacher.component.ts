@@ -57,7 +57,6 @@ export class TeacherComponent implements OnInit, OnDestroy {
         if (user != null) {
          
           this.user = user;
-
    
         } else {
           this.user = null;

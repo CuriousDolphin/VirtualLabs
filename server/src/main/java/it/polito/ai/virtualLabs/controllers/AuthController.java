@@ -126,11 +126,8 @@ public class AuthController {
 
     public User AddGenericUser(String username, String psw, byte[] photo)
     {
-        System.out.println("111111");
         if(users.findByUsername(username.toLowerCase()).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists!");
-        System.out.println("22222222");
-        System.out.println(photo);
         User u;
         if(photo != null)
         {

@@ -54,7 +54,6 @@ export class StudentComponent implements OnInit {
         if (user != null) {
          
           this.user = user;
-
    
         } else {
           this.user = null;
