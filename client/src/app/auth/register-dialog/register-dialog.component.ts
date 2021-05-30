@@ -74,7 +74,7 @@ export class RegisterDialogComponent implements OnInit {
           this.registerForm.get("confirmPassword").value,
           this.registerForm.get("firstName").value,
           this.registerForm.get("lastName").value,
-          this.imageSrc.toString()
+          this.imageSrc != null ? this.imageSrc.toString() : ""
         )
         .subscribe((evt) => {
           this.isLoading = false;
