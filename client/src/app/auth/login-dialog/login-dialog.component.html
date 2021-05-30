@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>Login</h1>
 <div mat-dialog-content>
-  <div class="main-container" [formGroup]="loginForm">
+  <div class="main-container" [formGroup]="loginForm" (keyup.enter)="attempLogin()">
     <mat-form-field class="full-width" appearance="outline">
       <mat-label>Enter your email</mat-label>
       <input
