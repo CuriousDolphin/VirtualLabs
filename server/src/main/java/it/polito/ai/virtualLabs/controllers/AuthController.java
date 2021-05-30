@@ -83,9 +83,13 @@ public class AuthController {
             if(!u.isPresent())
                 throw new UsernameNotFoundException("Username " + email + "not found");
 
+
+            String photo = u.get().getPhoto() != null ?
+                    "data:image/png;base64," + Base64.getMimeEncoder().encodeToString(u.get().getPhoto()) :
+                    "";
             String token = jwtTokenProvider.createToken(
                     email,
-                    u.get().getRoles(),id,"data:image/png;base64," + Base64.getMimeEncoder().encodeToString(u.get().getPhoto()));
+                    u.get().getRoles(), id, photo);
             Map<Object, Object> model = new HashMap<>();
             model.put("username", email);
             model.put("token", token);
