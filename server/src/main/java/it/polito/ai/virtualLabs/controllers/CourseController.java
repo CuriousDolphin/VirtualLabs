@@ -80,7 +80,7 @@ public class CourseController {
         if (!input.containsKey("id")) throw new ResponseStatusException(HttpStatus.CONFLICT);
         try {
             if (!teamService.addStudentToCourse(input.get("id"), courseName))
-                throw new ResponseStatusException(HttpStatus.CONFLICT);
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Student already enrolled");
         } catch (CourseNotFoundException ce) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
         } catch (StudentNotFoundException se) {
