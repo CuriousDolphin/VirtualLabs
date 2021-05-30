@@ -84,7 +84,7 @@ public class AuthController {
                 throw new UsernameNotFoundException("Username " + email + "not found");
 
 
-            String photo = u.get().getPhoto() != null ?
+            String photo = u.get().getPhoto() != null && u.get().getPhoto().toString() != "" ?
                     "data:image/png;base64," + Base64.getMimeEncoder().encodeToString(u.get().getPhoto()) :
                     "";
             String token = jwtTokenProvider.createToken(
@@ -126,18 +126,40 @@ public class AuthController {
 
     public User AddGenericUser(String username, String psw, byte[] photo)
     {
+        System.out.println("111111");
         if(users.findByUsername(username.toLowerCase()).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists!");
-
-        photo = ResizeImg(photo,45,45);
-
-        User u = User.builder().id(username.toLowerCase().split("@")[0])
+        System.out.println("22222222");
+        System.out.println(photo);
+        User u;
+        if(photo != null)
+        {
+            photo = ResizeImg(photo,45,45);
+            u = User.builder().id(username.toLowerCase().split("@")[0])
+                    .username(username.toLowerCase())
+                    .password(passwordEncoder.encode(psw))
+                    .enabled(false)
+                    .photo(photo)
+                    .roles(username.toLowerCase().startsWith("d") ? Arrays.asList( "ROLE_PROF") : Arrays.asList( "ROLE_STUDENT"))
+                    .build();
+        }
+        else
+        {
+            u = User.builder().id(username.toLowerCase().split("@")[0])
+                    .username(username.toLowerCase())
+                    .password(passwordEncoder.encode(psw))
+                    .enabled(false)
+                    .roles(username.toLowerCase().startsWith("d") ? Arrays.asList( "ROLE_PROF") : Arrays.asList( "ROLE_STUDENT"))
+                    .build();
+        }
+        //System.out.println("aaaaaaaa" + photo.toString());
+        /*User u = User.builder().id(username.toLowerCase().split("@")[0])
                 .username(username.toLowerCase())
                 .password(passwordEncoder.encode(psw))
                 .enabled(false)
                 .photo(photo)
                 .roles(username.toLowerCase().startsWith("d") ? Arrays.asList( "ROLE_PROF") : Arrays.asList( "ROLE_STUDENT"))
-                .build();
+                .build();*/
 
         users.save(u);
         u = users.findByUsername(username.toLowerCase()).get();
@@ -154,8 +176,12 @@ public class AuthController {
             Student student;
             Optional<Teacher> optTeacher;
             Teacher teacher;
+            byte[] photo = null;
+            if(data.getPhoto() != null && data.getPhoto() != "")
+            {
+                photo = Base64.getMimeDecoder().decode(data.getPhoto().split(",")[1]);
+            }
 
-            byte[] photo = Base64.getMimeDecoder().decode(data.getPhoto().split(",")[1]);
 
             if(!(data.getPassword().equals(data.getConfirmPassword())))
             {
