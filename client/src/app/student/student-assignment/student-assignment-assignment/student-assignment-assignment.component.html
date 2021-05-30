@@ -71,7 +71,7 @@
       <tr mat-header-row *matHeaderRowDef="colsToDisplay"> </tr>
       <tr mat-row *matRowDef="let row; columns: colsToDisplay"></tr>
     </table>
-    <div *ngIf="dataSource.data?.length == 0">
+    <div class="p-16 text-align-center" *ngIf="dataSource.data?.length == 0">
       No assignments available
     </div>
   </mat-card-content>
