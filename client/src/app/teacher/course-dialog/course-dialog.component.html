@@ -3,83 +3,70 @@
   <div [formGroup]="courseForm">
     <mat-form-field class="full-width" appearance="outline">
       <mat-label>Name</mat-label>
-      <input
-        matInput
-        placeholder="Es: Applicazioni internet"
-        formControlName="name"
-        required
-      />
-      <mat-error *ngIf="courseForm.controls['name'].invalid"
-        >Not a valid name</mat-error
-      >
+      <input matInput placeholder="Es: Applicazioni internet" formControlName="name" required />
+      <mat-error *ngIf="courseForm.controls['name'].invalid">Not a valid name</mat-error>
     </mat-form-field>
     <mat-form-field class="full-width" appearance="outline">
       <mat-label>Acronym</mat-label>
       <input matInput placeholder="Es: AI" formControlName="acronym" required />
-      <mat-error *ngIf="courseForm.controls['acronym'].invalid"
-        >Not a valid acronym</mat-error
-      >
+      <mat-error *ngIf="courseForm.controls['acronym'].invalid">Not a valid acronym</mat-error>
     </mat-form-field>
 
     <div fxLayout="row" fxLayoutAlign="space-between start">
       <mat-form-field class="form-small mini" appearance="outline">
         <mat-label>min</mat-label>
 
-        <input
-          min="1"
-          max="100"
-          matInput
-          type="number"
-          placeholder="min"
-          formControlName="min"
-          required
-        />
+        <input min="1" max="100" matInput type="number" placeholder="min" formControlName="min" required />
       </mat-form-field>
 
       <mat-form-field class="form-small mini" appearance="outline">
         <mat-label>max</mat-label>
 
-        <input
-          min="1"
-          max="100"
-          matInput
-          type="number"
-          placeholder="max"
-          formControlName="max"
-          required
-        />
+        <input min="1" max="100" matInput type="number" placeholder="max" formControlName="max" required />
       </mat-form-field>
 
       <div fxLayout="row" fxLayoutAlign=" center" style="height: 50px">
-        <mat-slide-toggle class="ml-1" formControlName="enabled"
-          >Enabled</mat-slide-toggle
-        >
+        <mat-slide-toggle class="ml-1" formControlName="enabled">Enabled</mat-slide-toggle>
       </div>
     </div>
+
+
+
+    <div *ngIf="data.mode === 'Create'">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Owners</mat-label> 
+        
+        <mat-select  formControlName="teachers" multiple>
+          <mat-select-trigger>
+            {{courseForm.value['teachers'] ? courseForm.value['teachers'][0] : ''}}
+           <span *ngIf="courseForm.value['teachers']?.length > 1" class="example-additional-selection">
+              (+{{courseForm.value['teachers'].length - 1}} {{courseForm.value['teachers']?.length === 2 ? 'other' : 'others'}})
+            </span> 
+          </mat-select-trigger>
+          <mat-option *ngFor="let teacher of teachersList" [value]="teacher.id" [disabled]="teacher.id==idUser">{{teacher.id}} {{teacher.name}} {{teacher.lastName}}</mat-option>
+        </mat-select>
+
+      
+      </mat-form-field>
+
+      
+    
+    </div>
+
     <mat-label class="my_label" *ngIf="showError">
       Error during request
     </mat-label>
   </div>
 </div>
-
+<mat-divider></mat-divider>
 <div mat-dialog-actions>
-  <button
-    *ngIf="data.mode === 'Create'"
-    [disabled]="!courseForm.valid"
-    mat-raised-button
-    color="primary"
-    (click)="createCourse()"
-  >
+  <button *ngIf="data.mode === 'Create'" [disabled]="!courseForm.valid" mat-raised-button color="primary"
+    (click)="createCourse()">
     Create
   </button>
 
-  <button
-    *ngIf="data.mode === 'Update'"
-    [disabled]="!courseForm.valid || courseForm.pristine"
-    mat-raised-button
-    color="primary"
-    (click)="updateCourse()"
-  >
+  <button *ngIf="data.mode === 'Update'" [disabled]="!courseForm.valid || courseForm.pristine" mat-raised-button
+    color="primary" (click)="updateCourse()">
     update
   </button>
   <button mat-button color="primary" (click)="cancel()">Cancel</button>

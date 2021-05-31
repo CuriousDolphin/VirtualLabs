@@ -22,6 +22,7 @@ import { Assignment } from '../models/assignment.model';
 import { VmModel } from "../models/vm-model.model";
 import { VmInstance } from "../models/vm-instance.model";
 import { Team } from "../models/team.model";
+import { Teacher } from "../models/teacher.model";
 const BASE_PATH = environment.apiUrl;
 const IMG_PATH = '/assets/VM_images/';
 
@@ -39,6 +40,12 @@ export class CourseService {
       .pipe(catchError((e) => this.handleError(e)));
   }
 
+  getAllTeachers():Observable<Teacher[]> {
+    const url = BASE_PATH + "courses/teachers";
+    return this.http
+      .get<Teacher[]>(url)
+      .pipe(catchError((e) => this.handleError(e)));
+  }
   getCoursesByTeacher(userId: String): Observable<Course[]> {
     const url = BASE_PATH + "courses/teacher/" + userId;
     return this.http
@@ -53,30 +60,28 @@ export class CourseService {
       .pipe(catchError((e) => this.handleError(e)));
   }
 
-  updateCourse(course: Course, name: string, userId: String): Observable<Course> {
+  updateCourse(course: Course, name: string, userIds: String[]): Observable<Course> {
     const url = BASE_PATH + "courses/" + name;
     //return this.http
     //  .patch<Course>(url, course)
     //  .pipe(catchError((e) => this.handleError(e)));
+
     const body = {
       course,
-      userId
+      userIds
     };
     return this.http.patch(url, body)
       .pipe(catchError((e) => this.handleError(e)));
   }
 
-  addCourse(course: Course, userId: String) {
+  addCourse(course: Course, userIds: Array<String>) {
     const url = BASE_PATH + "courses/";
     const body = {
       course,
-      userId
+      userIds
     };
     return this.http.post(url, body)
       .pipe(catchError((e) => this.handleError(e)));
-    //return this.http
-    //  .post<Course>(url, course)
-    //  .pipe(catchError((e) => this.handleError(e)));
   }
   enrollOne(course: Course, student: Student): Observable<any> {
     const url = BASE_PATH + "courses/" + course.name + "/enrollOne";

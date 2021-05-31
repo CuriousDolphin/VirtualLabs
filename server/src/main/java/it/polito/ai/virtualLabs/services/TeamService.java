@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public interface TeamService {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
-    boolean addCourse(CourseDTO course, String userId);
+    boolean addCourse(CourseDTO course, List<String> userIds);
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     CourseDTO updateCourse(CourseDTO course,String courseName, String userId);
@@ -32,6 +32,9 @@ public interface TeamService {
 
     @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     List<CourseDTO> getAllTeacherCourses(String userId);
+
+    @PreAuthorize(" hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
+    List<TeacherDTO> getAllTeachers();
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_PROF')")
     List<EnrolledStudentDTO> getEnrolledStudents(String courseName);

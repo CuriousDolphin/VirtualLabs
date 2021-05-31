@@ -49,6 +49,11 @@ public class CourseController {
 
     }
 
+    @GetMapping({"/teachers"})
+    List<TeacherDTO> getAllTeacher(){
+        return teamService.getAllTeachers();
+    }
+
     @GetMapping({"/teacher/{userId}"})
     List<CourseDTO> getAllByTeacher(@PathVariable("userId") String userId) {
 
@@ -64,10 +69,10 @@ public class CourseController {
     @ResponseStatus(HttpStatus.CREATED)
     CourseDTO addCourse(@Valid @RequestBody(required = true) CourseProposal body, BindingResult result) {
         CourseDTO courseDTO = body.getCourse();
-        String userId = body.getUserId();
+        List<String> userIds = body.getUserIds();
 
         if (result.hasErrors()) throw new ResponseStatusException(HttpStatus.CONFLICT);
-        if (!teamService.addCourse(courseDTO,userId))
+        if (!teamService.addCourse(courseDTO,userIds))
             throw new ResponseStatusException(HttpStatus.CONFLICT, courseDTO.getName());
         // notificationService.sendMessage("isnob46@gmail.com","nuova materia inserita",dto.getName().toString());
         return ModelHelper.enrich(courseDTO);
@@ -249,7 +254,7 @@ public class CourseController {
     @PatchMapping("/{name}")
     CourseDTO updateCourse(@RequestBody @Valid CourseProposal body, @PathVariable("name") String courseName) {
         try {
-            CourseDTO c=teamService.updateCourse(body.getCourse(),courseName,body.getUserId());
+            CourseDTO c=teamService.updateCourse(body.getCourse(),courseName,body.getUserIds().get(0));
             return c;
         } catch (CourseNotFoundException ce) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");

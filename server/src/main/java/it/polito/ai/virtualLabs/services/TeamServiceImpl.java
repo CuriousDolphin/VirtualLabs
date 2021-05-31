@@ -67,19 +67,20 @@ public class TeamServiceImpl implements TeamService {
 
 
     @Override
-    public boolean addCourse(CourseDTO course, String userId) {
+    public boolean addCourse(CourseDTO course, List<String> userIds) {
         if (courseRepository.findByNameIgnoreCase(course.getName()).isPresent()) {
             return false;
         } else {
             if (course.getName() != null && !course.getName().equals("")) {
                 Course newCourse = modelMapper.map(course, Course.class);
-                Optional<Teacher> optTeacher = teacherRepository.findById(userId);
-                if (optTeacher.isPresent())
-                    newCourse.addTeacher(optTeacher.get());
-                else
-                    return false;
-                if (!optTeacher.get().getId().equals("admin"))
-                    newCourse.addTeacher(teacherRepository.getOne("admin"));
+
+                userIds.forEach(userId->{
+                    Optional<Teacher> optTeacher = teacherRepository.findById(userId);
+                    if (optTeacher.isPresent())
+                        newCourse.addTeacher(optTeacher.get());
+                    if (!optTeacher.get().getId().equals("admin"))
+                        newCourse.addTeacher(teacherRepository.getOne("admin"));
+                });
                 VmModel newVmModel = VmModel.builder()
                         .image("defaultVmImage.png")
                         .course(newCourse)
@@ -162,6 +163,13 @@ public class TeamServiceImpl implements TeamService {
                 .map(student -> modelMapper.map(student, StudentDTO.class));
     }
 
+    @Override
+    public List<TeacherDTO> getAllTeachers(){
+        return teacherRepository.findAll()
+                .stream()
+                .map(teacher-> modelMapper.map(teacher,TeacherDTO.class))
+                .collect(Collectors.toList());
+    }
 
     @Override
     public List<StudentDTO> getAllStudents() {

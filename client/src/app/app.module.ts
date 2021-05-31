@@ -62,6 +62,8 @@ import { StudentAssignmentComponent } from './student/student-assignment/student
 import { StudentAssignmentAssignmentComponent, StudentImageDialog } from './student/student-assignment/student-assignment-assignment/student-assignment-assignment.component';
 import { OpenVmComponent } from "./open-vm/open-vm.component";
 import { StudentAssignmentPapersnapshotComponent } from './student/student-assignment/student-assignment-papersnapshot/student-assignment-papersnapshot.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import {MatSelectModule} from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -129,7 +131,9 @@ import { StudentAssignmentPapersnapshotComponent } from './student/student-assig
     MatGridListModule,
     MatRadioModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatFormFieldModule,
+    MatSelectModule
   ],
   providers: [
     {
@@ -139,6 +143,6 @@ import { StudentAssignmentPapersnapshotComponent } from './student/student-assig
     },
   ],
   bootstrap: [AppComponent],
-  entryComponents: [LoginDialogComponent, RegisterDialogComponent,OpenVmComponent,DialogEditModelComponent,DialogConfirmDeleteComponent],
+  entryComponents: [LoginDialogComponent, RegisterDialogComponent, OpenVmComponent, DialogEditModelComponent, DialogConfirmDeleteComponent],
 })
-export class AppModule {}
+export class AppModule { }
