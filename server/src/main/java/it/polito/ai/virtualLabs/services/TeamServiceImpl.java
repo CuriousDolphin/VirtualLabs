@@ -167,6 +167,7 @@ public class TeamServiceImpl implements TeamService {
     public List<TeacherDTO> getAllTeachers(){
         return teacherRepository.findAll()
                 .stream()
+                .filter(teacher -> !teacher.getId().equals("admin"))
                 .map(teacher-> modelMapper.map(teacher,TeacherDTO.class))
                 .collect(Collectors.toList());
     }

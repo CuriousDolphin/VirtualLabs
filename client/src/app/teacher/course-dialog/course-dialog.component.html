@@ -43,6 +43,7 @@
               (+{{courseForm.value['teachers'].length - 1}} {{courseForm.value['teachers']?.length === 2 ? 'other' : 'others'}})
             </span> 
           </mat-select-trigger>
+          <mat-option *ngIf="idUser=='admin'" value="admin" disabled> admin </mat-option>
           <mat-option *ngFor="let teacher of teachersList" [value]="teacher.id" [disabled]="teacher.id==idUser">{{teacher.id}} {{teacher.name}} {{teacher.lastName}}</mat-option>
         </mat-select>
 
