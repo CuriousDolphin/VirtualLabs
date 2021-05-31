@@ -14,6 +14,8 @@ public interface CourseRepository extends JpaRepository<Course, String> {
 
     Optional<Course> findByNameIgnoreCase(String name);
 
+    Optional<Course> findByAcronymIgnoreCase(String name);
+
     boolean existsCourseByName(String name);
 
     @Query("SELECT s FROM Student s INNER JOIN s.teams t INNER JOIN t.course c WHERE c.name=:courseName")

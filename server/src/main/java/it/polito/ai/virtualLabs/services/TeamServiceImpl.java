@@ -68,7 +68,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public boolean addCourse(CourseDTO course, List<String> userIds) {
-        if (courseRepository.findByNameIgnoreCase(course.getName()).isPresent()) {
+        if (courseRepository.findByNameIgnoreCase(course.getName()).isPresent() || courseRepository.findByAcronymIgnoreCase(course.getAcronym()).isPresent()) {
             return false;
         } else {
             if (course.getName() != null && !course.getName().equals("")) {
