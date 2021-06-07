@@ -235,7 +235,7 @@ export class CourseService {
 
     // window.alert(errorMessage);
 
-    this.toastService.error(error.message, error.status.toString());
+    this.toastService.error(/*error.message, */"ERROR " + error.status.toString());
     return of(null);
   }
 }
