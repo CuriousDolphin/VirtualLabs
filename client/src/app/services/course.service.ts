@@ -40,7 +40,7 @@ export class CourseService {
       .pipe(catchError((e) => this.handleError(e)));
   }
 
-  getAllTeachers():Observable<Teacher[]> {
+  getAllTeachers(): Observable<Teacher[]> {
     const url = BASE_PATH + "courses/teachers";
     return this.http
       .get<Teacher[]>(url)
@@ -166,8 +166,8 @@ export class CourseService {
   getPaper(paperId: number): Observable<Paper> {
     const url = BASE_PATH + "courses/" + "papers/" + paperId
     return this.http
-    .get<Paper>(url)
-    .pipe(catchError((e) => this.handleError(e)))
+      .get<Paper>(url)
+      .pipe(catchError((e) => this.handleError(e)))
   }
 
   addPapersnapshot(paperId: Number, formData: SolutionFormData) {
@@ -223,19 +223,20 @@ export class CourseService {
   }
 
   private handleError(error) {
+    console.log(error)
     let errorMessage = "";
-    if (error.error instanceof ErrorEvent) {
+    /* if (error.error instanceof ErrorEvent) {
       // client-side error
       errorMessage = `Error: ${error.message}`;
     } else {
       // server-side error
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-    }
+    } */
     // this.toastService.error(err.message, err.status.toString())
 
     // window.alert(errorMessage);
 
-    this.toastService.error(/*error.message, */"ERROR " + error.status.toString());
+    this.toastService.error("ERROR " + error.status.toString(), error.error.message);
     return of(null);
   }
 }
