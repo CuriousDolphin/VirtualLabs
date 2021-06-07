@@ -73,7 +73,7 @@ public class CourseController {
 
         if (result.hasErrors()) throw new ResponseStatusException(HttpStatus.CONFLICT);
         if (!teamService.addCourse(courseDTO,userIds))
-            throw new ResponseStatusException(HttpStatus.CONFLICT, courseDTO.getName());
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Duplicated name"/*, courseDTO.getName()*/);
         // notificationService.sendMessage("isnob46@gmail.com","nuova materia inserita",dto.getName().toString());
         return ModelHelper.enrich(courseDTO);
 

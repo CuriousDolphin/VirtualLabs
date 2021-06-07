@@ -236,7 +236,7 @@ export class CourseService {
 
     // window.alert(errorMessage);
 
-    this.toastService.error("ERROR " + error.status.toString(), error.error.message);
+    this.toastService.error("Something went wrong: " + error.status.toString());
     return of(null);
   }
 }
