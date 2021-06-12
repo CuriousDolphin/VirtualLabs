@@ -11,6 +11,7 @@ services:
       - ./db/db_data:/var/lib/mysql
       - ./db/db_init:/docker-entrypoint-initdb.d
   spring:
+    image: isnob46/virtuallabs_spring
     build: ./server/
     container_name: virtualLabs-backend
     ports:
@@ -24,7 +25,9 @@ services:
       - DB_NAME=db_test
     restart: always
   angular:
+    image: isnob46/virtuallabs_angular
     build: ./client/
+    container_name: virtualLabs-frontend
     ports:
       - "80:80"
     volumes:

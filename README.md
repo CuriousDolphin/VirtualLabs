@@ -13,9 +13,13 @@ web application project made with love with:
 
 ## RUN VIRTUALLABS STANDALONE
 
-You can run the app (frontend,backend and db) just type in root folder:
+You can just run the app (frontend,backend and db) just type in root folder (this will download prebuilded images):
 
 - `docker-compose up ` 
+  
+Or build from scratch
+- `docker-compose build --no-cache`
+- `docker-compose up`
 
 to shutdown:
 
@@ -26,7 +30,7 @@ to rebuild and then execute:
 - `docker-compose up --build `
 
 
-the process might be very slower (around 5-7 mins) because the containers build both frontend and backend.
+the buil process might be very slower (around 5-7 mins) because the containers build both frontend and backend.
 
 the frontend will be exposed at http://localhost:80/ 
 server api at http://localhost:8080/api/ 
